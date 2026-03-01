@@ -1,0 +1,58 @@
+name: Trust Audit
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'config/**'
+      - 'audit/**'
+      - '.github/workflows/audit.yml'
+  schedule:
+    # Daily at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    name: Verify Infrastructure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run audit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node audit/run.js --verbose
+
+      - name: Commit audit output
+        run: |
+          git config user.name "blackroad-audit[bot]"
+          git config user.email "audit@blackroad.systems"
+          if git diff --quiet audit/output.json 2>/dev/null; then
+            echo "No changes to audit output."
+          else
+            git add audit/output.json
+            git commit -m "audit: update verification results [skip ci]"
+            git push
+          fi
+
+      - name: Check critical failures
+        run: |
+          STATUS=$(node -e "
+            const audit = require('./audit/output.json');
+            process.stdout.write(audit.summary.status);
+          ")
+          if [ "$STATUS" != "PASS" ]; then
+            echo "::warning::Trust audit status: $STATUS"
+          fi
+          echo "Audit status: $STATUS"

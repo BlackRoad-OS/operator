@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlackRoad OS — System Status</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --border: #1e1e1e;
+      --text: #e0e0e0;
+      --muted: #666666;
+      --accent: #ffffff;
+      --pass: #22c55e;
+      --fail: #ef4444;
+      --warn: #eab308;
+      --skip: #6b7280;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+
+    .global-status {
+      margin-top: 1rem;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .global-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .global-indicator.pass { background: var(--pass); box-shadow: 0 0 8px var(--pass); }
+    .global-indicator.fail { background: var(--fail); box-shadow: 0 0 8px var(--fail); }
+    .global-indicator.unknown { background: var(--skip); }
+
+    .global-text {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .global-sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    h2 {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin: 2rem 0 0.75rem;
+    }
+
+    .check-grid {
+      display: grid;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .check-row {
+      display: grid;
+      grid-template-columns: 180px 80px 60px 1fr;
+      gap: 1rem;
+      padding: 0.6rem 1rem;
+      background: var(--surface);
+      align-items: center;
+      font-size: 0.75rem;
+    }
+
+    .check-row.header {
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.1rem 0.4rem;
+      border-radius: 2px;
+      font-size: 0.6rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge.pass { background: #0a2e14; color: var(--pass); }
+    .badge.fail { background: #2e0a0a; color: var(--fail); }
+    .badge.skip { background: #1a1a1a; color: var(--skip); }
+
+    .severity {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .severity.critical { color: var(--fail); }
+    .severity.warning { color: var(--warn); }
+    .severity.info { color: var(--skip); }
+
+    .detail { color: var(--muted); }
+
+    .org-section {
+      margin-bottom: 0.5rem;
+    }
+
+    .org-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .org-header:hover { opacity: 0.8; }
+
+    .org-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .org-dot.pass { background: var(--pass); }
+    .org-dot.fail { background: var(--fail); }
+    .org-dot.unknown { background: var(--skip); }
+
+    .org-header-name {
+      font-size: 0.8rem;
+      color: var(--accent);
+    }
+
+    .org-header-pct {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .org-checks {
+      display: none;
+      margin-bottom: 1rem;
+    }
+
+    .org-checks.open { display: block; }
+
+    footer {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.7rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .no-data {
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>BLACKROAD OS — SYSTEM STATUS</h1>
+    <div class="global-status">
+      <div class="global-indicator unknown" id="global-dot"></div>
+      <span class="global-text" id="global-label">Loading...</span>
+      <span class="global-sub" id="global-time">—</span>
+    </div>
+  </header>
+
+  <div id="content">
+    <div class="no-data" id="no-data">
+      No audit data available.<br>
+      Run <code>node audit/run.js</code> to generate.
+    </div>
+  </div>
+
+  <footer>
+    <span>&copy; 2024–2026 BlackRoad OS, Inc.</span>
+    <span>Automated verification — no manual narrative</span>
+  </footer>
+
+  <script>
+    async function load() {
+      try {
+        const res = await fetch("../audit/output.json");
+        if (!res.ok) throw new Error("Not found");
+        const audit = await res.json();
+        render(audit);
+      } catch {
+        // No audit data — show default state
+      }
+    }
+
+    function render(audit) {
+      // Global status
+      const dot = document.getElementById("global-dot");
+      const label = document.getElementById("global-label");
+      const time = document.getElementById("global-time");
+
+      const isPassing = audit.summary.status === "PASS";
+      dot.classList.remove("unknown");
+      dot.classList.add(isPassing ? "pass" : "fail");
+      label.textContent = isPassing
+        ? `All Systems Operational — ${audit.summary.healthy_orgs}/${audit.summary.total_orgs}`
+        : `Degraded — ${audit.summary.healthy_orgs}/${audit.summary.total_orgs} healthy`;
+      time.textContent = `Last verified: ${audit.summary.timestamp}`;
+
+      // Org details
+      document.getElementById("no-data").style.display = "none";
+      const content = document.getElementById("content");
+
+      const heading = document.createElement("h2");
+      heading.textContent = "Organization Checks";
+      content.appendChild(heading);
+
+      for (const [orgName, orgData] of Object.entries(audit.organizations)) {
+        const section = document.createElement("div");
+        section.className = "org-section";
+
+        const header = document.createElement("div");
+        header.className = "org-header";
+        header.innerHTML = `
+          <div class="org-dot ${orgData.health.healthy ? "pass" : "fail"}"></div>
+          <span class="org-header-name">${orgName}</span>
+          <span class="org-header-pct">${(orgData.health.overall_rate * 100).toFixed(0)}%</span>
+        `;
+
+        const checks = document.createElement("div");
+        checks.className = "check-grid org-checks";
+
+        checks.innerHTML = `
+          <div class="check-row header">
+            <span>Check</span>
+            <span>Result</span>
+            <span>Severity</span>
+            <span>Detail</span>
+          </div>
+        `;
+
+        for (const [checkId, checkData] of Object.entries(orgData.checks)) {
+          const status =
+            checkData.pass === true
+              ? "pass"
+              : checkData.pass === false
+              ? "fail"
+              : "skip";
+          const statusLabel =
+            status === "pass" ? "PASS" : status === "fail" ? "FAIL" : "SKIP";
+
+          checks.innerHTML += `
+            <div class="check-row">
+              <span>${checkId}</span>
+              <span><span class="badge ${status}">${statusLabel}</span></span>
+              <span class="severity ${checkData.severity}">${checkData.severity}</span>
+              <span class="detail">${checkData.detail}</span>
+            </div>
+          `;
+        }
+
+        header.addEventListener("click", () => {
+          checks.classList.toggle("open");
+        });
+
+        section.appendChild(header);
+        section.appendChild(checks);
+        content.appendChild(section);
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>
