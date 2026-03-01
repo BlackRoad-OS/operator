@@ -1,7 +1,5 @@
-node_modules/
-coverage/
-reports/*.json
-!reports/.gitkeep
-*.log
-.env
-.env.*
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+scraped_data.json

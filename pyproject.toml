@@ -1,0 +1,13 @@
+[project]
+name = "operator"
+version = "0.1.0"
+description = "E2E testing scraper for BlackRoad OS repos — verified data only"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=7.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

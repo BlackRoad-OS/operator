@@ -1,49 +1,69 @@
 # operator
 
-E2E scraper and validation system for BlackRoad OS repositories.
+<!-- VERIFIED-DATA-START -->
+## Verified Repo Data
 
-## What It Does
+> Last scraped: **2026-03-01 03:33:53 UTC**
+> Every number below was fetched live from the GitHub API during this run.
+> Fields that failed to fetch show `n/a` — never backfilled from old data.
 
-Scrapes, validates, and reports real metrics across target repos. Every number is verified at runtime - nothing cached, nothing assumed.
+### Repository Stats
 
-- **Scraper** - GitHub API scraper with retry logic, pulls repo stats, commits, workflows, CI runs, PRs
-- **SEO Analyzer** - Live page analysis: title, meta, OG tags, headings, structured data, link audit
-- **E2E Runner** - Orchestrates scraper + SEO across all targets, runs health checks
-- **Dashboard** - Generates status output from verified data only
+| Repo | Stars | Forks | Open Issues | Open PRs | Language | Branches | Scraped At |
+|------|-------|-------|-------------|----------|----------|----------|------------|
+| BlackRoad-OS/blackroad | n/a | n/a | n/a | n/a | n/a | n/a | 2026-03-01T03:33:49Z |
+| BlackRoad-OS/blackroad-os | 0 | 0 | 765 | n/a | HTML | n/a | 2026-03-01T03:33:49Z |
+| BlackRoad-OS/.github | n/a | n/a | n/a | n/a | n/a | n/a | 2026-03-01T03:33:50Z |
+| BlackRoad-OS/blackroad-os-web | n/a | n/a | n/a | 115 | n/a | 1 | 2026-03-01T03:33:50Z |
+| BlackRoad-OS/operator | n/a | n/a | n/a | 1 | n/a | 23 | 2026-03-01T03:33:51Z |
 
-## Setup
+### SEO Discoverability Scores
 
-```bash
-npm install
-```
+| Repo | Score | Weakest Signal |
+|------|-------|----------------|
+| BlackRoad-OS/blackroad | 0.0 | description (0) |
+| BlackRoad-OS/blackroad-os | 50.5 | homepage (0) |
+| BlackRoad-OS/.github | 0.0 | description (0) |
+| BlackRoad-OS/blackroad-os-web | 0.0 | description (0) |
+| BlackRoad-OS/operator | 6.0 | description (0) |
 
-## Commands
+### SEO Recommendations
 
-```bash
-npm test          # Run 41 unit tests
-npm run e2e       # Run full E2E scraper against all targets
-npm run status    # Display latest verified status
-```
+**BlackRoad-OS/blackroad**
+- Add a description (50+ chars) explaining what this repo does
+- Add more topic tags (currently 0, aim for 5+)
+- Set a homepage URL (docs site, landing page, etc.)
+- Add a recognized license so GitHub can display it
+- Push recent commits — stale repos rank lower
+- Enable GitHub Pages for additional search surface
 
-## Targets
+**BlackRoad-OS/blackroad-os**
+- Set a homepage URL (docs site, landing page, etc.)
+- Add a recognized license so GitHub can display it
+- Enable GitHub Pages for additional search surface
 
-Configured in `config/targets.json`. Currently validates 5 repos across the BlackRoad org universe.
+**BlackRoad-OS/.github**
+- Add a description (50+ chars) explaining what this repo does
+- Add more topic tags (currently 0, aim for 5+)
+- Set a homepage URL (docs site, landing page, etc.)
+- Add a recognized license so GitHub can display it
+- Push recent commits — stale repos rank lower
+- Enable GitHub Pages for additional search surface
 
-## CI/CD
+**BlackRoad-OS/blackroad-os-web**
+- Add a description (50+ chars) explaining what this repo does
+- Add more topic tags (currently 0, aim for 5+)
+- Set a homepage URL (docs site, landing page, etc.)
+- Add a recognized license so GitHub can display it
+- Push recent commits — stale repos rank lower
+- Enable GitHub Pages for additional search surface
 
-- **Tests** run on every push and PR
-- **E2E scraper** runs every 6 hours via GitHub Actions, commits verified STATUS.md
+**BlackRoad-OS/operator**
+- Add a description (50+ chars) explaining what this repo does
+- Add more topic tags (currently 0, aim for 5+)
+- Set a homepage URL (docs site, landing page, etc.)
+- Add a recognized license so GitHub can display it
+- Push recent commits — stale repos rank lower
+- Enable GitHub Pages for additional search surface
 
-## Architecture
-
-```
-src/
-  scraper/         GitHub API scraper (repos, commits, workflows, runs, PRs)
-  seo/             Live SEO page analyzer (title, meta, OG, headings, schema)
-  e2e/             E2E runner + CLI entry point
-  dashboard/       Status report generator (markdown + JSON)
-config/
-  targets.json     Target repos for scraping
-tests/             Jest unit tests (41 tests, 4 suites)
-reports/           Generated reports (gitignored, latest.json)
-```
+<!-- VERIFIED-DATA-END -->
