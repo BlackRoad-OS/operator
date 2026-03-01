@@ -1,16 +1,28 @@
 {
-  "name": "@blackroad-os/operator",
+  "name": "@blackroad/operator",
   "version": "1.0.0",
-  "description": "E2E scraper and verified metrics for BlackRoad OS repos",
-  "type": "module",
+  "description": "E2E scraper and validation system for BlackRoad OS repos",
+  "main": "src/e2e/run.js",
   "scripts": {
-    "scrape": "node src/scraper/index.js",
-    "test": "node --test src/e2e/*.test.js",
-    "test:e2e": "node --test src/e2e/*.test.js",
-    "verify": "node src/metrics/verify.js",
-    "report": "node src/metrics/report.js",
-    "ci": "npm run scrape && npm run verify && npm run test"
+    "test": "jest --verbose",
+    "test:coverage": "jest --coverage",
+    "e2e": "node src/e2e/run.js",
+    "status": "node -e \"const {StatusDashboard}=require('./src/dashboard/status'); const d=new StatusDashboard(); const r=d.loadLatest(); console.log(r ? d.generateMarkdown(r) : 'No data. Run: npm run e2e');\""
   },
-  "keywords": ["blackroad", "scraper", "e2e", "metrics"],
-  "license": "SEE LICENSE IN LICENSE"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BlackRoad-OS/operator"
+  },
+  "keywords": ["e2e", "scraper", "seo", "automation", "blackroad"],
+  "author": "BlackRoad OS, Inc.",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "axios": "^1.13.6",
+    "cheerio": "^1.2.0",
+    "node-cron": "^4.2.1",
+    "undici": "^7.22.0"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0"
+  }
 }
