@@ -1,102 +1,192 @@
-# BlackRoad OS — Control Plane
+# operator
 
-Config-driven infrastructure dashboard. Edit one JSON file, everything updates.
+Centralized remote streaming engine for all BlackRoad OS organizations and repositories.
+
+Operator connects to every GitHub organization, discovers every repository, streams live events, and broadcasts files/configs across the entire fleet — 17 orgs, 1,825+ repos, one command.
 
 ## Architecture
 
 ```
-operator/
-├── config/
-│   └── blackroad.json        # Single source of truth
-├── public/
-│   ├── index.html             # Directory — org listing w/ filters
-│   ├── status.html            # Status — org + domain health
-│   ├── map.html               # Map — org tree + domain topology
-│   ├── css/
-│   │   └── style.css          # Brutalist design system
-│   └── js/
-│       └── render.js          # Config-driven renderer
-├── functions/
-│   └── api.js                 # Cloudflare Pages Function (GitHub proxy)
-├── .env.example
-└── README.md
+┌─────────────────────────────────────────────────────┐
+│                    OPERATOR CLI                      │
+│  scan | stream | status | broadcast | rate-limit     │
+├─────────────────────────────────────────────────────┤
+│                                                      │
+│  ┌──────────┐  ┌──────────────┐  ┌───────────────┐  │
+│  │  GitHub   │  │   Stream     │  │   Remote      │  │
+│  │  Client   │  │   Engine     │  │   Broadcast   │  │
+│  │          │  │              │  │               │  │
+│  │  - Orgs   │  │  - Polling   │  │  - Sync all   │  │
+│  │  - Repos  │  │  - Events    │  │  - Push files │  │
+│  │  - Events │  │  - Handlers  │  │  - Dry run    │  │
+│  └──────────┘  └──────────────┘  └───────────────┘  │
+│                                                      │
+│  ┌──────────────────────────────────────────────┐    │
+│  │  Config / State / Logger / Retry / Concurrency│   │
+│  └──────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────┘
+         │              │              │
+         ▼              ▼              ▼
+   ┌──────────┐  ┌──────────┐  ┌──────────┐
+   │  Org 1   │  │  Org 2   │  │  Org N   │
+   │  repos   │  │  repos   │  │  repos   │
+   └──────────┘  └──────────┘  └──────────┘
 ```
 
-## How It Works
-
-1. All orgs, domains, roles defined in `config/blackroad.json`
-2. `render.js` loads config at runtime, renders all pages
-3. Counts auto-calculate from config data
-4. Add an org → add one object to the JSON → done
-5. `functions/api.js` proxies GitHub API for live repo data
-
-## Pages
-
-| Page | Path | Purpose |
-|------|------|---------|
-| Directory | `/` | Filterable org grid with role badges |
-| Status | `/status.html` | Org + domain status tables |
-| Map | `/map.html` | Org-by-role tree + domain-by-TLD map |
-
-## Config Schema
-
-```json
-{
-  "meta": { "name", "enterprise", "tagline", "version", "updated" },
-  "orgs": [{ "id", "name", "role", "description", "url", "status" }],
-  "domains": [{ "domain", "purpose", "status" }],
-  "roles": { "key": { "label", "description" } }
-}
-```
-
-## Deploy to Cloudflare Pages
+## Setup
 
 ```bash
-# 1. Connect repo to Cloudflare Pages
-#    Build output directory: public
-#    No build command needed
+# Install dependencies
+npm install
 
-# 2. Set environment variable
-#    GITHUB_TOKEN = your GitHub PAT with read:org scope
+# Configure
+cp .env.example .env
+# Edit .env with your GitHub token
 
-# 3. Push to main
-git push origin main
+# Run
+npm run dev -- help
 ```
 
-Cloudflare Pages auto-detects the `/functions` directory and deploys edge functions.
+### Required GitHub Token Scopes
 
-## Local Dev
+- `repo` — Full repository access
+- `read:org` — Read org membership
+- `admin:org` — Org administration (for full discovery)
+
+## Commands
+
+### `scan` — Discover everything
+
+Crawls all organizations, lists every repository, builds a local manifest.
 
 ```bash
-# Serve locally (any static server works)
-npx wrangler pages dev public
-
-# Or simply
-cd public && python3 -m http.server 8000
+npm run scan
 ```
 
-## Adding an Org
+### `stream` — Live event stream
 
-Edit `config/blackroad.json`:
+Streams real-time events (pushes, PRs, issues, releases) from all organizations.
 
-```json
-{
-  "id": "new-org",
-  "name": "New Org",
-  "role": "engineering",
-  "description": "What this org does.",
-  "url": "https://github.com/new-org",
-  "status": "active"
+```bash
+npm run stream
+
+# Custom poll interval
+npm run dev -- stream --interval 10000
+```
+
+### `status [org]` — Repository status
+
+Shows the latest commit and status for every repo across all orgs.
+
+```bash
+# All orgs
+npm run dev -- status
+
+# Specific org
+npm run dev -- status --org BlackRoad-OS
+
+# JSON output
+npm run dev -- status --org BlackRoad-OS --json
+```
+
+### `broadcast` — Push to all repos
+
+Pushes a file to every active (non-archived) repository across all organizations.
+
+```bash
+# Push LICENSE to all repos
+npm run dev -- broadcast LICENSE LICENSE "legal: Deploy proprietary license v2"
+
+# Dry run first
+npm run dev -- broadcast LICENSE LICENSE "legal: Deploy license" --dry-run
+
+# Target specific org
+npm run dev -- broadcast LICENSE LICENSE "legal: Deploy license" --org BlackRoad-OS
+```
+
+### `rate-limit` — Check API budget
+
+```bash
+npm run dev -- rate-limit
+```
+
+## Configuration
+
+All configuration via environment variables or `.env` file:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `GITHUB_TOKEN` | — | GitHub PAT (required) |
+| `OPERATOR_ORGS` | auto-discover | Comma-separated org list |
+| `OPERATOR_STREAM_INTERVAL` | `30000` | Polling interval (ms) |
+| `OPERATOR_STREAM_BATCH_SIZE` | `100` | Events per poll |
+| `OPERATOR_CONCURRENCY` | `10` | Max parallel API calls |
+| `OPERATOR_LOG_LEVEL` | `info` | debug/info/warn/error |
+| `OPERATOR_DATA_DIR` | `.operator` | Local state directory |
+
+## Programmatic Usage
+
+```typescript
+import {
+  loadConfig,
+  initClient,
+  resolveOrgs,
+  listOrgRepos,
+  StreamEngine,
+  createConsoleHandler,
+  broadcastFile,
+  reposToTargets,
+} from "@blackroad/operator";
+
+const config = loadConfig();
+initClient(config.token);
+
+// Discover everything
+const orgs = await resolveOrgs(config.orgs);
+for (const org of orgs) {
+  const repos = await listOrgRepos(org.login);
+  console.log(`${org.login}: ${repos.length} repos`);
 }
+
+// Stream events
+const engine = new StreamEngine(config, state, orgs.map(o => o.login));
+engine.on("stream", createConsoleHandler());
+await engine.start();
+
+// Broadcast a file to all repos
+const repos = await listOrgRepos("BlackRoad-OS");
+const targets = reposToTargets(repos);
+await broadcastFile(targets, {
+  path: "LICENSE",
+  content: "...",
+  commitMessage: "legal: update license",
+}, 10);
 ```
 
-Push. Done. All pages update automatically.
+## Project Structure
 
-## Expansion Path
+```
+src/
+├── cli.ts                  CLI entry point
+├── config.ts               Configuration and state management
+├── index.ts                Public API exports
+├── github/
+│   ├── client.ts           Octokit wrapper
+│   ├── orgs.ts             Organization discovery
+│   ├── repos.ts            Repository operations
+│   └── events.ts           Event polling
+├── stream/
+│   ├── engine.ts           Streaming engine (EventEmitter)
+│   └── handlers.ts         Event handlers (console, filter, JSON)
+├── remote/
+│   ├── sync.ts             Full scan and status
+│   └── broadcast.ts        File broadcast to all repos
+└── utils/
+    ├── logger.ts           Structured logging
+    ├── retry.ts            Exponential backoff retry
+    └── concurrency.ts      Parallel execution pool
+```
 
-- **Live repo counts** — Wire `functions/api.js` into render.js to show repo counts per org
-- **Health checks** — Add domain ping endpoint, render real uptime in status page
-- **Multi-tenant** — Multiple config files, one per tenant, switcher in nav
-- **Web Components** — Extract cards/tables into `<br-card>`, `<br-table>` custom elements
-- **CI/CD status** — Pull GitHub Actions status per repo into status page
-- **Auth layer** — Cloudflare Access for internal-only pages
+## License
+
+Proprietary — BlackRoad OS, Inc. See [LICENSE](LICENSE).

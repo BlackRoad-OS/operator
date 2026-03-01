@@ -1,18 +1,41 @@
 {
-  "name": "@blackroad-os/operator",
+  "name": "@blackroad/operator",
   "version": "0.1.0",
-  "description": "BlackRoad OS operator — E2E scraper and cross-repo health monitor",
-  "private": true,
+  "description": "Centralized remote streaming operator for all BlackRoad OS organizations and repositories",
   "type": "module",
-  "scripts": {
-    "scrape": "node scraper/index.js",
-    "test": "node --test e2e/*.test.js",
-    "test:scraper": "node --test e2e/scraper.test.js",
-    "test:readme": "node --test e2e/readme.test.js",
-    "test:repos": "node --test e2e/repos.test.js",
-    "update": "node scraper/index.js && node scraper/render-readme.js",
-    "ci": "npm run scrape && npm test && npm run update"
+  "main": "dist/index.js",
+  "bin": {
+    "operator": "bin/operator.js"
   },
-  "keywords": ["blackroad", "operator", "e2e", "scraper", "monitoring"],
-  "license": "SEE LICENSE IN LICENSE"
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli.ts",
+    "start": "node dist/cli.js",
+    "stream": "tsx src/cli.ts stream",
+    "sync": "tsx src/cli.ts sync",
+    "scan": "tsx src/cli.ts scan",
+    "broadcast": "tsx src/cli.ts broadcast",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@octokit/rest": "^21.1.1",
+    "@octokit/plugin-paginate-graphql": "^5.2.4",
+    "@octokit/webhooks-types": "^7.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "BlackRoad OS, Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BlackRoad-OS/operator"
+  }
 }
