@@ -1,51 +1,44 @@
 # operator
 
-## BLACKROAD_MASTER Containment System
+**Canonical control repo for the BlackRoad OS platform.**
 
-A structured approach to file-system clarity before any reorganization.  
-**Measure first. Move nothing until you can see everything.**
+All automation, configuration, and infrastructure definitions originate here.
+No automation runs against any org or repo unless it is declared in this repo first.
 
-### Directory Structure
+## Structure
 
-```
-BLACKROAD_MASTER/
-├── _raw        ← untouched original data
-├── _analysis   ← generated reports
-├── _sorted     ← organized output (populated later)
-├── _archive    ← cold storage
-└── _scripts    ← automation scripts (lives here in the repo)
-```
+| Directory | Purpose |
+|-----------|---------|
+| [`config/`](config/) | Single source of truth for all configuration |
+| [`docs/`](docs/) | Architecture documentation and operational runbooks |
+| [`scripts/`](scripts/) | Approved automation entry-points |
+| [`infra/`](infra/) | Infrastructure-as-code definitions |
 
-### Quick Start
+## Core Rule
+
+> All automation originates here.
+
+- Agents do not open PRs across orgs until declared in [`config/orgs.yaml`](config/orgs.yaml).
+- Every automated mutation runs through a script in [`scripts/`](scripts/).
+- Every infrastructure change is declared in [`infra/`](infra/).
+
+## Quick Start
 
 ```bash
-bash _scripts/blackroad_master_init.sh
+# Validate your local environment
+bash scripts/bootstrap.sh
 ```
 
-An optional path argument overrides the default `~/BLACKROAD_MASTER` location:
+## Operational Reset
 
-```bash
-bash _scripts/blackroad_master_init.sh /path/to/BLACKROAD_MASTER
-```
+If the system feels out of control, follow the reset procedure in
+[`docs/runbook.md`](docs/runbook.md#operational-reset):
 
-### What the Script Does
+1. Set `global_enabled: false` in [`config/automation.yaml`](config/automation.yaml).
+2. Audit [`config/orgs.yaml`](config/orgs.yaml) — disable any targets that should not be touched.
+3. Re-enable targets one at a time after review.
 
-| Phase | Description | Output |
-|-------|-------------|--------|
-| 1 – Freeze | Creates the five-directory scaffold | `~/BLACKROAD_MASTER/` |
-| 2 – Global Scan | Lists every file under `~` and reports total count & disk usage | `_analysis/all_files.txt` |
-| 3 – Largest Dirs | Finds the 30 heaviest directories (depth 2) | `_analysis/largest_dirs.txt` |
-| 4 – Extension Breakdown | Counts the 30 most common file extensions | `_analysis/file_types.txt` |
+## Docs
 
-After the script finishes it prints a summary showing:
-- Home directory total size
-- Total file count
-- Top 5 extensions and top 5 largest directories
-
-### Why This Order
-
-> Organization without visibility = permanent damage.
-
-The reports make the invisible structure visible.  
-Only after reviewing `all_files.txt`, `largest_dirs.txt`, and `file_types.txt`  
-should you begin moving or restructuring anything.
+- [Architecture](docs/architecture.md) — system design and control-flow
+- [Runbook](docs/runbook.md) — day-to-day operations
