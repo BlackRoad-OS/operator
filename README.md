@@ -1,44 +1,51 @@
 # operator
 
-BlackRoad OS operator agent — system administration AI that orchestrates, scrapes, and validates across the BlackRoad ecosystem.
+## BLACKROAD_MASTER Containment System
 
-## Monitored Repos
+A structured approach to file-system clarity before any reorganization.  
+**Measure first. Move nothing until you can see everything.**
 
-> All numbers below were fetched live at `2026-03-01T03:29:24.266245+00:00`.  
-> If a value says "unavailable", the API call failed — we don't guess.
-
-| Repo | Stars | Forks | Open Issues | Last Push | SEO: Meta Desc | SEO: README Length |
-|------|-------|-------|-------------|-----------|----------------|-------------------|
-| [blackroad-os](https://github.com/BlackRoad-OS/blackroad-os) | 0 | 0 | 765 | 2026-03-01 | yes | 521 chars |
-| [blackroad-os-web](https://github.com/BlackRoad-OS/blackroad-os-web) | 0 | 0 | 22 | 2026-02-28 | yes | 4050 chars |
-| [blackroad-os-demo](https://github.com/BlackRoad-OS/blackroad-os-demo) | 0 | 0 | 17 | 2026-02-27 | yes | 904 chars |
-| [lucidia-earth-website](https://github.com/BlackRoad-OS/lucidia-earth-website) | 0 | 0 | 12 | 2026-02-27 | yes | 4895 chars |
-| [operator](https://github.com/BlackRoad-OS/operator) | 0 | 0 | 17 | 2026-03-01 | yes | 9 chars |
-
-## E2E Status
-
-Run `python3 -m pytest e2e/ -v` to validate all repos.
-
-## Scraper
-
-Run `python3 -m scraper.seo_scraper` to refresh all numbers above.
-
-## Architecture
+### Directory Structure
 
 ```
-operator/
-  scraper/          # Live SEO + GitHub API scraper
-    config.py       # 5 target repos
-    seo_scraper.py  # Fetches real data, saves to reports/
-    readme_writer.py# Generates README from verified data only
-  e2e/              # End-to-end validation tests
-    test_repos.py   # Repo existence, health, SEO checks
-    test_scraper.py # Scraper integration tests
-  scripts/          # Automation
-    run_all.py      # Full pipeline: scrape -> test -> update README
-  .github/workflows/
-    e2e.yml         # CI: runs on push + daily schedule
-  reports/           # Live data (gitignored, regenerated each run)
+BLACKROAD_MASTER/
+├── _raw        ← untouched original data
+├── _analysis   ← generated reports
+├── _sorted     ← organized output (populated later)
+├── _archive    ← cold storage
+└── _scripts    ← automation scripts (lives here in the repo)
 ```
 
-*Last verified: 2026-03-01T03:29:24.266245+00:00*
+### Quick Start
+
+```bash
+bash _scripts/blackroad_master_init.sh
+```
+
+An optional path argument overrides the default `~/BLACKROAD_MASTER` location:
+
+```bash
+bash _scripts/blackroad_master_init.sh /path/to/BLACKROAD_MASTER
+```
+
+### What the Script Does
+
+| Phase | Description | Output |
+|-------|-------------|--------|
+| 1 – Freeze | Creates the five-directory scaffold | `~/BLACKROAD_MASTER/` |
+| 2 – Global Scan | Lists every file under `~` and reports total count & disk usage | `_analysis/all_files.txt` |
+| 3 – Largest Dirs | Finds the 30 heaviest directories (depth 2) | `_analysis/largest_dirs.txt` |
+| 4 – Extension Breakdown | Counts the 30 most common file extensions | `_analysis/file_types.txt` |
+
+After the script finishes it prints a summary showing:
+- Home directory total size
+- Total file count
+- Top 5 extensions and top 5 largest directories
+
+### Why This Order
+
+> Organization without visibility = permanent damage.
+
+The reports make the invisible structure visible.  
+Only after reviewing `all_files.txt`, `largest_dirs.txt`, and `file_types.txt`  
+should you begin moving or restructuring anything.
