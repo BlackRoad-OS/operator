@@ -1,60 +1,44 @@
-name: E2E Scraper & Validation
+name: Multi-Repo E2E
 
 on:
-  schedule:
-    # Run every 6 hours - keeps metrics fresh and verified
-    - cron: '0 */6 * * *'
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
+    branches: [main]
+  schedule:
+    # Run daily at 6am UTC for real-time dashboard updates
+    - cron: '0 6 * * *'
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   e2e:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm install
 
-      - name: Run unit tests
-        run: npm test
-
-      - name: Run E2E scraper
+      - name: Run full E2E pipeline
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run e2e || true
-        # Don't fail the workflow on scraper errors - we report them
+        run: npm run full
 
-      - name: Upload reports
-        uses: actions/upload-artifact@v4
+      - name: Upload scrape results
         if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: e2e-reports-${{ github.run_number }}
-          path: reports/
-          retention-days: 30
+          name: e2e-results
+          path: data/
 
-      - name: Commit STATUS.md if changed
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+      - name: Commit updated README
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
-          git config user.name "BlackRoad Operator"
-          git config user.email "operator@blackroad.dev"
-          git add STATUS.md reports/latest.json || true
-          if git diff --staged --quiet; then
-            echo "No status changes to commit"
-          else
-            git commit -m "status: Update verified metrics [automated]"
-            git push
-          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git diff --cached --quiet || git commit -m "chore: update README with verified scrape data"
+          git push

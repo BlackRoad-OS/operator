@@ -1,192 +1,62 @@
 # operator
 
-Centralized remote streaming engine for all BlackRoad OS organizations and repositories.
+Multi-repo E2E testing, scraping, and health monitoring for BlackRoad OS.
 
-Operator connects to every GitHub organization, discovers every repository, streams live events, and broadcasts files/configs across the entire fleet — 17 orgs, 1,825+ repos, one command.
+## Monitored Repositories
 
-## Architecture
+> Every number below is scraped live from the GitHub API. Nothing fabricated.
+> Last verified: 2026-03-01T03:36:48.907Z
 
-```
-┌─────────────────────────────────────────────────────┐
-│                    OPERATOR CLI                      │
-│  scan | stream | status | broadcast | rate-limit     │
-├─────────────────────────────────────────────────────┤
-│                                                      │
-│  ┌──────────┐  ┌──────────────┐  ┌───────────────┐  │
-│  │  GitHub   │  │   Stream     │  │   Remote      │  │
-│  │  Client   │  │   Engine     │  │   Broadcast   │  │
-│  │          │  │              │  │               │  │
-│  │  - Orgs   │  │  - Polling   │  │  - Sync all   │  │
-│  │  - Repos  │  │  - Events    │  │  - Push files │  │
-│  │  - Events │  │  - Handlers  │  │  - Dry run    │  │
-│  └──────────┘  └──────────────┘  └───────────────┘  │
-│                                                      │
-│  ┌──────────────────────────────────────────────┐    │
-│  │  Config / State / Logger / Retry / Concurrency│   │
-│  └──────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────┘
-         │              │              │
-         ▼              ▼              ▼
-   ┌──────────┐  ┌──────────┐  ┌──────────┐
-   │  Org 1   │  │  Org 2   │  │  Org N   │
-   │  repos   │  │  repos   │  │  repos   │
-   └──────────┘  └──────────┘  └──────────┘
-```
+| Repository | Role | Languages | Open Issues | Stars | Last Commit |
+|------------|------|-----------|-------------|-------|-------------|
+| [BlackRoad-OS/blackroad-os](https://github.com/BlackRoad-OS/blackroad-os) | enterprise-platform | HTML (48%), Shell (27%), JavaScript (10%) | 765 | 0 | 2026-02-26 |
+| [BlackRoad-OS/blackroad-os-web](https://github.com/BlackRoad-OS/blackroad-os-web) | web-api | HTML (69%), TypeScript (25%), Shell (6%) | 22 | 0 | N/A |
+| [BlackRoad-OS/chanfana-openapi-template](https://github.com/BlackRoad-OS/chanfana-openapi-template) | api-template | N/A | 5 | 0 | 2026-03-01 |
 
-## Setup
+## Aggregate (Verified Only)
 
-```bash
-# Install dependencies
-npm install
+| Metric | Value | Source |
+|--------|-------|--------|
+| Repos scraped | 5 | GitHub API |
+| Repos verified | 3 | Scraper validation |
+| Total open issues | 792 | GitHub API (sum) |
+| Total stars | 0 | GitHub API (sum) |
+| Total forks | 0 | GitHub API (sum) |
+| Primary languages | HTML | GitHub API |
+| Topics | ai, automation, blackroad, blackroad-os, cloud-native, enterprise, infrastructure | GitHub API |
+| Most recent push | 2026-03-01T03:09:40Z | GitHub API |
 
-# Configure
-cp .env.example .env
-# Edit .env with your GitHub token
+## E2E Test Status
 
-# Run
-npm run dev -- help
-```
+| Metric | Value |
+|--------|-------|
+| Total tests | 39 |
+| Passed | 27 |
+| Failed | 12 |
+| Pass rate | 69.2% |
+| Last run | 2026-03-01T03:36:48.914Z |
 
-### Required GitHub Token Scopes
+### Recovery Steps Needed
 
-- `repo` — Full repository access
-- `read:org` — Read org membership
-- `admin:org` — Org administration (for full discovery)
+- **[medium]** Investigate failure in "repo:BlackRoad-OS/blackroad:metadata-present": BlackRoad-OS/blackroad missing metadata
+- **[medium]** Re-run scraper for "repo:BlackRoad-OS/blackroad:is-verified" — data may be stale or API was temporarily unavailable.
+- **[high]** Set GITHUB_TOKEN env var to avoid rate limiting. Generate at github.com/settings/tokens.
+- **[medium]** Investigate failure in "repo:BlackRoad-OS/blackroad-os-demo:metadata-present": BlackRoad-OS/blackroad-os-demo missing metadata
+- **[medium]** Re-run scraper for "repo:BlackRoad-OS/blackroad-os-demo:is-verified" — data may be stale or API was temporarily unavailable.
+- **[medium]** Investigate failure in "cross:at-least-one-typescript-repo": No TypeScript repos found — blackroad monorepo should be TypeScript
+
+## How It Works
+
+1. **Scraper** (`src/scraper.js`) — Hits GitHub API for each repo. Pulls metadata, languages, commits, issues, PRs, contributors.
+2. **E2E Runner** (`src/e2e-runner.js`) — 30+ assertions against live data. Validates every repo is reachable, active, not archived, data is consistent.
+3. **README Updater** (`src/readme-updater.js`) — Rebuilds this file from verified scrape data only. Unverified repos are excluded.
+4. **Automation** (`src/automation.js`) — Orchestrates scrape -> test -> update -> report. Failure recovery built in.
 
 ## Commands
 
-### `scan` — Discover everything
-
-Crawls all organizations, lists every repository, builds a local manifest.
-
 ```bash
-npm run scan
+npm run scrape        # Scrape all 5 repos
+npm test              # Run E2E tests (scrapes first)
+npm run update-readme # Update this file from verified data
+npm run full          # Full pipeline: scrape -> test -> update readme
 ```
-
-### `stream` — Live event stream
-
-Streams real-time events (pushes, PRs, issues, releases) from all organizations.
-
-```bash
-npm run stream
-
-# Custom poll interval
-npm run dev -- stream --interval 10000
-```
-
-### `status [org]` — Repository status
-
-Shows the latest commit and status for every repo across all orgs.
-
-```bash
-# All orgs
-npm run dev -- status
-
-# Specific org
-npm run dev -- status --org BlackRoad-OS
-
-# JSON output
-npm run dev -- status --org BlackRoad-OS --json
-```
-
-### `broadcast` — Push to all repos
-
-Pushes a file to every active (non-archived) repository across all organizations.
-
-```bash
-# Push LICENSE to all repos
-npm run dev -- broadcast LICENSE LICENSE "legal: Deploy proprietary license v2"
-
-# Dry run first
-npm run dev -- broadcast LICENSE LICENSE "legal: Deploy license" --dry-run
-
-# Target specific org
-npm run dev -- broadcast LICENSE LICENSE "legal: Deploy license" --org BlackRoad-OS
-```
-
-### `rate-limit` — Check API budget
-
-```bash
-npm run dev -- rate-limit
-```
-
-## Configuration
-
-All configuration via environment variables or `.env` file:
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `GITHUB_TOKEN` | — | GitHub PAT (required) |
-| `OPERATOR_ORGS` | auto-discover | Comma-separated org list |
-| `OPERATOR_STREAM_INTERVAL` | `30000` | Polling interval (ms) |
-| `OPERATOR_STREAM_BATCH_SIZE` | `100` | Events per poll |
-| `OPERATOR_CONCURRENCY` | `10` | Max parallel API calls |
-| `OPERATOR_LOG_LEVEL` | `info` | debug/info/warn/error |
-| `OPERATOR_DATA_DIR` | `.operator` | Local state directory |
-
-## Programmatic Usage
-
-```typescript
-import {
-  loadConfig,
-  initClient,
-  resolveOrgs,
-  listOrgRepos,
-  StreamEngine,
-  createConsoleHandler,
-  broadcastFile,
-  reposToTargets,
-} from "@blackroad/operator";
-
-const config = loadConfig();
-initClient(config.token);
-
-// Discover everything
-const orgs = await resolveOrgs(config.orgs);
-for (const org of orgs) {
-  const repos = await listOrgRepos(org.login);
-  console.log(`${org.login}: ${repos.length} repos`);
-}
-
-// Stream events
-const engine = new StreamEngine(config, state, orgs.map(o => o.login));
-engine.on("stream", createConsoleHandler());
-await engine.start();
-
-// Broadcast a file to all repos
-const repos = await listOrgRepos("BlackRoad-OS");
-const targets = reposToTargets(repos);
-await broadcastFile(targets, {
-  path: "LICENSE",
-  content: "...",
-  commitMessage: "legal: update license",
-}, 10);
-```
-
-## Project Structure
-
-```
-src/
-├── cli.ts                  CLI entry point
-├── config.ts               Configuration and state management
-├── index.ts                Public API exports
-├── github/
-│   ├── client.ts           Octokit wrapper
-│   ├── orgs.ts             Organization discovery
-│   ├── repos.ts            Repository operations
-│   └── events.ts           Event polling
-├── stream/
-│   ├── engine.ts           Streaming engine (EventEmitter)
-│   └── handlers.ts         Event handlers (console, filter, JSON)
-├── remote/
-│   ├── sync.ts             Full scan and status
-│   └── broadcast.ts        File broadcast to all repos
-└── utils/
-    ├── logger.ts           Structured logging
-    ├── retry.ts            Exponential backoff retry
-    └── concurrency.ts      Parallel execution pool
-```
-
-## License
-
-Proprietary — BlackRoad OS, Inc. See [LICENSE](LICENSE).
