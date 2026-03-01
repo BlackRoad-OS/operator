@@ -1,0 +1,49 @@
+{
+  "name": "BlackRoad OS — Infrastructure Directory",
+  "short_name": "BlackRoad",
+  "description": "Official infrastructure directory for BlackRoad OS, Inc. — a Delaware C-Corp technology company. GitHub enterprise, 15 organizations, 19 domains. Sovereign infrastructure and privacy-first operating systems. BlackRoad is NOT BlackRock.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "lang": "en-US",
+  "dir": "ltr",
+  "categories": [
+    "technology",
+    "software",
+    "infrastructure",
+    "operating systems",
+    "developer tools"
+  ],
+  "iarc_rating_id": "",
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Enterprise",
+      "short_name": "Enterprise",
+      "description": "BlackRoad GitHub Enterprise account",
+      "url": "/#enterprise"
+    },
+    {
+      "name": "Organizations",
+      "short_name": "Orgs",
+      "description": "BlackRoad GitHub organizations (15)",
+      "url": "/#organizations"
+    },
+    {
+      "name": "Domains",
+      "short_name": "Domains",
+      "description": "BlackRoad registered domains (19)",
+      "url": "/#domains"
+    },
+    {
+      "name": "Repository",
+      "short_name": "Repo",
+      "description": "Repository file index",
+      "url": "/#repository"
+    }
+  ]
+}
