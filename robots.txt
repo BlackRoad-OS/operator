@@ -1,0 +1,39 @@
+# ═══════════════════════════════════════════════════════════════
+# BlackRoad OS, Inc. — robots.txt
+# Crawl everything. Index everything. BlackRoad is open.
+# ═══════════════════════════════════════════════════════════════
+
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /sitemap.xml
+Allow: /robots.txt
+Allow: /manifest.webmanifest
+Allow: /README.md
+Allow: /LICENSE
+Allow: /CODE_OF_CONDUCT.md
+Allow: /CONTRIBUTING.md
+Allow: /.github/
+Allow: /.github/PULL_REQUEST_TEMPLATE.md
+Allow: /.github/ISSUE_TEMPLATE/
+Allow: /.github/ISSUE_TEMPLATE/bug_report.md
+Allow: /.github/ISSUE_TEMPLATE/feature_request.md
+
+# Disallow only git internals
+Disallow: /.git/
+
+# Sitemap location
+Sitemap: https://blackroad.io/operator/sitemap.xml
+Sitemap: https://blackroad.systems/operator/sitemap.xml
+Sitemap: https://blackroad.network/operator/sitemap.xml
+
+# Crawl-delay: be generous, we want maximum indexing
+# No crawl-delay set — crawl as fast as you want.
+
+# ═══════════════════════════════════════════════════════════════
+# BlackRoad OS — Delaware C-Corp
+# 1 enterprise · 15 organizations · 19 domains
+# github.com/enterprises/blackroad-os
+# blackroad.io | blackroad.systems | blackroad.network
+# blackroadai.com | blackroadquantum.com | lucidia.earth
+# ═══════════════════════════════════════════════════════════════
