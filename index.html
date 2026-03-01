@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Operator — Scan &amp; Summarize</title>
+  <meta name="description" content="Scan a local directory and get a clear summary: file count, total size, top file types, and largest folders. All processing stays on your device." />
+  <style>
+    :root {
+      --bg:           #09090b;
+      --surface:      #18181b;
+      --surface-2:    #27272a;
+      --border:       #3f3f46;
+      --text:         #f4f4f5;
+      --muted:        #71717a;
+      --accent:       #7c3aed;
+      --accent-light: #a78bfa;
+      --green:        #22c55e;
+      --amber:        #f59e0b;
+      --red:          #ef4444;
+      --radius:       8px;
+      --font-sans:    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono:    "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1.25rem 5rem;
+    }
+
+    /* ── Layout ── */
+    .container { width: 100%; max-width: 760px; }
+
+    header {
+      margin-bottom: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .logo {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.925rem;
+      max-width: 520px;
+    }
+
+    /* ── Scan button ── */
+    .scan-zone {
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      transition: border-color 0.2s;
+    }
+
+    .scan-zone:hover { border-color: var(--accent); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.5rem;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      font-size: 0.925rem;
+      font-weight: 600;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover:not(:disabled) { opacity: 0.9; }
+
+    .btn-secondary {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover:not(:disabled) { background: var(--surface); }
+
+    .scan-hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* ── Progress ── */
+    #progress {
+      display: none;
+      margin-bottom: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+    }
+
+    .progress-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .progress-bar-track {
+      height: 4px;
+      background: var(--surface-2);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 999px;
+      width: 0%;
+      transition: width 0.1s;
+      animation: indeterminate 1.4s infinite linear;
+    }
+
+    @keyframes indeterminate {
+      0%   { transform: translateX(-100%) scaleX(0.5); }
+      50%  { transform: translateX(0%)    scaleX(0.8); }
+      100% { transform: translateX(200%) scaleX(0.5); }
+    }
+
+    /* ── Results ── */
+    #results { display: none; }
+
+    .results-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .results-header h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .dir-name {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent-light);
+      background: var(--surface);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      max-width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ── Stat cards ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-value {
+      font-family: var(--font-mono);
+      font-size: 1.4rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .stat-value.green  { color: var(--green); }
+    .stat-value.amber  { color: var(--amber); }
+    .stat-value.accent { color: var(--accent-light); }
+
+    /* ── Tables ── */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+
+    .section-title {
+      padding: 0.75rem 1.25rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    tr + tr td { border-top: 1px solid var(--border); }
+
+    td {
+      padding: 0.6rem 1.25rem;
+      font-size: 0.875rem;
+    }
+
+    td:first-child {
+      font-family: var(--font-mono);
+      color: var(--accent-light);
+      width: 1%;
+      white-space: nowrap;
+    }
+
+    td.bar-cell { padding: 0.6rem 1.25rem 0.6rem 0.5rem; }
+
+    .bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .bar {
+      flex: 1;
+      height: 6px;
+      background: var(--surface-2);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-inner {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .bar-count {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+      min-width: 3.5rem;
+      text-align: right;
+    }
+
+    td.right {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* ── Error ── */
+    #error {
+      display: none;
+      margin-bottom: 1.5rem;
+      background: #1f0707;
+      border: 1px solid var(--red);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      font-size: 0.875rem;
+      color: #fca5a5;
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 3rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    footer a { color: var(--muted); text-decoration: underline; }
+    footer a:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <span class="logo">BlackRoad OS &mdash; Operator</span>
+      <h1>Scan &amp; Summarize</h1>
+      <p class="subtitle">
+        Choose a folder on your device. Operator counts files, measures sizes,
+        and identifies top types &amp; largest directories — entirely offline,
+        nothing leaves your machine.
+      </p>
+    </header>
+
+    <!-- Scan zone -->
+    <div class="scan-zone" id="scanZone">
+      <button class="btn btn-primary" id="scanBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h6l3 4h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg>
+        Choose Directory to Scan
+      </button>
+      <p class="scan-hint">Uses your browser's File System Access API &mdash; read-only, no uploads</p>
+    </div>
+
+    <!-- Progress -->
+    <div id="progress" role="status" aria-live="polite">
+      <div class="progress-label">
+        <span id="progressText">Scanning…</span>
+        <span id="progressCount"></span>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div id="error" role="alert"></div>
+
+    <!-- Results -->
+    <div id="results">
+      <div class="results-header">
+        <h2>Results</h2>
+        <div class="dir-name" id="dirName"></div>
+      </div>
+
+      <!-- Summary stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Files</div>
+          <div class="stat-value accent" id="statFiles">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Size</div>
+          <div class="stat-value green" id="statSize">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">File Types</div>
+          <div class="stat-value amber" id="statTypes">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Subdirectories</div>
+          <div class="stat-value" id="statDirs">—</div>
+        </div>
+      </div>
+
+      <!-- Top file types -->
+      <div class="section">
+        <div class="section-title">Top File Types</div>
+        <table id="typesTable" aria-label="Top file types by count"></table>
+      </div>
+
+      <!-- Largest directories -->
+      <div class="section">
+        <div class="section-title">Largest Directories</div>
+        <table id="dirsTable" aria-label="Largest top-level directories by size"></table>
+      </div>
+
+      <div style="text-align:right; margin-top: 1rem;">
+        <button class="btn btn-secondary" id="resetBtn">Scan Another Directory</button>
+      </div>
+    </div>
+
+    <footer>
+      <p>All processing is local. No data leaves your device. &mdash; <a href="https://blackroad.io" rel="noopener">blackroad.io</a></p>
+    </footer>
+
+  </div>
+
+  <script>
+    // ── Utilities ──────────────────────────────────────────────────────────────
+
+    function fmtNumber(n) {
+      return n.toLocaleString();
+    }
+
+    function fmtSize(bytes) {
+      if (bytes === 0) return '0 B';
+      const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+      const i = Math.min(Math.floor(Math.log2(bytes) / 10), units.length - 1);
+      const val = bytes / Math.pow(1024, i);
+      return (i === 0 ? val : val.toFixed(2)) + ' ' + units[i];
+    }
+
+    function extOf(name) {
+      const dot = name.lastIndexOf('.');
+      // dot < 0  → no dot at all (e.g. "Makefile")
+      // dot === 0 → hidden dotfile (e.g. ".gitignore") — no real extension
+      // dot === name.length - 1 → trailing dot (e.g. "file.") — no extension
+      if (dot <= 0 || dot === name.length - 1) return '(none)';
+      return '.' + name.slice(dot + 1).toLowerCase();
+    }
+
+    // How often (in files processed) to fire a live progress update.
+    const PROGRESS_UPDATE_INTERVAL = 200;
+
+    /**
+     * Recursively walk a FileSystemDirectoryHandle.
+     * Returns { count, size, exts: Map<string,number> }
+     */
+    async function walkDir(dirHandle, onProgress) {
+      let count = 0;
+      let size  = 0;
+      const exts = new Map();
+
+      async function recurse(handle) {
+        for await (const entry of handle.values()) {
+          if (entry.kind === 'file') {
+            const file = await entry.getFile();
+            count++;
+            size += file.size;
+            const ext = extOf(entry.name);
+            exts.set(ext, (exts.get(ext) ?? 0) + 1);
+            if (count % PROGRESS_UPDATE_INTERVAL === 0) onProgress(count);
+          } else if (entry.kind === 'directory') {
+            await recurse(entry);
+          }
+        }
+      }
+
+      await recurse(dirHandle);
+      onProgress(count);
+      return { count, size, exts };
+    }
+
+    /**
+     * Scan each top-level child of dirHandle, returning an array of
+     * { name, count, size } sorted by size descending.
+     */
+    async function scanSubdirs(dirHandle, onProgress) {
+      const results = [];
+      for await (const entry of dirHandle.values()) {
+        if (entry.kind === 'directory') {
+          const sub = await walkDir(entry, onProgress);
+          results.push({ name: entry.name, count: sub.count, size: sub.size });
+        }
+      }
+      results.sort((a, b) => b.size - a.size);
+      return results;
+    }
+
+    // ── UI helpers ─────────────────────────────────────────────────────────────
+
+    function showProgress(visible) {
+      document.getElementById('progress').style.display = visible ? 'block' : 'none';
+    }
+
+    function setProgressText(text, count) {
+      document.getElementById('progressText').textContent = text;
+      document.getElementById('progressCount').textContent = count != null ? fmtNumber(count) + ' files…' : '';
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('error');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function hideError() {
+      document.getElementById('error').style.display = 'none';
+    }
+
+    function renderResults(dirName, totals, subdirs) {
+      document.getElementById('dirName').textContent   = dirName;
+      document.getElementById('statFiles').textContent = fmtNumber(totals.count);
+      document.getElementById('statSize').textContent  = fmtSize(totals.size);
+
+      // sort extensions by count
+      const sortedExts = [...totals.exts.entries()].sort((a, b) => b[1] - a[1]);
+      document.getElementById('statTypes').textContent = fmtNumber(sortedExts.length);
+      document.getElementById('statDirs').textContent  = fmtNumber(subdirs.length);
+
+      // Top 20 file types
+      const topExts  = sortedExts.slice(0, 20);
+      const maxCount = Math.max(topExts[0]?.[1] ?? 0, 1);
+      const typesBody = topExts.map(([ext, cnt]) => {
+        const pct = Math.round((cnt / maxCount) * 100);
+        return `<tr>
+          <td>${escHtml(ext)}</td>
+          <td class="bar-cell">
+            <div class="bar-wrap">
+              <div class="bar"><div class="bar-inner" style="width:${pct}%"></div></div>
+              <span class="bar-count">${fmtNumber(cnt)}</span>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+      document.getElementById('typesTable').innerHTML = typesBody || '<tr><td colspan="2" style="color:var(--muted);padding:1rem">No files found.</td></tr>';
+
+      // Top 20 directories
+      const topDirs   = subdirs.slice(0, 20);
+      const maxSize   = Math.max(topDirs[0]?.size ?? 0, 1);
+      const dirsBody  = topDirs.map(d => {
+        const pct = Math.round((d.size / maxSize) * 100);
+        return `<tr>
+          <td>${escHtml(d.name)}</td>
+          <td class="bar-cell">
+            <div class="bar-wrap">
+              <div class="bar"><div class="bar-inner" style="width:${pct}%"></div></div>
+              <span class="bar-count">${fmtSize(d.size)}</span>
+            </div>
+          </td>
+          <td class="right">${fmtNumber(d.count)} files</td>
+        </tr>`;
+      }).join('');
+      document.getElementById('dirsTable').innerHTML = dirsBody || '<tr><td colspan="3" style="color:var(--muted);padding:1rem">No subdirectories found.</td></tr>';
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    /** Minimal HTML escaping to prevent XSS from file/directory names */
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function resetUI() {
+      document.getElementById('results').style.display  = 'none';
+      document.getElementById('progress').style.display = 'none';
+      hideError();
+      document.getElementById('scanBtn').disabled = false;
+    }
+
+    // ── Main flow ──────────────────────────────────────────────────────────────
+
+    document.getElementById('scanBtn').addEventListener('click', async () => {
+      hideError();
+
+      // Check browser support
+      if (typeof window.showDirectoryPicker !== 'function') {
+        showError(
+          'Your browser does not support the File System Access API. ' +
+          'Please use a recent version of Chrome, Edge, or Opera.'
+        );
+        return;
+      }
+
+      let dirHandle;
+      try {
+        dirHandle = await window.showDirectoryPicker({ mode: 'read' });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          showError('Could not open directory: ' + err.message);
+        }
+        return;
+      }
+
+      document.getElementById('scanBtn').disabled = true;
+      document.getElementById('results').style.display = 'none';
+      showProgress(true);
+      setProgressText('Counting files…', null);
+
+      try {
+        let filesScanned = 0;
+        const onProgress = (n) => {
+          filesScanned = n;
+          setProgressText('Scanning…', n);
+        };
+
+        // Phase 1: full walk for totals + extension map
+        setProgressText('Phase 1 — counting all files…', null);
+        const totals = await walkDir(dirHandle, onProgress);
+
+        // Phase 2: per-subdir sizes for the directory table
+        setProgressText('Phase 2 — measuring subdirectories…', filesScanned);
+        const subdirs = await scanSubdirs(dirHandle, onProgress);
+
+        showProgress(false);
+        renderResults(dirHandle.name, totals, subdirs);
+      } catch (err) {
+        showProgress(false);
+        showError('Scan error: ' + err.message);
+      } finally {
+        document.getElementById('scanBtn').disabled = false;
+      }
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', resetUI);
+  </script>
+</body>
+</html>
