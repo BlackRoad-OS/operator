@@ -1,67 +1,62 @@
 # operator
 
-Infrastructure audit and status reporting for BlackRoad OS, Inc.
+Cross-repo scraper, E2E test pipeline, and SEO engine for the BlackRoad OS ecosystem.
 
-Correct numbers. No reliability scores. No vanity percentages. No color drama.
+## What this does
 
-## Running the Audit
+Scrapes live data from 5 core BlackRoad repos via the GitHub API, verifies every number is real, generates SEO cross-linking artifacts, and tests the full pipeline end-to-end.
+
+**Target repos:**
+
+| Repo | Role |
+|------|------|
+| [blackroad](https://github.com/BlackRoad-OS/blackroad) | Core monorepo |
+| [blackroad-os-core](https://github.com/BlackRoad-OS/blackroad-os-core) | Main app — desktop UI, backend APIs, auth |
+| [blackroad-os-api](https://github.com/BlackRoad-OS/blackroad-os-api) | API Gateway |
+| [blackroad-os-web](https://github.com/BlackRoad-OS/blackroad-os-web) | Web API / FastAPI backend |
+| [blackroad-os-prism-console](https://github.com/BlackRoad-OS/blackroad-os-prism-console) | Prism Console |
+
+## Commands
 
 ```bash
-# Requires: jq, curl, openssl, dnsutils (nslookup/dig/host)
-./infrastructure/audit.sh
+npm run scrape          # Scrape all 5 repos, write data/latest.json
+npm run scrape:live     # Scrape + re-run every 5 minutes
+npm run verify          # Verify data is real and fresh
+npm run seo:generate    # Generate SEO artifacts from scraped data
+npm test                # Run all 35 tests (unit + E2E)
+npm run test:unit       # Unit tests only
+npm run test:e2e        # E2E pipeline tests only
 ```
 
-The audit runs **nightly at 03:00 UTC** and **on demand** via GitHub Actions.
-
-Output is written to `infrastructure/STATUS.md`.
-
-## Metric Definitions
-
-Every number reported has a precise, defensible definition.
-
-### Organization Verified
-
-GitHub API returns HTTP 200 for the organization endpoint. The org exists.
-
-### Active Organization (30d)
-
-At least one repository in the organization has been updated in the last 30 days.
-
-### Domain Resolving
-
-DNS lookup succeeds. The domain returns at least one address record.
-
-### HTTPS 200 OK
-
-An HTTPS GET request to the domain root returns HTTP status code 200.
-
-### Valid SSL Certificate
-
-The TLS certificate presented on port 443 has an expiry date in the future.
-
-### Enterprise Reachable
-
-The GitHub API (`api.github.com`) responds successfully.
-
-## What This Does Not Claim
-
-- No uptime percentage (we are not running continuous monitoring)
-- No reliability score (a single audit is not a reliability measurement)
-- No "production ready" designation (that requires operational criteria beyond reachability)
-
-If something fails, the count drops. `HTTPS 200 OK: 17 / 19` means two domains did not return 200. No hiding. No coloring it green.
-
-## Configuration
-
-Organizations and domains are defined in [`infrastructure/config.json`](infrastructure/config.json).
-
-## Files
+## Architecture
 
 ```
-infrastructure/
-  config.json    # Source of truth: organizations and domains
-  audit.sh       # Audit script
-  STATUS.md      # Generated status report (do not edit manually)
+src/
+  index.js              — Entry point. Scrape → verify → SEO pipeline
+  scrapers/github.js    — GitHub API scraper (repo metadata, languages, commits, contributors)
+  seo/generate.js       — SEO engine: repo graph, JSON-LD structured data, ecosystem index
+  verify.js             — Data verification: rejects stale, fabricated, or malformed metrics
+  types/repo.js         — Type definitions and target repo list
+tests/
+  unit/                 — 24 unit tests (scraper, verify, SEO)
+  e2e/                  — 11 E2E tests (full pipeline: scrape → verify → SEO)
 .github/workflows/
-  audit.yml      # Nightly + on-demand workflow
+  e2e.yml               — CI: unit tests on Node 18/20/22, E2E, scheduled scraping
 ```
+
+## SEO approach
+
+Instead of treating repos as disconnected pages (how Google indexes them), this builds a **directed relationship graph** across the ecosystem:
+
+- Each repo gets a role (monorepo, core, api, web, console)
+- Cross-links are generated based on actual relationships (extends, powers, consumes, renders, sibling, related)
+- JSON-LD structured data (`schema.org/SoftwareSourceCode`) ties them together as a single software system
+- The ecosystem index computes aggregate totals from live-scraped data only
+
+## Verification rules
+
+No number appears in output unless:
+1. It was fetched from a live API endpoint in the current scrape cycle
+2. It passes type checking (numbers must be numbers, URLs must be URLs)
+3. The `scraped_at` timestamp is recent (< 1 hour)
+4. Failed scrapes are labeled "unavailable" — never backfilled or guessed
