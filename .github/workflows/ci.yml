@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate repository structure
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate config JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('config/blackroad.json','utf8')); console.log('config/blackroad.json: valid JSON');"
+
+      - name: Check required files exist
+        run: |
+          for f in \
+            config/blackroad.json \
+            audit/runner.js \
+            audit/checks/dns.js \
+            audit/checks/github.js \
+            audit/checks/https.js \
+            audit/checks/ssl.js; do
+            if [ ! -f "$f" ]; then
+              echo "MISSING: $f"
+              exit 1
+            fi
+            echo "OK: $f"
+          done
+
+      - name: Check JavaScript syntax
+        run: |
+          for f in \
+            audit/runner.js \
+            audit/checks/dns.js \
+            audit/checks/github.js \
+            audit/checks/https.js \
+            audit/checks/ssl.js; do
+            node --check "$f" && echo "Syntax OK: $f"
+          done

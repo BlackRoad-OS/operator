@@ -1,0 +1,52 @@
+name: Infrastructure Audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run daily at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    name: Run Audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run audit
+        # continue-on-error: external network checks (DNS, HTTPS, SSL, GitHub API)
+        # may be unavailable in restricted CI environments. Failures are recorded
+        # in the uploaded artifacts but must not block pull request merges.
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node audit/runner.js
+
+      - name: Upload private audit output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-output-private
+          path: audit/output-private.json
+          retention-days: 90
+
+      - name: Upload public audit output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-output-public
+          path: audit/output-public.json
+          retention-days: 90
