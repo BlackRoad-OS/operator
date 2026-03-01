@@ -1,39 +1,80 @@
-# ═══════════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════════
 # BlackRoad OS, Inc. — robots.txt
-# Crawl everything. Index everything. BlackRoad is open.
-# ═══════════════════════════════════════════════════════════════
+# Maximum crawl access for search engine indexing
+# Copyright 2024-2026 BlackRoad OS, Inc.
+# ═══════════════════════════════════════════════════════════════════
 
+# Allow all crawlers full access
 User-agent: *
 Allow: /
 Allow: /index.html
 Allow: /sitemap.xml
-Allow: /robots.txt
-Allow: /manifest.webmanifest
-Allow: /README.md
-Allow: /LICENSE
-Allow: /CODE_OF_CONDUCT.md
-Allow: /CONTRIBUTING.md
-Allow: /.github/
-Allow: /.github/PULL_REQUEST_TEMPLATE.md
-Allow: /.github/ISSUE_TEMPLATE/
-Allow: /.github/ISSUE_TEMPLATE/bug_report.md
-Allow: /.github/ISSUE_TEMPLATE/feature_request.md
+Allow: /manifest.json
+Allow: /404.html
 
-# Disallow only git internals
-Disallow: /.git/
+# No restrictions — index everything
+Disallow:
 
-# Sitemap location
-Sitemap: https://blackroad.io/operator/sitemap.xml
-Sitemap: https://blackroad.systems/operator/sitemap.xml
-Sitemap: https://blackroad.network/operator/sitemap.xml
+# Sitemap locations (daisy-chain across domains)
+Sitemap: https://blackroad.io/sitemap.xml
+Sitemap: https://blackroad.systems/sitemap.xml
+Sitemap: https://blackroadai.com/sitemap.xml
+Sitemap: https://blackroad.network/sitemap.xml
+Sitemap: https://blackroadquantum.com/sitemap.xml
+Sitemap: https://lucidia.earth/sitemap.xml
+Sitemap: https://roadchain.io/sitemap.xml
+Sitemap: https://roadcoin.io/sitemap.xml
+Sitemap: https://blackboxprogramming.io/sitemap.xml
 
-# Crawl-delay: be generous, we want maximum indexing
-# No crawl-delay set — crawl as fast as you want.
+# Crawl-delay: none — crawl as fast as you want
+# We want maximum indexing velocity
 
-# ═══════════════════════════════════════════════════════════════
-# BlackRoad OS — Delaware C-Corp
-# 1 enterprise · 15 organizations · 19 domains
-# github.com/enterprises/blackroad-os
-# blackroad.io | blackroad.systems | blackroad.network
-# blackroadai.com | blackroadquantum.com | lucidia.earth
-# ═══════════════════════════════════════════════════════════════
+# ═══ Google ════════════════════════════════════════════════════════
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-News
+Allow: /
+
+User-agent: Googlebot-Video
+Allow: /
+
+# ═══ Bing ══════════════════════════════════════════════════════════
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+User-agent: MSNBot
+Allow: /
+
+# ═══ Other Major Crawlers ═════════════════════════════════════════
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: facebot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# ═══ Host ══════════════════════════════════════════════════════════
+Host: https://blackroad.io
