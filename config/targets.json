@@ -1,0 +1,30 @@
+{
+  "description": "E2E scraper target repos. These 5 repos are scraped and validated on every run.",
+  "targets": [
+    {
+      "owner": "BlackRoad-OS",
+      "repo": "operator",
+      "reason": "Command center - orchestrates all E2E testing and scraping"
+    },
+    {
+      "owner": "blackboxprogramming",
+      "repo": "blackboxprogramming",
+      "reason": "Primary development org profile repo - SEO and visibility anchor"
+    },
+    {
+      "owner": "BlackRoad-OS-Inc",
+      "repo": "BlackRoad-OS-Inc",
+      "reason": "Corporate entity org profile - legal and brand presence"
+    },
+    {
+      "owner": "BlackRoad-AI",
+      "repo": "BlackRoad-AI",
+      "reason": "AI/ML stack org profile - technical credibility signal"
+    },
+    {
+      "owner": "BlackRoad-Cloud",
+      "repo": "BlackRoad-Cloud",
+      "reason": "Cloud infrastructure org profile - deployment and ops"
+    }
+  ]
+}

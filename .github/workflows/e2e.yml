@@ -1,0 +1,60 @@
+name: E2E Scraper & Validation
+
+on:
+  schedule:
+    # Run every 6 hours - keeps metrics fresh and verified
+    - cron: '0 */6 * * *'
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Run E2E scraper
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run e2e || true
+        # Don't fail the workflow on scraper errors - we report them
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-reports-${{ github.run_number }}
+          path: reports/
+          retention-days: 30
+
+      - name: Commit STATUS.md if changed
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "BlackRoad Operator"
+          git config user.email "operator@blackroad.dev"
+          git add STATUS.md reports/latest.json || true
+          if git diff --staged --quiet; then
+            echo "No status changes to commit"
+          else
+            git commit -m "status: Update verified metrics [automated]"
+            git push
+          fi
