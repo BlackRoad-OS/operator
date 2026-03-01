@@ -1,0 +1,72 @@
+{
+  "repos": [
+    {
+      "name": "operator",
+      "full_name": "BlackRoad-OS/operator",
+      "scraped_at": "2026-03-01T03:46:45.309Z",
+      "checks": {
+        "api_reachable": true,
+        "exists": true,
+        "has_license": true,
+        "has_commits": true,
+        "data_fresh": true,
+        "numbers_valid": true
+      },
+      "head_sha": "463282be5cb9e4134bf4e76c31916b7c68137bba",
+      "branches": 27,
+      "tags": 0,
+      "pull_requests": 44,
+      "has_license": true,
+      "license": "NONE",
+      "total_commits": 6,
+      "first_commit": "2026-01-26T14:57:19-06:00",
+      "last_commit": "2026-02-24T21:01:21-06:00"
+    }
+  ],
+  "verified_at": "2026-03-01T03:47:00.837Z",
+  "source": "local_git_proxy",
+  "total_verified": 1,
+  "total_rejected": 4,
+  "rejected": [
+    {
+      "name": "blackroad-web-scraper",
+      "failed": [
+        "api_reachable",
+        "exists",
+        "has_license",
+        "has_commits",
+        "numbers_valid"
+      ]
+    },
+    {
+      "name": "blackroad-os-core",
+      "failed": [
+        "api_reachable",
+        "exists",
+        "has_license",
+        "has_commits",
+        "numbers_valid"
+      ]
+    },
+    {
+      "name": "blackroad-sync-engine",
+      "failed": [
+        "api_reachable",
+        "exists",
+        "has_license",
+        "has_commits",
+        "numbers_valid"
+      ]
+    },
+    {
+      "name": "blackroad-a-b-testing",
+      "failed": [
+        "api_reachable",
+        "exists",
+        "has_license",
+        "has_commits",
+        "numbers_valid"
+      ]
+    }
+  ]
+}

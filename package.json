@@ -1,28 +1,16 @@
 {
   "name": "@blackroad-os/operator",
-  "version": "0.1.0",
-  "description": "BlackRoad OS operator — cross-repo scraper, E2E testing, SEO engine, and real-time ecosystem metrics.",
+  "version": "1.0.0",
+  "description": "E2E scraper and verified metrics for BlackRoad OS repos",
   "type": "module",
-  "main": "src/index.js",
   "scripts": {
-    "scrape": "node src/index.js",
-    "scrape:live": "node src/index.js --live",
-    "test": "node --test --test-concurrency=1 tests/unit/*.test.js tests/e2e/*.test.js",
-    "test:unit": "node --test --test-concurrency=1 tests/unit/*.test.js",
-    "test:e2e": "node --test tests/e2e/*.test.js",
-    "seo:generate": "node src/seo/generate.js",
-    "verify": "node src/verify.js"
+    "scrape": "node src/scraper/index.js",
+    "test": "node --test src/e2e/*.test.js",
+    "test:e2e": "node --test src/e2e/*.test.js",
+    "verify": "node src/metrics/verify.js",
+    "report": "node src/metrics/report.js",
+    "ci": "npm run scrape && npm run verify && npm run test"
   },
-  "keywords": [
-    "blackroad",
-    "operator",
-    "scraper",
-    "e2e",
-    "seo",
-    "automation"
-  ],
-  "license": "SEE LICENSE IN LICENSE",
-  "engines": {
-    "node": ">=18.0.0"
-  }
+  "keywords": ["blackroad", "scraper", "e2e", "metrics"],
+  "license": "SEE LICENSE IN LICENSE"
 }
