@@ -1,12 +1,2 @@
-# Reports are regenerated each run - never commit stale data
-reports/
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
-.pytest_cache/
-
-# Environment
-.env
-.venv/
+audit/output-private.json
+audit/output-public.json

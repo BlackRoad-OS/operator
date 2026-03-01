@@ -1,58 +1,34 @@
-name: Trust Audit
+name: Audit
 
 on:
   push:
-    branches: [main, master]
-    paths:
-      - 'config/**'
-      - 'audit/**'
-      - '.github/workflows/audit.yml'
-  schedule:
-    # Daily at 06:00 UTC
-    - cron: '0 6 * * *'
-  workflow_dispatch:
-
-permissions:
-  contents: write
+    branches: ["main", "copilot/**"]
+  pull_request:
+    branches: ["main"]
 
 jobs:
   audit:
-    name: Verify Infrastructure
+    name: Run audit runner
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
-      - name: Run audit
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node audit/run.js --verbose
+      - name: Run audit runner
+        run: node audit/runner.js
 
-      - name: Commit audit output
-        run: |
-          git config user.name "blackroad-audit[bot]"
-          git config user.email "audit@blackroad.systems"
-          if git diff --quiet audit/output.json 2>/dev/null; then
-            echo "No changes to audit output."
-          else
-            git add audit/output.json
-            git commit -m "audit: update verification results [skip ci]"
-            git push
-          fi
-
-      - name: Check critical failures
-        run: |
-          STATUS=$(node -e "
-            const audit = require('./audit/output.json');
-            process.stdout.write(audit.summary.status);
-          ")
-          if [ "$STATUS" != "PASS" ]; then
-            echo "::warning::Trust audit status: $STATUS"
-          fi
-          echo "Audit status: $STATUS"
+      - name: Upload audit outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-outputs
+          path: |
+            audit/output-private.json
+            audit/output-public.json
