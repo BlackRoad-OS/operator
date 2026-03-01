@@ -1,83 +1,129 @@
 #!/usr/bin/env node
-'use strict';
+/**
+ * BlackRoad Infrastructure Audit Runner
+ *
+ * Reads config/blackroad.json, runs infrastructure checks, writes:
+ *   audit/output-private.json  – full detail
+ *   audit/output-public.json   – counts only
+ *
+ * Exits 0 if all checks pass, 1 if any fail.
+ */
 
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
+
+const { checkGitHubOrg } = require('./checks/github');
+const { checkDns } = require('./checks/dns');
+const { checkHttps } = require('./checks/https');
+const { checkSsl } = require('./checks/ssl');
 
 const ROOT = path.resolve(__dirname, '..');
-const OUTPUT_DIR = path.join(ROOT, 'audit');
+const CONFIG_PATH = path.join(ROOT, 'config', 'blackroad.json');
+const OUT_DIR = path.join(ROOT, 'audit');
+const PRIVATE_OUT = path.join(OUT_DIR, 'output-private.json');
+const PUBLIC_OUT = path.join(OUT_DIR, 'output-public.json');
 
-function collectChecks() {
-  const checks = [];
+// ── Helpers ──────────────────────────────────────────────────────────────────
 
-  // Check: repository root contains expected governance files
-  const expectedFiles = ['README.md', 'LICENSE', 'CODE_OF_CONDUCT.md', 'CONTRIBUTING.md'];
-  for (const file of expectedFiles) {
-    const exists = fs.existsSync(path.join(ROOT, file));
-    checks.push({
-      id: `root.${file.toLowerCase().replace(/[^a-z0-9]/g, '_')}`,
-      description: `Repository root contains ${file}`,
-      pass: exists,
-    });
-  }
-
-  // Check: .github directory exists
-  const githubDir = path.join(ROOT, '.github');
-  checks.push({
-    id: 'github.dir',
-    description: '.github directory exists',
-    pass: fs.existsSync(githubDir),
-  });
-
-  // Check: pull request template exists
-  const prTemplate = path.join(githubDir, 'PULL_REQUEST_TEMPLATE.md');
-  checks.push({
-    id: 'github.pr_template',
-    description: 'Pull request template exists',
-    pass: fs.existsSync(prTemplate),
-  });
-
-  return checks;
-}
-
-function run() {
-  const checks = collectChecks();
-  const passed = checks.filter((c) => c.pass);
-  const failed = checks.filter((c) => !c.pass);
-
-  const summary = {
-    timestamp: new Date().toISOString(),
-    host: os.hostname(),
-    total: checks.length,
-    passed: passed.length,
-    failed: failed.length,
-    checks,
-  };
-
-  // Public output: omit host information
-  const publicSummary = {
-    timestamp: summary.timestamp,
-    total: summary.total,
-    passed: summary.passed,
-    failed: summary.failed,
-    checks,
-  };
-
-  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-  fs.writeFileSync(path.join(OUTPUT_DIR, 'output-private.json'), JSON.stringify(summary, null, 2));
-  fs.writeFileSync(path.join(OUTPUT_DIR, 'output-public.json'), JSON.stringify(publicSummary, null, 2));
-
-  if (failed.length > 0) {
-    console.error(`audit: ${failed.length} check(s) failed:`);
-    for (const check of failed) {
-      console.error(`  ✗ [${check.id}] ${check.description}`);
-    }
+function loadConfig() {
+  if (!fs.existsSync(CONFIG_PATH)) {
+    console.error(`[ERROR] Config not found: ${CONFIG_PATH}`);
     process.exit(1);
   }
-
-  console.log(`audit: all ${passed.length} check(s) passed`);
-  process.exit(0);
+  return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
 }
 
-run();
+function pad(str, len) {
+  return String(str).padEnd(len);
+}
+
+function printSummary(results) {
+  const checkW = 12;
+  const targetW = 32;
+  const statusW = 8;
+  const detailW = 40;
+
+  const sep = '-'.repeat(checkW + targetW + statusW + detailW + 9);
+  console.log('\n' + sep);
+  console.log(
+    `| ${pad('CHECK', checkW)} | ${pad('TARGET', targetW)} | ${pad('STATUS', statusW)} | ${pad('DETAIL', detailW)} |`
+  );
+  console.log(sep);
+
+  for (const r of results) {
+    const status = r.pass ? 'PASS' : 'FAIL';
+    console.log(
+      `| ${pad(r.check, checkW)} | ${pad(r.target, targetW)} | ${pad(status, statusW)} | ${pad(r.detail || '', detailW)} |`
+    );
+  }
+
+  console.log(sep + '\n');
+
+  const total = results.length;
+  const passed = results.filter((r) => r.pass).length;
+  const failed = total - passed;
+  console.log(`Audit complete: ${passed}/${total} passed, ${failed} failed.\n`);
+}
+
+// ── Main ─────────────────────────────────────────────────────────────────────
+
+async function main() {
+  const config = loadConfig();
+  const { enterprise, orgs = [], domains = [] } = config;
+
+  console.log(`\nBlackRoad Audit Runner — ${enterprise}`);
+  console.log(`Orgs: ${orgs.join(', ')} | Domains: ${domains.join(', ')}\n`);
+
+  const tasks = [];
+
+  for (const org of orgs) {
+    tasks.push(checkGitHubOrg(org));
+  }
+
+  for (const domain of domains) {
+    tasks.push(checkDns(domain));
+    tasks.push(checkHttps(domain));
+    tasks.push(checkSsl(domain));
+  }
+
+  const results = await Promise.all(tasks);
+
+  printSummary(results);
+
+  // Write private output (full detail)
+  const privatePayload = {
+    enterprise,
+    runAt: new Date().toISOString(),
+    results,
+  };
+  fs.writeFileSync(PRIVATE_OUT, JSON.stringify(privatePayload, null, 2));
+
+  // Write public output (counts only, no sensitive detail)
+  const total = results.length;
+  const passed = results.filter((r) => r.pass).length;
+  const failed = total - passed;
+  const publicPayload = {
+    enterprise,
+    runAt: privatePayload.runAt,
+    summary: { total, passed, failed },
+    checks: results.map((r) => ({
+      check: r.check,
+      target: r.target,
+      pass: r.pass,
+    })),
+  };
+  fs.writeFileSync(PUBLIC_OUT, JSON.stringify(publicPayload, null, 2));
+
+  console.log(`Private output → ${PRIVATE_OUT}`);
+  console.log(`Public output  → ${PUBLIC_OUT}\n`);
+
+  if (failed > 0) {
+    console.error(`[FAIL] ${failed} check(s) failed. Exiting with code 1.`);
+    process.exit(1);
+  }
+}
+
+main().catch((err) => {
+  console.error('[FATAL]', err);
+  process.exit(1);
+});

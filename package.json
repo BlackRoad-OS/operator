@@ -1,29 +1,13 @@
 {
-  "name": "operator",
+  "name": "blackroad-audit-runner",
   "version": "1.0.0",
-  "description": "Multi-repo E2E testing, scraping, and health monitoring for BlackRoad OS",
-  "main": "src/automation.js",
+  "description": "BlackRoad Infrastructure Audit Runner",
+  "main": "audit/runner.js",
   "scripts": {
-    "scrape": "node src/scraper.js",
-    "test": "node src/e2e-runner.js",
-    "update-readme": "node src/readme-updater.js",
-    "full": "node src/automation.js"
+    "audit": "node audit/runner.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/BlackRoad-OS/operator"
+  "engines": {
+    "node": ">=18"
   },
-  "keywords": [
-    "blackroad",
-    "e2e",
-    "multi-repo",
-    "scraper",
-    "testing",
-    "automation"
-  ],
-  "author": "BlackRoad OS, Inc.",
-  "license": "SEE LICENSE IN LICENSE",
-  "dependencies": {
-    "node-fetch": "^2.7.0"
-  }
+  "license": "SEE LICENSE IN LICENSE"
 }
