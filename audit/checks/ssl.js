@@ -27,10 +27,11 @@ function checkSsl(domain) {
         }
 
         const expiresAt = new Date(cert.valid_to);
-        const daysLeft = Math.floor(
-          (expiresAt - Date.now()) / (1000 * 60 * 60 * 24)
+        const msLeft = expiresAt.getTime() - Date.now();
+        const daysLeft = Math.ceil(
+          msLeft / (1000 * 60 * 60 * 24)
         );
-        const pass = daysLeft > WARN_DAYS;
+        const pass = msLeft > WARN_DAYS * (1000 * 60 * 60 * 24);
 
         resolve({
           check: 'ssl',
