@@ -1,0 +1,17 @@
+{
+  "targets": [
+    "BlackRoad-OS/operator",
+    "BlackRoad-OS/blackroad",
+    "BlackRoad-OS/blackroad-prism-console",
+    "BlackRoad-OS/blackroad-os-core",
+    "BlackRoad-OS/blackroad-os-api"
+  ],
+  "org": "BlackRoad-OS",
+  "scrape_fields": [
+    "name", "full_name", "description", "language",
+    "stargazers_count", "forks_count", "open_issues_count",
+    "watchers_count", "size", "default_branch",
+    "created_at", "updated_at", "pushed_at",
+    "topics", "visibility", "has_issues", "has_wiki"
+  ]
+}

@@ -1,69 +1,33 @@
 # operator
 
-<!-- VERIFIED-DATA-START -->
-## Verified Repo Data
+> BlackRoad OS operator — cross-repo health monitor and E2E scraper.
 
-> Last scraped: **2026-03-01 03:33:53 UTC**
-> Every number below was fetched live from the GitHub API during this run.
-> Fields that failed to fetch show `n/a` — never backfilled from old data.
+## Monitored Repos (5)
 
-### Repository Stats
+| Repo | Language | Stars | Issues | Branches | Last Push |
+|------|----------|-------|--------|----------|-----------|
+| [operator](https://github.com/BlackRoad-OS/operator) | — | 0 | 21 | 24 | 2026-03-01 |
+| [blackroad](https://github.com/BlackRoad-OS/blackroad) | TypeScript | 0 | 10 | 23 | 2026-03-01 |
+| [blackroad-prism-console](https://github.com/BlackRoad-OS/blackroad-prism-console) | Python | 1 | 448 | 100 | 2026-02-28 |
+| [blackroad-os-core](https://github.com/BlackRoad-OS/blackroad-os-core) | Python | 0 | 8 | 38 | 2026-03-01 |
+| [blackroad-os-api](https://github.com/BlackRoad-OS/blackroad-os-api) | TypeScript | 0 | 8 | 28 | 2026-02-25 |
 
-| Repo | Stars | Forks | Open Issues | Open PRs | Language | Branches | Scraped At |
-|------|-------|-------|-------------|----------|----------|----------|------------|
-| BlackRoad-OS/blackroad | n/a | n/a | n/a | n/a | n/a | n/a | 2026-03-01T03:33:49Z |
-| BlackRoad-OS/blackroad-os | 0 | 0 | 765 | n/a | HTML | n/a | 2026-03-01T03:33:49Z |
-| BlackRoad-OS/.github | n/a | n/a | n/a | n/a | n/a | n/a | 2026-03-01T03:33:50Z |
-| BlackRoad-OS/blackroad-os-web | n/a | n/a | n/a | 115 | n/a | 1 | 2026-03-01T03:33:50Z |
-| BlackRoad-OS/operator | n/a | n/a | n/a | 1 | n/a | 23 | 2026-03-01T03:33:51Z |
+## Verified Totals
 
-### SEO Discoverability Scores
+| Metric | Value | Source |
+|--------|-------|--------|
+| Total open issues | 495 | GitHub API |
+| Total active branches | 213 | GitHub API |
+| Total stars | 1 | GitHub API |
+| Languages detected | TypeScript, Python | GitHub API |
+| Org public repos | 1218 | GitHub API |
 
-| Repo | Score | Weakest Signal |
-|------|-------|----------------|
-| BlackRoad-OS/blackroad | 0.0 | description (0) |
-| BlackRoad-OS/blackroad-os | 50.5 | homepage (0) |
-| BlackRoad-OS/.github | 0.0 | description (0) |
-| BlackRoad-OS/blackroad-os-web | 0.0 | description (0) |
-| BlackRoad-OS/operator | 6.0 | description (0) |
+## Data Provenance
 
-### SEO Recommendations
+- **Scraped at:** 2026-03-01T03:38:51.794Z
+- **Source:** GitHub REST API v3
+- **Repos scraped:** 5/5 successful
+- **Method:** Live fetch, zero cached assumptions
 
-**BlackRoad-OS/blackroad**
-- Add a description (50+ chars) explaining what this repo does
-- Add more topic tags (currently 0, aim for 5+)
-- Set a homepage URL (docs site, landing page, etc.)
-- Add a recognized license so GitHub can display it
-- Push recent commits — stale repos rank lower
-- Enable GitHub Pages for additional search surface
-
-**BlackRoad-OS/blackroad-os**
-- Set a homepage URL (docs site, landing page, etc.)
-- Add a recognized license so GitHub can display it
-- Enable GitHub Pages for additional search surface
-
-**BlackRoad-OS/.github**
-- Add a description (50+ chars) explaining what this repo does
-- Add more topic tags (currently 0, aim for 5+)
-- Set a homepage URL (docs site, landing page, etc.)
-- Add a recognized license so GitHub can display it
-- Push recent commits — stale repos rank lower
-- Enable GitHub Pages for additional search surface
-
-**BlackRoad-OS/blackroad-os-web**
-- Add a description (50+ chars) explaining what this repo does
-- Add more topic tags (currently 0, aim for 5+)
-- Set a homepage URL (docs site, landing page, etc.)
-- Add a recognized license so GitHub can display it
-- Push recent commits — stale repos rank lower
-- Enable GitHub Pages for additional search surface
-
-**BlackRoad-OS/operator**
-- Add a description (50+ chars) explaining what this repo does
-- Add more topic tags (currently 0, aim for 5+)
-- Set a homepage URL (docs site, landing page, etc.)
-- Add a recognized license so GitHub can display it
-- Push recent commits — stale repos rank lower
-- Enable GitHub Pages for additional search surface
-
-<!-- VERIFIED-DATA-END -->
+> Every number above was fetched from `api.github.com` at the timestamp shown.
+> No number persists from a prior run unless re-verified by a new scrape.

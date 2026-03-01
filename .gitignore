@@ -1,5 +1,4 @@
-__pycache__/
-*.pyc
-*.pyo
-.pytest_cache/
-scraped_data.json
+node_modules/
+scraper/data/
+*.log
+.env
