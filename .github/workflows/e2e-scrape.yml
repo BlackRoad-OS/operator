@@ -1,0 +1,52 @@
+name: E2E Scrape & Verify
+
+on:
+  schedule:
+    # Every 6 hours — real-time-ish without hammering the API
+    - cron: "0 */6 * * *"
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: # manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  scrape-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run scraper
+        run: node scraper/index.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run E2E tests
+        run: node --test e2e/*.test.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Render README from verified data
+        run: node scraper/render-readme.js
+
+      - name: Commit updated data & README
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          git config user.name "blackroad-operator[bot]"
+          git config user.email "operator@blackroad.io"
+          git add scraper/data/ README.md
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "data: refresh scraped repo metrics [automated]"
+            git push
+          fi
