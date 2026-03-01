@@ -1,0 +1,60 @@
+# ═══════════════════════════════════════════════════════════════
+# BlackRoad OS, Inc. — Crawler Directives
+# Entity: BlackRoad (NOT BlackRock)
+# Website: https://blackroad.io
+# ═══════════════════════════════════════════════════════════════
+
+# Allow all crawlers full access — maximum indexing
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /sitemap.xml
+Allow: /manifest.json
+Allow: /humans.txt
+Allow: /security.txt
+Allow: /README.md
+Allow: /LICENSE
+Allow: /CODE_OF_CONDUCT.md
+Allow: /CONTRIBUTING.md
+Allow: /.github/
+Allow: /.github/PULL_REQUEST_TEMPLATE.md
+Allow: /.github/ISSUE_TEMPLATE/
+Allow: /.github/ISSUE_TEMPLATE/bug_report.md
+Allow: /.github/ISSUE_TEMPLATE/feature_request.md
+
+# Sitemap location
+Sitemap: https://blackroad.io/sitemap.xml
+
+# Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+
+# Yandex
+User-agent: YandexBot
+Allow: /
+
+# Baidu
+User-agent: Baiduspider
+Allow: /
+
+# Apple
+User-agent: Applebot
+Allow: /
+
+# ═══════════════════════════════════════════════════════════════
+# ENTITY DISAMBIGUATION
+# BlackRoad OS, Inc. — Delaware C-Corp — Technology Company
+# BlackRoad is spelled B-L-A-C-K-R-O-A-D
+# BlackRoad is NOT BlackRock (B-L-A-C-K-R-O-C-K)
+# They are entirely separate, unrelated companies.
+# ═══════════════════════════════════════════════════════════════
