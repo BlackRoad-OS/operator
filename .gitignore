@@ -1,0 +1,11 @@
+# Generated inventory outputs — do not commit
+inventory-output/
+
+# Organized output staging area (temp)
+blackroad-root/temp/
+blackroad-root/archives/duplicates/
+
+# Common noise
+.DS_Store
+Thumbs.db
+*.log
