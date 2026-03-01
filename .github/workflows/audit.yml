@@ -1,35 +1,48 @@
-name: infra-audit
+name: Infrastructure Audit
 
 on:
-  pull_request:
-    branches: [main]
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run daily at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
 
 jobs:
-  infra-audit:
-    name: infra-audit
+  audit:
+    name: Run Audit
     runs-on: ubuntu-latest
     permissions:
       contents: read
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '20'
 
       - name: Run audit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node audit/runner.js
 
-      - name: Upload audit artifacts
+      - name: Upload private audit output
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: audit-results
-          path: |
-            audit/output-public.json
-            audit/output-private.json
-          if-no-files-found: ignore
+          name: audit-output-private
+          path: audit/output-private.json
+          retention-days: 90
+
+      - name: Upload public audit output
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: audit-output-public
+          path: audit/output-public.json
+          retention-days: 90
