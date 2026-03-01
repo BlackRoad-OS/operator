@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BlackRoad OS — Status</title>
+  <title>BlackRoad OS — Map</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -14,8 +14,8 @@
       <div class="header__tagline" id="site-tagline">Infrastructure for sovereign systems.</div>
       <nav class="header__nav">
         <a href="/">Directory</a>
-        <a href="/status.html" class="active">Status</a>
-        <a href="/map.html">Map</a>
+        <a href="/status.html">Status</a>
+        <a href="/map.html" class="active">Map</a>
       </nav>
     </header>
 
@@ -25,16 +25,16 @@
 
     <main id="main">
       <section class="section">
-        <div class="section__title">Organization Status</div>
-        <div id="status-orgs">
-          <div class="loading">Loading status</div>
+        <div class="section__title">Organization Map</div>
+        <div id="org-map">
+          <div class="loading">Loading org map</div>
         </div>
       </section>
 
       <section class="section">
-        <div class="section__title">Domain Status</div>
-        <div id="status-domains">
-          <div class="loading">Loading domains</div>
+        <div class="section__title">Domain Map</div>
+        <div id="domain-map">
+          <div class="loading">Loading domain map</div>
         </div>
       </section>
     </main>
@@ -47,6 +47,6 @@
 
   </div>
   <script src="/js/render.js"></script>
-  <script>BR.init("status");</script>
+  <script>BR.init("map");</script>
 </body>
 </html>

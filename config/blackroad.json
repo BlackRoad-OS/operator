@@ -1,155 +1,140 @@
 {
-  "schema_version": "1.0.0",
-  "organization": {
-    "legal_name": "BlackRoad OS, Inc.",
-    "founder": "Alexa Louise Amundson",
-    "domain": "blackroad.systems",
-    "contact": "blackroad.systems@gmail.com"
+  "meta": {
+    "name": "BlackRoad OS",
+    "enterprise": "blackroad-os",
+    "tagline": "Infrastructure for sovereign systems.",
+    "version": "1.0.0",
+    "updated": "2026-03-01"
   },
-  "infrastructure": {
-    "github_orgs": [
-      {
-        "name": "BlackRoad-OS-Inc",
-        "url": "https://github.com/BlackRoad-OS-Inc",
-        "role": "corporate",
-        "description": "Corporate entity — legal, governance, licensing"
-      },
-      {
-        "name": "BlackRoad-OS",
-        "url": "https://github.com/BlackRoad-OS",
-        "role": "platform",
-        "description": "Core operating system and platform infrastructure"
-      },
-      {
-        "name": "blackboxprogramming",
-        "url": "https://github.com/blackboxprogramming",
-        "role": "engineering",
-        "description": "Engineering tools and programming utilities"
-      },
-      {
-        "name": "BlackRoad-AI",
-        "url": "https://github.com/BlackRoad-AI",
-        "role": "product",
-        "description": "AI/ML models, agents, and intelligent systems"
-      },
-      {
-        "name": "BlackRoad-Cloud",
-        "url": "https://github.com/BlackRoad-Cloud",
-        "role": "infrastructure",
-        "description": "Cloud infrastructure, deployment, and orchestration"
-      },
-      {
-        "name": "BlackRoad-Security",
-        "url": "https://github.com/BlackRoad-Security",
-        "role": "security",
-        "description": "Security tooling, auditing, and compliance"
-      },
-      {
-        "name": "BlackRoad-Media",
-        "url": "https://github.com/BlackRoad-Media",
-        "role": "product",
-        "description": "Media production and content systems"
-      },
-      {
-        "name": "BlackRoad-Foundation",
-        "url": "https://github.com/BlackRoad-Foundation",
-        "role": "governance",
-        "description": "Open-source foundation and community governance"
-      },
-      {
-        "name": "BlackRoad-Interactive",
-        "url": "https://github.com/BlackRoad-Interactive",
-        "role": "product",
-        "description": "Interactive experiences and application frontends"
-      },
-      {
-        "name": "BlackRoad-Hardware",
-        "url": "https://github.com/BlackRoad-Hardware",
-        "role": "product",
-        "description": "Hardware design, firmware, and device integration"
-      },
-      {
-        "name": "BlackRoad-Labs",
-        "url": "https://github.com/BlackRoad-Labs",
-        "role": "research",
-        "description": "R&D, prototypes, and experimental projects"
-      },
-      {
-        "name": "BlackRoad-Studio",
-        "url": "https://github.com/BlackRoad-Studio",
-        "role": "product",
-        "description": "Creative studio — design systems and visual tooling"
-      },
-      {
-        "name": "BlackRoad-Ventures",
-        "url": "https://github.com/BlackRoad-Ventures",
-        "role": "business",
-        "description": "Venture operations and portfolio management"
-      },
-      {
-        "name": "BlackRoad-Education",
-        "url": "https://github.com/BlackRoad-Education",
-        "role": "product",
-        "description": "Educational platforms and learning systems"
-      },
-      {
-        "name": "BlackRoad-Gov",
-        "url": "https://github.com/BlackRoad-Gov",
-        "role": "compliance",
-        "description": "Government compliance, regulatory, and public sector"
-      },
-      {
-        "name": "Blackbox-Enterprises",
-        "url": "https://github.com/Blackbox-Enterprises",
-        "role": "business",
-        "description": "Enterprise products and B2B services"
-      },
-      {
-        "name": "BlackRoad-Archive",
-        "url": "https://github.com/BlackRoad-Archive",
-        "role": "archive",
-        "description": "Archived and legacy repositories"
-      }
-    ]
-  },
-  "verification": {
-    "checks": [
-      {
-        "id": "org_exists",
-        "description": "GitHub organization exists and is accessible",
-        "severity": "critical"
-      },
-      {
-        "id": "has_repos",
-        "description": "Organization has at least one repository",
-        "severity": "warning"
-      },
-      {
-        "id": "recent_activity",
-        "description": "At least one commit within the last 90 days",
-        "severity": "info"
-      },
-      {
-        "id": "has_readme",
-        "description": "Organization profile or primary repo has a README",
-        "severity": "warning"
-      },
-      {
-        "id": "ssl_valid",
-        "description": "Associated domain has valid SSL certificate",
-        "severity": "critical"
-      }
-    ],
-    "thresholds": {
-      "critical_pass_rate": 1.0,
-      "warning_pass_rate": 0.8,
-      "overall_health_minimum": 0.7
+  "orgs": [
+    {
+      "id": "BlackRoad-OS",
+      "name": "BlackRoad OS",
+      "role": "core",
+      "description": "Core infrastructure and system orchestration.",
+      "url": "https://github.com/BlackRoad-OS",
+      "status": "active"
+    },
+    {
+      "id": "BLKRD",
+      "name": "BLKRD",
+      "role": "core",
+      "description": "Primary product and protocol layer.",
+      "url": "https://github.com/BLKRD",
+      "status": "active"
+    },
+    {
+      "id": "blackroadio",
+      "name": "blackroad.io",
+      "role": "core",
+      "description": "Public-facing web infrastructure.",
+      "url": "https://github.com/blackroadio",
+      "status": "active"
+    },
+    {
+      "id": "blkrd-enterprises",
+      "name": "BLKRD Enterprises",
+      "role": "business",
+      "description": "Business operations and enterprise integrations.",
+      "url": "https://github.com/blkrd-enterprises",
+      "status": "active"
+    },
+    {
+      "id": "blkrd-capital",
+      "name": "BLKRD Capital",
+      "role": "business",
+      "description": "Financial infrastructure and investment tooling.",
+      "url": "https://github.com/blkrd-capital",
+      "status": "active"
+    },
+    {
+      "id": "BLKRD-Records",
+      "name": "BLKRD Records",
+      "role": "media",
+      "description": "Music, media, and content distribution.",
+      "url": "https://github.com/BLKRD-Records",
+      "status": "active"
+    },
+    {
+      "id": "blkrd-press",
+      "name": "BLKRD Press",
+      "role": "media",
+      "description": "Publishing and editorial systems.",
+      "url": "https://github.com/blkrd-press",
+      "status": "active"
+    },
+    {
+      "id": "blkrd-studio",
+      "name": "BLKRD Studio",
+      "role": "media",
+      "description": "Creative production and design systems.",
+      "url": "https://github.com/blkrd-studio",
+      "status": "active"
+    },
+    {
+      "id": "blkrd-dev",
+      "name": "BLKRD Dev",
+      "role": "engineering",
+      "description": "Developer tools and internal SDKs.",
+      "url": "https://github.com/blkrd-dev",
+      "status": "active"
+    },
+    {
+      "id": "blkrd-labs",
+      "name": "BLKRD Labs",
+      "role": "engineering",
+      "description": "Research, prototyping, and experimental builds.",
+      "url": "https://github.com/blkrd-labs",
+      "status": "active"
+    },
+    {
+      "id": "blkrd-infra",
+      "name": "BLKRD Infra",
+      "role": "engineering",
+      "description": "Cloud, CI/CD, and deployment infrastructure.",
+      "url": "https://github.com/blkrd-infra",
+      "status": "active"
+    },
+    {
+      "id": "blkrd-legal",
+      "name": "BLKRD Legal",
+      "role": "governance",
+      "description": "Legal frameworks, compliance, and licensing.",
+      "url": "https://github.com/blkrd-legal",
+      "status": "active"
+    },
+    {
+      "id": "blkrd-archive",
+      "name": "BLKRD Archive",
+      "role": "governance",
+      "description": "Historical records and canonical documentation.",
+      "url": "https://github.com/blkrd-archive",
+      "status": "active"
     }
-  },
-  "audit": {
-    "schedule": "daily",
-    "retention_days": 90,
-    "output_path": "audit/output.json",
-    "notify_on_failure": true
+  ],
+  "domains": [
+    { "domain": "blackroad.io", "purpose": "Primary web presence", "status": "active" },
+    { "domain": "blkrd.com", "purpose": "Short-form routing", "status": "active" },
+    { "domain": "blkrd.io", "purpose": "Developer portal", "status": "active" },
+    { "domain": "blackroad.dev", "purpose": "Engineering docs", "status": "active" },
+    { "domain": "blkrd.dev", "purpose": "Developer tools", "status": "active" },
+    { "domain": "blackroad.org", "purpose": "Open-source projects", "status": "active" },
+    { "domain": "blkrd.org", "purpose": "Community", "status": "active" },
+    { "domain": "blackroad.us", "purpose": "US operations", "status": "active" },
+    { "domain": "blackroad.co", "purpose": "Corporate", "status": "active" },
+    { "domain": "blkrd.co", "purpose": "Corporate short-form", "status": "active" },
+    { "domain": "blackroad.ai", "purpose": "AI/ML infrastructure", "status": "active" },
+    { "domain": "blkrd.ai", "purpose": "AI services", "status": "active" },
+    { "domain": "blackroad.cloud", "purpose": "Cloud infrastructure", "status": "active" },
+    { "domain": "blkrd.cloud", "purpose": "Cloud services", "status": "active" },
+    { "domain": "blackroad.network", "purpose": "Network infrastructure", "status": "active" },
+    { "domain": "blkrd.xyz", "purpose": "Experimental", "status": "active" }
+  ],
+  "roles": {
+    "core": { "label": "Core", "description": "Foundation infrastructure" },
+    "business": { "label": "Business", "description": "Operations and finance" },
+    "media": { "label": "Media", "description": "Content and publishing" },
+    "engineering": { "label": "Engineering", "description": "Dev tools and infra" },
+    "governance": { "label": "Governance", "description": "Legal and compliance" }
   }
 }

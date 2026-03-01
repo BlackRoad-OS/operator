@@ -1,72 +1,102 @@
-# operator
+# BlackRoad OS — Control Plane
 
-**BlackRoad OS Control Plane — Trust Architecture**
+Config-driven infrastructure dashboard. Edit one JSON file, everything updates.
 
-Config-driven infrastructure verification for BlackRoad OS, Inc.
-
-## What This Is
-
-A single system that serves three audiences at three zoom levels:
-
-| Layer | Audience | Question It Answers |
-|-------|----------|-------------------|
-| Public Credibility | Customers | "Does this actually run?" |
-| Internal Governance | Operators | "Is everything still healthy?" |
-| Investor Signal | Investors / Auditors | "Can this operate without chaos?" |
-
-## Structure
+## Architecture
 
 ```
 operator/
 ├── config/
-│   └── blackroad.json       # Infrastructure map — all 17 orgs, checks, thresholds
-├── audit/
-│   ├── run.js                # Automated verification script
-│   └── output.json           # Generated audit results (gitignored until first run)
+│   └── blackroad.json        # Single source of truth
 ├── public/
-│   ├── index.html            # Public infrastructure directory
-│   └── status.html           # Live status page — reads from audit/output.json
-└── .github/
-    └── workflows/
-        └── audit.yml         # CI pipeline — runs daily + on push
+│   ├── index.html             # Directory — org listing w/ filters
+│   ├── status.html            # Status — org + domain health
+│   ├── map.html               # Map — org tree + domain topology
+│   ├── css/
+│   │   └── style.css          # Brutalist design system
+│   └── js/
+│       └── render.js          # Config-driven renderer
+├── functions/
+│   └── api.js                 # Cloudflare Pages Function (GitHub proxy)
+├── .env.example
+└── README.md
 ```
 
 ## How It Works
 
-1. `config/blackroad.json` defines every org, what checks to run, and pass/fail thresholds
-2. `audit/run.js` reads the config, hits the GitHub API, and writes structured results to `audit/output.json`
-3. `public/status.html` renders the audit output — no manual narrative, just state
-4. `.github/workflows/audit.yml` triggers the audit on push, on schedule, and on demand
+1. All orgs, domains, roles defined in `config/blackroad.json`
+2. `render.js` loads config at runtime, renders all pages
+3. Counts auto-calculate from config data
+4. Add an org → add one object to the JSON → done
+5. `functions/api.js` proxies GitHub API for live repo data
 
-Every push triggers verification. Failures break the build. Logs timestamp everything.
+## Pages
 
-## Running Locally
+| Page | Path | Purpose |
+|------|------|---------|
+| Directory | `/` | Filterable org grid with role badges |
+| Status | `/status.html` | Org + domain status tables |
+| Map | `/map.html` | Org-by-role tree + domain-by-TLD map |
 
-```sh
-# Run the audit
-node audit/run.js --verbose
+## Config Schema
 
-# With higher API rate limits
-GITHUB_TOKEN=ghp_... node audit/run.js --verbose
+```json
+{
+  "meta": { "name", "enterprise", "tagline", "version", "updated" },
+  "orgs": [{ "id", "name", "role", "description", "url", "status" }],
+  "domains": [{ "domain", "purpose", "status" }],
+  "roles": { "key": { "label", "description" } }
+}
 ```
 
-## Verification Checks
+## Deploy to Cloudflare Pages
 
-| Check | Severity | Description |
-|-------|----------|-------------|
-| `org_exists` | critical | GitHub organization exists and is accessible |
-| `has_repos` | warning | Organization has at least one repository |
-| `recent_activity` | info | At least one commit within the last 90 days |
-| `has_readme` | warning | Organization or primary repo has a README |
-| `ssl_valid` | critical | Associated domain has valid SSL |
+```bash
+# 1. Connect repo to Cloudflare Pages
+#    Build output directory: public
+#    No build command needed
 
-## Principles
+# 2. Set environment variable
+#    GITHUB_TOKEN = your GitHub PAT with read:org scope
 
-- **Deterministic**: Same input produces same output
-- **Independent**: Script runs without human intervention
-- **Verifiable**: Anyone can clone, run, and verify
-- **Continuous**: Not a one-time audit — runs on schedule
+# 3. Push to main
+git push origin main
+```
 
-## License
+Cloudflare Pages auto-detects the `/functions` directory and deploys edge functions.
 
-Proprietary — BlackRoad OS, Inc. See [LICENSE](LICENSE).
+## Local Dev
+
+```bash
+# Serve locally (any static server works)
+npx wrangler pages dev public
+
+# Or simply
+cd public && python3 -m http.server 8000
+```
+
+## Adding an Org
+
+Edit `config/blackroad.json`:
+
+```json
+{
+  "id": "new-org",
+  "name": "New Org",
+  "role": "engineering",
+  "description": "What this org does.",
+  "url": "https://github.com/new-org",
+  "status": "active"
+}
+```
+
+Push. Done. All pages update automatically.
+
+## Expansion Path
+
+- **Live repo counts** — Wire `functions/api.js` into render.js to show repo counts per org
+- **Health checks** — Add domain ping endpoint, render real uptime in status page
+- **Multi-tenant** — Multiple config files, one per tenant, switcher in nav
+- **Web Components** — Extract cards/tables into `<br-card>`, `<br-table>` custom elements
+- **CI/CD status** — Pull GitHub Actions status per repo into status page
+- **Auth layer** — Cloudflare Access for internal-only pages

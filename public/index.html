@@ -3,258 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BlackRoad OS — Infrastructure Directory</title>
-  <style>
-    :root {
-      --bg: #0a0a0a;
-      --surface: #111111;
-      --border: #1e1e1e;
-      --text: #e0e0e0;
-      --muted: #666666;
-      --accent: #ffffff;
-      --pass: #22c55e;
-      --fail: #ef4444;
-      --warn: #eab308;
-      --skip: #6b7280;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      padding: 2rem;
-      max-width: 960px;
-      margin: 0 auto;
-    }
-
-    header {
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    h1 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--accent);
-      letter-spacing: 0.05em;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      font-size: 0.8rem;
-      margin-top: 0.25rem;
-    }
-
-    .meta {
-      display: flex;
-      gap: 2rem;
-      margin-top: 1rem;
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-
-    .meta span { white-space: nowrap; }
-
-    .org-grid {
-      display: grid;
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-
-    .org-row {
-      display: grid;
-      grid-template-columns: 200px 100px 1fr;
-      gap: 1rem;
-      padding: 0.75rem 1rem;
-      background: var(--surface);
-      align-items: center;
-      font-size: 0.8rem;
-    }
-
-    .org-row:hover { background: #161616; }
-
-    .org-row.header {
-      background: var(--bg);
-      color: var(--muted);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .org-name a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    .org-name a:hover { text-decoration: underline; }
-
-    .org-role {
-      padding: 0.15rem 0.5rem;
-      border-radius: 2px;
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      background: var(--border);
-      color: var(--muted);
-      text-align: center;
-      width: fit-content;
-    }
-
-    .org-desc { color: var(--muted); }
-
-    .status-indicator {
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      margin-right: 0.5rem;
-    }
-
-    .status-indicator.pass { background: var(--pass); }
-    .status-indicator.fail { background: var(--fail); }
-    .status-indicator.unknown { background: var(--skip); }
-
-    footer {
-      margin-top: 2rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--border);
-      font-size: 0.7rem;
-      color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-    }
-
-    #audit-status {
-      margin-top: 2rem;
-      padding: 1rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      font-size: 0.75rem;
-    }
-
-    .summary-line {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.25rem 0;
-    }
-
-    .summary-label { color: var(--muted); }
-    .summary-value { color: var(--accent); }
-    .summary-value.pass { color: var(--pass); }
-    .summary-value.fail { color: var(--fail); }
-  </style>
+  <title>BlackRoad OS — Directory</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <header>
-    <h1>BLACKROAD OS</h1>
-    <div class="subtitle">Infrastructure Directory</div>
-    <div class="meta">
-      <span>BlackRoad OS, Inc.</span>
-      <span>17 Organizations</span>
-      <span id="last-audit">Audit: loading...</span>
-    </div>
-  </header>
+  <div class="shell">
 
-  <div class="org-grid">
-    <div class="org-row header">
-      <span>Organization</span>
-      <span>Role</span>
-      <span>Description</span>
+    <header class="header">
+      <div class="header__name" id="site-name">BlackRoad OS</div>
+      <div class="header__tagline" id="site-tagline">Infrastructure for sovereign systems.</div>
+      <nav class="header__nav">
+        <a href="/" class="active">Directory</a>
+        <a href="/status.html">Status</a>
+        <a href="/map.html">Map</a>
+      </nav>
+    </header>
+
+    <div class="stats" id="stats">
+      <div class="loading">Loading</div>
     </div>
-    <div id="org-list"></div>
+
+    <main id="main">
+      <section class="section">
+        <div class="section__title">Organizations</div>
+        <div id="filters"></div>
+        <div id="directory">
+          <div class="loading">Loading directory</div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span id="site-version">v1.0.0</span>
+      <span id="site-updated"></span>
+      <span>&copy; BlackRoad OS, Inc.</span>
+    </footer>
+
   </div>
-
-  <div id="audit-status">
-    <div class="summary-line">
-      <span class="summary-label">Status</span>
-      <span class="summary-value" id="summary-status">—</span>
-    </div>
-    <div class="summary-line">
-      <span class="summary-label">Healthy Organizations</span>
-      <span class="summary-value" id="summary-healthy">—</span>
-    </div>
-    <div class="summary-line">
-      <span class="summary-label">Last Verified</span>
-      <span class="summary-value" id="summary-timestamp">—</span>
-    </div>
-  </div>
-
-  <footer>
-    <span>&copy; 2024–2026 BlackRoad OS, Inc.</span>
-    <span>Alexa Louise Amundson — Founder, CEO</span>
-  </footer>
-
-  <script>
-    async function loadConfig() {
-      try {
-        const res = await fetch("../config/blackroad.json");
-        const config = await res.json();
-        renderOrgs(config.infrastructure.github_orgs);
-      } catch {
-        document.getElementById("org-list").innerHTML =
-          '<div class="org-row"><span colspan="3">Config not loaded — run locally or deploy.</span></div>';
-      }
-    }
-
-    function renderOrgs(orgs) {
-      const container = document.getElementById("org-list");
-      container.innerHTML = orgs
-        .map(
-          (org) => `
-        <div class="org-row">
-          <span class="org-name">
-            <span class="status-indicator unknown"></span>
-            <a href="${org.url}" target="_blank" rel="noopener">${org.name}</a>
-          </span>
-          <span class="org-role">${org.role}</span>
-          <span class="org-desc">${org.description}</span>
-        </div>`
-        )
-        .join("");
-    }
-
-    async function loadAudit() {
-      try {
-        const res = await fetch("../audit/output.json");
-        const audit = await res.json();
-        renderAuditSummary(audit);
-        renderAuditIndicators(audit);
-      } catch {
-        document.getElementById("last-audit").textContent = "Audit: not yet run";
-      }
-    }
-
-    function renderAuditSummary(audit) {
-      const s = audit.summary;
-      document.getElementById("summary-status").textContent = s.status;
-      document.getElementById("summary-status").className =
-        "summary-value " + (s.status === "PASS" ? "pass" : "fail");
-      document.getElementById("summary-healthy").textContent =
-        `${s.healthy_orgs} / ${s.total_orgs}`;
-      document.getElementById("summary-timestamp").textContent = s.timestamp;
-      document.getElementById("last-audit").textContent =
-        `Audit: ${s.timestamp}`;
-    }
-
-    function renderAuditIndicators(audit) {
-      const indicators = document.querySelectorAll(".status-indicator");
-      const orgNames = Object.keys(audit.organizations);
-      indicators.forEach((el, i) => {
-        if (orgNames[i]) {
-          const org = audit.organizations[orgNames[i]];
-          el.classList.remove("unknown");
-          el.classList.add(org.health.healthy ? "pass" : "fail");
-        }
-      });
-    }
-
-    loadConfig();
-    loadAudit();
-  </script>
+  <script src="/js/render.js"></script>
+  <script>BR.init("directory");</script>
 </body>
 </html>
