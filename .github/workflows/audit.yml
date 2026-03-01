@@ -1,0 +1,38 @@
+name: Infrastructure Audit
+
+on:
+  schedule:
+    # Nightly at 03:00 UTC
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    # On demand — run manually from Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # actions/checkout v4.2.2
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y jq dnsutils openssl curl
+
+      - name: Run audit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./infrastructure/audit.sh
+
+      - name: Commit status report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add infrastructure/STATUS.md
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "audit: update infrastructure status $(date -u +%Y-%m-%d)"
+            git push
+          fi
