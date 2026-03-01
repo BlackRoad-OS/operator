@@ -27,6 +27,10 @@ jobs:
           node-version: '20'
 
       - name: Run audit
+        # continue-on-error: external network checks (DNS, HTTPS, SSL, GitHub API)
+        # may be unavailable in restricted CI environments. Failures are recorded
+        # in the uploaded artifacts but must not block pull request merges.
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node audit/runner.js

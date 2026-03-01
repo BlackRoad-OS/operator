@@ -30,7 +30,12 @@ function loadConfig() {
     console.error(`[ERROR] Config not found: ${CONFIG_PATH}`);
     process.exit(1);
   }
-  return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+  try {
+    return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+  } catch (err) {
+    console.error(`[ERROR] Invalid JSON in ${CONFIG_PATH}: ${err.message}`);
+    process.exit(1);
+  }
 }
 
 function pad(str, len) {
