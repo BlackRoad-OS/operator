@@ -1,0 +1,8 @@
+{
+  "name": "blackroad-os-core",
+  "scraped_at": "2026-03-01T03:47:16.689Z",
+  "reachable": false,
+  "exists": false,
+  "error": "Command failed: git ls-remote \"http://local_proxy@127.0.0.1:26918/git/BlackRoad-OS/blackroad-os-core\" HEAD 2>&1",
+  "status": 0
+}

@@ -1,0 +1,68 @@
+{
+  "org": "BlackRoad-OS",
+  "source": "local_git_proxy",
+  "scraped_at": "2026-03-01T03:47:16.939Z",
+  "elapsed_ms": 15427,
+  "total": 5,
+  "reachable": 1,
+  "unreachable": 4,
+  "failed": 0,
+  "repos": [
+    {
+      "name": "operator",
+      "full_name": "BlackRoad-OS/operator",
+      "scraped_at": "2026-03-01T03:47:15.633Z",
+      "reachable": true,
+      "exists": true,
+      "private": false,
+      "head_sha": "463282be5cb9e4134bf4e76c31916b7c68137bba",
+      "branches": 27,
+      "tags": 0,
+      "pull_requests": 44,
+      "has_commits": true,
+      "has_license": true,
+      "license_spdx": "NONE",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "size_kb": 0,
+      "language": null,
+      "total_commits": 6,
+      "first_commit": "2026-01-26T14:57:19-06:00",
+      "last_commit": "2026-02-24T21:01:21-06:00"
+    },
+    {
+      "name": "blackroad-web-scraper",
+      "scraped_at": "2026-03-01T03:47:16.602Z",
+      "reachable": false,
+      "exists": false,
+      "error": "Command failed: git ls-remote \"http://local_proxy@127.0.0.1:26918/git/BlackRoad-OS/blackroad-web-scraper\" HEAD 2>&1",
+      "status": 0
+    },
+    {
+      "name": "blackroad-os-core",
+      "scraped_at": "2026-03-01T03:47:16.689Z",
+      "reachable": false,
+      "exists": false,
+      "error": "Command failed: git ls-remote \"http://local_proxy@127.0.0.1:26918/git/BlackRoad-OS/blackroad-os-core\" HEAD 2>&1",
+      "status": 0
+    },
+    {
+      "name": "blackroad-sync-engine",
+      "scraped_at": "2026-03-01T03:47:16.767Z",
+      "reachable": false,
+      "exists": false,
+      "error": "Command failed: git ls-remote \"http://local_proxy@127.0.0.1:26918/git/BlackRoad-OS/blackroad-sync-engine\" HEAD 2>&1",
+      "status": 0
+    },
+    {
+      "name": "blackroad-a-b-testing",
+      "scraped_at": "2026-03-01T03:47:16.852Z",
+      "reachable": false,
+      "exists": false,
+      "error": "Command failed: git ls-remote \"http://local_proxy@127.0.0.1:26918/git/BlackRoad-OS/blackroad-a-b-testing\" HEAD 2>&1",
+      "status": 0
+    }
+  ],
+  "failures": []
+}

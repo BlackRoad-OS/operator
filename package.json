@@ -1,0 +1,16 @@
+{
+  "name": "@blackroad-os/operator",
+  "version": "1.0.0",
+  "description": "E2E scraper and verified metrics for BlackRoad OS repos",
+  "type": "module",
+  "scripts": {
+    "scrape": "node src/scraper/index.js",
+    "test": "node --test src/e2e/*.test.js",
+    "test:e2e": "node --test src/e2e/*.test.js",
+    "verify": "node src/metrics/verify.js",
+    "report": "node src/metrics/report.js",
+    "ci": "npm run scrape && npm run verify && npm run test"
+  },
+  "keywords": ["blackroad", "scraper", "e2e", "metrics"],
+  "license": "SEE LICENSE IN LICENSE"
+}
