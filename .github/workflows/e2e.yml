@@ -1,13 +1,13 @@
-name: Multi-Repo E2E
+name: E2E Scrape & Test
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
-    branches: [main]
+    branches: [main, master]
   schedule:
-    # Run daily at 6am UTC for real-time dashboard updates
-    - cron: '0 6 * * *'
+    # Run daily at 06:00 UTC - fresh numbers every day
+    - cron: "0 6 * * *"
   workflow_dispatch:
 
 jobs:
@@ -16,29 +16,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: '22'
+          python-version: "3.11"
 
-      - run: npm install
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 pytest
 
-      - name: Run full E2E pipeline
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run full
+      - name: Run full pipeline (scrape + test + README update)
+        run: python3 scripts/run_all.py
 
-      - name: Upload scrape results
+      - name: Upload report artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-results
-          path: data/
+          name: seo-report
+          path: reports/latest.json
 
-      - name: Commit updated README
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+      - name: Commit updated README (scheduled runs only)
+        if: github.event_name == 'schedule' && success()
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "BlackRoad Operator"
+          git config user.email "operator@blackroad.os"
           git add README.md
-          git diff --cached --quiet || git commit -m "chore: update README with verified scrape data"
+          git diff --cached --quiet || git commit -m "chore: update README with verified live data"
           git push

@@ -1,62 +1,44 @@
 # operator
 
-Multi-repo E2E testing, scraping, and health monitoring for BlackRoad OS.
+BlackRoad OS operator agent — system administration AI that orchestrates, scrapes, and validates across the BlackRoad ecosystem.
 
-## Monitored Repositories
+## Monitored Repos
 
-> Every number below is scraped live from the GitHub API. Nothing fabricated.
-> Last verified: 2026-03-01T03:36:48.907Z
+> All numbers below were fetched live at `2026-03-01T03:29:24.266245+00:00`.  
+> If a value says "unavailable", the API call failed — we don't guess.
 
-| Repository | Role | Languages | Open Issues | Stars | Last Commit |
-|------------|------|-----------|-------------|-------|-------------|
-| [BlackRoad-OS/blackroad-os](https://github.com/BlackRoad-OS/blackroad-os) | enterprise-platform | HTML (48%), Shell (27%), JavaScript (10%) | 765 | 0 | 2026-02-26 |
-| [BlackRoad-OS/blackroad-os-web](https://github.com/BlackRoad-OS/blackroad-os-web) | web-api | HTML (69%), TypeScript (25%), Shell (6%) | 22 | 0 | N/A |
-| [BlackRoad-OS/chanfana-openapi-template](https://github.com/BlackRoad-OS/chanfana-openapi-template) | api-template | N/A | 5 | 0 | 2026-03-01 |
+| Repo | Stars | Forks | Open Issues | Last Push | SEO: Meta Desc | SEO: README Length |
+|------|-------|-------|-------------|-----------|----------------|-------------------|
+| [blackroad-os](https://github.com/BlackRoad-OS/blackroad-os) | 0 | 0 | 765 | 2026-03-01 | yes | 521 chars |
+| [blackroad-os-web](https://github.com/BlackRoad-OS/blackroad-os-web) | 0 | 0 | 22 | 2026-02-28 | yes | 4050 chars |
+| [blackroad-os-demo](https://github.com/BlackRoad-OS/blackroad-os-demo) | 0 | 0 | 17 | 2026-02-27 | yes | 904 chars |
+| [lucidia-earth-website](https://github.com/BlackRoad-OS/lucidia-earth-website) | 0 | 0 | 12 | 2026-02-27 | yes | 4895 chars |
+| [operator](https://github.com/BlackRoad-OS/operator) | 0 | 0 | 17 | 2026-03-01 | yes | 9 chars |
 
-## Aggregate (Verified Only)
+## E2E Status
 
-| Metric | Value | Source |
-|--------|-------|--------|
-| Repos scraped | 5 | GitHub API |
-| Repos verified | 3 | Scraper validation |
-| Total open issues | 792 | GitHub API (sum) |
-| Total stars | 0 | GitHub API (sum) |
-| Total forks | 0 | GitHub API (sum) |
-| Primary languages | HTML | GitHub API |
-| Topics | ai, automation, blackroad, blackroad-os, cloud-native, enterprise, infrastructure | GitHub API |
-| Most recent push | 2026-03-01T03:09:40Z | GitHub API |
+Run `python3 -m pytest e2e/ -v` to validate all repos.
 
-## E2E Test Status
+## Scraper
 
-| Metric | Value |
-|--------|-------|
-| Total tests | 39 |
-| Passed | 27 |
-| Failed | 12 |
-| Pass rate | 69.2% |
-| Last run | 2026-03-01T03:36:48.914Z |
+Run `python3 -m scraper.seo_scraper` to refresh all numbers above.
 
-### Recovery Steps Needed
+## Architecture
 
-- **[medium]** Investigate failure in "repo:BlackRoad-OS/blackroad:metadata-present": BlackRoad-OS/blackroad missing metadata
-- **[medium]** Re-run scraper for "repo:BlackRoad-OS/blackroad:is-verified" — data may be stale or API was temporarily unavailable.
-- **[high]** Set GITHUB_TOKEN env var to avoid rate limiting. Generate at github.com/settings/tokens.
-- **[medium]** Investigate failure in "repo:BlackRoad-OS/blackroad-os-demo:metadata-present": BlackRoad-OS/blackroad-os-demo missing metadata
-- **[medium]** Re-run scraper for "repo:BlackRoad-OS/blackroad-os-demo:is-verified" — data may be stale or API was temporarily unavailable.
-- **[medium]** Investigate failure in "cross:at-least-one-typescript-repo": No TypeScript repos found — blackroad monorepo should be TypeScript
-
-## How It Works
-
-1. **Scraper** (`src/scraper.js`) — Hits GitHub API for each repo. Pulls metadata, languages, commits, issues, PRs, contributors.
-2. **E2E Runner** (`src/e2e-runner.js`) — 30+ assertions against live data. Validates every repo is reachable, active, not archived, data is consistent.
-3. **README Updater** (`src/readme-updater.js`) — Rebuilds this file from verified scrape data only. Unverified repos are excluded.
-4. **Automation** (`src/automation.js`) — Orchestrates scrape -> test -> update -> report. Failure recovery built in.
-
-## Commands
-
-```bash
-npm run scrape        # Scrape all 5 repos
-npm test              # Run E2E tests (scrapes first)
-npm run update-readme # Update this file from verified data
-npm run full          # Full pipeline: scrape -> test -> update readme
 ```
+operator/
+  scraper/          # Live SEO + GitHub API scraper
+    config.py       # 5 target repos
+    seo_scraper.py  # Fetches real data, saves to reports/
+    readme_writer.py# Generates README from verified data only
+  e2e/              # End-to-end validation tests
+    test_repos.py   # Repo existence, health, SEO checks
+    test_scraper.py # Scraper integration tests
+  scripts/          # Automation
+    run_all.py      # Full pipeline: scrape -> test -> update README
+  .github/workflows/
+    e2e.yml         # CI: runs on push + daily schedule
+  reports/           # Live data (gitignored, regenerated each run)
+```
+
+*Last verified: 2026-03-01T03:29:24.266245+00:00*
