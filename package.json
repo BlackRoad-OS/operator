@@ -1,0 +1,29 @@
+{
+  "name": "operator",
+  "version": "1.0.0",
+  "description": "Multi-repo E2E testing, scraping, and health monitoring for BlackRoad OS",
+  "main": "src/automation.js",
+  "scripts": {
+    "scrape": "node src/scraper.js",
+    "test": "node src/e2e-runner.js",
+    "update-readme": "node src/readme-updater.js",
+    "full": "node src/automation.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BlackRoad-OS/operator"
+  },
+  "keywords": [
+    "blackroad",
+    "e2e",
+    "multi-repo",
+    "scraper",
+    "testing",
+    "automation"
+  ],
+  "author": "BlackRoad OS, Inc.",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "node-fetch": "^2.7.0"
+  }
+}
