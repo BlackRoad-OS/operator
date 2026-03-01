@@ -1,4 +1,5 @@
 node_modules/
-scraper/data/
-*.log
 .env
+.env.local
+.DS_Store
+*.log

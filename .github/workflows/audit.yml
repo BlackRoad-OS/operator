@@ -1,38 +1,58 @@
-name: Infrastructure Audit
+name: Trust Audit
 
 on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'config/**'
+      - 'audit/**'
+      - '.github/workflows/audit.yml'
   schedule:
-    # Nightly at 03:00 UTC
-    - cron: '0 3 * * *'
+    # Daily at 06:00 UTC
+    - cron: '0 6 * * *'
   workflow_dispatch:
-    # On demand — run manually from Actions tab
 
 permissions:
   contents: write
 
 jobs:
   audit:
-    runs-on: ubuntu-24.04
+    name: Verify Infrastructure
+    runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # actions/checkout v4.2.2
+        uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y jq dnsutils openssl curl
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Run audit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./infrastructure/audit.sh
+        run: node audit/run.js --verbose
 
-      - name: Commit status report
+      - name: Commit audit output
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add infrastructure/STATUS.md
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
+          git config user.name "blackroad-audit[bot]"
+          git config user.email "audit@blackroad.systems"
+          if git diff --quiet audit/output.json 2>/dev/null; then
+            echo "No changes to audit output."
           else
-            git commit -m "audit: update infrastructure status $(date -u +%Y-%m-%d)"
+            git add audit/output.json
+            git commit -m "audit: update verification results [skip ci]"
             git push
           fi
+
+      - name: Check critical failures
+        run: |
+          STATUS=$(node -e "
+            const audit = require('./audit/output.json');
+            process.stdout.write(audit.summary.status);
+          ")
+          if [ "$STATUS" != "PASS" ]; then
+            echo "::warning::Trust audit status: $STATUS"
+          fi
+          echo "Audit status: $STATUS"
