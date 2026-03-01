@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlackRoad OS — Map</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="shell">
+
+    <header class="header">
+      <div class="header__name" id="site-name">BlackRoad OS</div>
+      <div class="header__tagline" id="site-tagline">Infrastructure for sovereign systems.</div>
+      <nav class="header__nav">
+        <a href="/">Directory</a>
+        <a href="/status.html">Status</a>
+        <a href="/map.html" class="active">Map</a>
+      </nav>
+    </header>
+
+    <div class="stats" id="stats">
+      <div class="loading">Loading</div>
+    </div>
+
+    <main id="main">
+      <section class="section">
+        <div class="section__title">Organization Map</div>
+        <div id="org-map">
+          <div class="loading">Loading org map</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section__title">Domain Map</div>
+        <div id="domain-map">
+          <div class="loading">Loading domain map</div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span id="site-version">v1.0.0</span>
+      <span id="site-updated"></span>
+      <span>&copy; BlackRoad OS, Inc.</span>
+    </footer>
+
+  </div>
+  <script src="/js/render.js"></script>
+  <script>BR.init("map");</script>
+</body>
+</html>
