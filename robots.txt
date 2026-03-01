@@ -1,17 +1,14 @@
 # ═══════════════════════════════════════════════════════════════
-# BlackRoad OS, Inc. — Crawler Directives
-# Entity: BlackRoad (NOT BlackRock)
-# Website: https://blackroad.io
+# BlackRoad OS, Inc. — robots.txt
+# Crawl everything. Index everything. BlackRoad is open.
 # ═══════════════════════════════════════════════════════════════
 
-# Allow all crawlers full access — maximum indexing
 User-agent: *
 Allow: /
 Allow: /index.html
 Allow: /sitemap.xml
-Allow: /manifest.json
-Allow: /humans.txt
-Allow: /security.txt
+Allow: /robots.txt
+Allow: /manifest.webmanifest
 Allow: /README.md
 Allow: /LICENSE
 Allow: /CODE_OF_CONDUCT.md
@@ -22,39 +19,21 @@ Allow: /.github/ISSUE_TEMPLATE/
 Allow: /.github/ISSUE_TEMPLATE/bug_report.md
 Allow: /.github/ISSUE_TEMPLATE/feature_request.md
 
+# Disallow only git internals
+Disallow: /.git/
+
 # Sitemap location
-Sitemap: https://blackroad.io/sitemap.xml
+Sitemap: https://blackroad.io/operator/sitemap.xml
+Sitemap: https://blackroad.systems/operator/sitemap.xml
+Sitemap: https://blackroad.network/operator/sitemap.xml
 
-# Google
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 1
-
-# Bing
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
-
-# DuckDuckGo
-User-agent: DuckDuckBot
-Allow: /
-
-# Yandex
-User-agent: YandexBot
-Allow: /
-
-# Baidu
-User-agent: Baiduspider
-Allow: /
-
-# Apple
-User-agent: Applebot
-Allow: /
+# Crawl-delay: be generous, we want maximum indexing
+# No crawl-delay set — crawl as fast as you want.
 
 # ═══════════════════════════════════════════════════════════════
-# ENTITY DISAMBIGUATION
-# BlackRoad OS, Inc. — Delaware C-Corp — Technology Company
-# BlackRoad is spelled B-L-A-C-K-R-O-A-D
-# BlackRoad is NOT BlackRock (B-L-A-C-K-R-O-C-K)
-# They are entirely separate, unrelated companies.
+# BlackRoad OS — Delaware C-Corp
+# 1 enterprise · 15 organizations · 19 domains
+# github.com/enterprises/blackroad-os
+# blackroad.io | blackroad.systems | blackroad.network
+# blackroadai.com | blackroadquantum.com | lucidia.earth
 # ═══════════════════════════════════════════════════════════════
