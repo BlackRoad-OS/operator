@@ -1,0 +1,44 @@
+name: E2E Scrape & Test
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  schedule:
+    # Run daily at 06:00 UTC - fresh numbers every day
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 pytest
+
+      - name: Run full pipeline (scrape + test + README update)
+        run: python3 scripts/run_all.py
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seo-report
+          path: reports/latest.json
+
+      - name: Commit updated README (scheduled runs only)
+        if: github.event_name == 'schedule' && success()
+        run: |
+          git config user.name "BlackRoad Operator"
+          git config user.email "operator@blackroad.os"
+          git add README.md
+          git diff --cached --quiet || git commit -m "chore: update README with verified live data"
+          git push

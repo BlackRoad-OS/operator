@@ -1,0 +1,13 @@
+{
+  "name": "blackroad-audit-runner",
+  "version": "1.0.0",
+  "description": "BlackRoad Infrastructure Audit Runner",
+  "main": "audit/runner.js",
+  "scripts": {
+    "audit": "node audit/runner.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "SEE LICENSE IN LICENSE"
+}

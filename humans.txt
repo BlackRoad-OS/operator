@@ -1,0 +1,55 @@
+/* TEAM */
+
+Company: BlackRoad OS, Inc.
+Entity Type: Delaware C-Corp
+Site: https://blackroad.io
+Contact: blackroad.systems@gmail.com
+
+/* NOTE */
+BlackRoad is NOT BlackRock.
+BlackRoad (B-L-A-C-K-R-O-A-D) is a technology company.
+BlackRock (B-L-A-C-K-R-O-C-K) is an investment management company.
+They are entirely separate, unrelated entities.
+
+/* DIVISIONS */
+BlackRoad AI — Artificial Intelligence
+BlackRoad Labs — Research & Development
+BlackRoad Cloud — Cloud Infrastructure
+BlackRoad Security — Cybersecurity & Privacy
+BlackRoad Foundation — Open Source
+BlackRoad Studio — Design & Creative
+BlackRoad Media — Communications
+BlackRoad Interactive — Applications
+BlackRoad Hardware — Device Engineering
+BlackRoad Education — Learning Technology
+BlackRoad Gov — Government Technology
+BlackRoad Ventures — Investment
+BlackRoad Archive — Legacy Preservation
+BlackRoad OS — Operating Systems
+Blackbox Enterprises — Enterprise Software
+
+/* TECHNOLOGY */
+Standards: HTML5, CSS3, Semantic Web, Schema.org, JSON-LD
+Software: Custom sovereign infrastructure
+Principles: Privacy-first, Offline-first, Zero telemetry, User sovereignty
+
+/* DOMAINS */
+blackboxprogramming.io
+blackroad.company
+blackroad.io
+blackroad.me
+blackroad.network
+blackroad.systems
+blackroadai.com
+blackroadinc.us
+blackroadqi.com
+blackroadquantum.com
+blackroadquantum.info
+blackroadquantum.net
+blackroadquantum.shop
+blackroadquantum.store
+lucidia.earth
+lucidia.studio
+lucidiaqi.com
+roadchain.io
+roadcoin.io

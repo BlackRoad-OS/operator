@@ -1,0 +1,23 @@
+# Automation settings — canonical source of truth
+#
+# All automated workflows across all orgs MUST have an entry here.
+# Setting enabled: false pauses automation for that target without
+# deleting the declaration.
+
+automation:
+  # Global kill-switch: set to false to pause ALL cross-org automation.
+  global_enabled: true
+
+  defaults:
+    # Require a PR review before any automated mutation is merged.
+    require_review: true
+    # Do not allow automation to open PRs across orgs unless explicitly
+    # enabled per-target below.
+    cross_org_prs: false
+
+  # Per-target overrides.
+  # targets:
+  #   - org: BlackRoad-OS
+  #     repo: example-repo
+  #     enabled: false
+  #     cross_org_prs: false

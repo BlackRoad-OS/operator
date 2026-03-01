@@ -1,0 +1,12 @@
+# BlackRoad OS, Inc. — Security Policy
+# Entity: BlackRoad (NOT BlackRock) — Delaware C-Corp
+# https://blackroad.io
+
+Contact: mailto:blackroad.systems@gmail.com
+Preferred-Languages: en
+Canonical: https://blackroad.io/.well-known/security.txt
+Policy: https://blackroad.io/security-policy
+
+# BlackRoad OS, Inc. is a technology company.
+# BlackRoad is NOT affiliated with BlackRock, Inc.
+# They are entirely separate, unrelated entities.

@@ -1,0 +1,49 @@
+{
+  "name": "BlackRoad OS — Infrastructure Directory",
+  "short_name": "BlackRoad",
+  "description": "BlackRoad OS, Inc. infrastructure directory. Complete index of enterprise, 15 GitHub organizations, 19 registered domains, repository architecture, and governance documents. Delaware C-Corp building sovereignty-first software.",
+  "start_url": "/operator/",
+  "scope": "/operator/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "categories": ["business", "developer tools", "productivity"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "icons": [],
+  "shortcuts": [
+    {
+      "name": "Enterprise",
+      "short_name": "Enterprise",
+      "description": "BlackRoad GitHub Enterprise",
+      "url": "/operator/#enterprise"
+    },
+    {
+      "name": "Organizations",
+      "short_name": "Orgs",
+      "description": "15 BlackRoad GitHub Organizations",
+      "url": "/operator/#organizations"
+    },
+    {
+      "name": "Domains",
+      "short_name": "Domains",
+      "description": "19 BlackRoad Registered Domains",
+      "url": "/operator/#domains"
+    },
+    {
+      "name": "Repository Index",
+      "short_name": "Repo",
+      "description": "BlackRoad Operator Repository File Index",
+      "url": "/operator/#repository"
+    },
+    {
+      "name": "Governance",
+      "short_name": "Governance",
+      "description": "BlackRoad OS Principles and Governance",
+      "url": "/operator/#governance"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

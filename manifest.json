@@ -1,0 +1,61 @@
+{
+  "name": "BlackRoad OS — Infrastructure Directory",
+  "short_name": "BlackRoad OS",
+  "description": "Official infrastructure directory for BlackRoad OS, Inc. Enterprise GitHub management across 17+ organizations, 1,825+ repositories, and 19 registered domains. Sovereign technology by Alexa Louise Amundson. Delaware C-Corp.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "any",
+  "scope": "/",
+  "lang": "en-US",
+  "dir": "ltr",
+  "categories": [
+    "business",
+    "developer",
+    "productivity",
+    "utilities"
+  ],
+  "iarc_rating_id": "",
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Enterprise",
+      "short_name": "Enterprise",
+      "description": "BlackRoad OS GitHub Enterprise",
+      "url": "/#enterprise"
+    },
+    {
+      "name": "Organizations",
+      "short_name": "Orgs",
+      "description": "BlackRoad OS GitHub Organizations",
+      "url": "/#organizations"
+    },
+    {
+      "name": "Domains",
+      "short_name": "Domains",
+      "description": "BlackRoad OS Registered Domains",
+      "url": "/#domains"
+    },
+    {
+      "name": "Repository Index",
+      "short_name": "Repos",
+      "description": "BlackRoad OS Repository Index",
+      "url": "/#index"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "web",
+      "url": "https://blackroad.io"
+    },
+    {
+      "platform": "web",
+      "url": "https://github.com/BlackRoad-OS"
+    },
+    {
+      "platform": "web",
+      "url": "https://github.com/enterprises/blackroad-os"
+    }
+  ]
+}

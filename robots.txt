@@ -1,0 +1,80 @@
+# ═══════════════════════════════════════════════════════════════════
+# BlackRoad OS, Inc. — robots.txt
+# Maximum crawl access for search engine indexing
+# Copyright 2024-2026 BlackRoad OS, Inc.
+# ═══════════════════════════════════════════════════════════════════
+
+# Allow all crawlers full access
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /sitemap.xml
+Allow: /manifest.json
+Allow: /404.html
+
+# No restrictions — index everything
+Disallow:
+
+# Sitemap locations (daisy-chain across domains)
+Sitemap: https://blackroad.io/sitemap.xml
+Sitemap: https://blackroad.systems/sitemap.xml
+Sitemap: https://blackroadai.com/sitemap.xml
+Sitemap: https://blackroad.network/sitemap.xml
+Sitemap: https://blackroadquantum.com/sitemap.xml
+Sitemap: https://lucidia.earth/sitemap.xml
+Sitemap: https://roadchain.io/sitemap.xml
+Sitemap: https://roadcoin.io/sitemap.xml
+Sitemap: https://blackboxprogramming.io/sitemap.xml
+
+# Crawl-delay: none — crawl as fast as you want
+# We want maximum indexing velocity
+
+# ═══ Google ════════════════════════════════════════════════════════
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-News
+Allow: /
+
+User-agent: Googlebot-Video
+Allow: /
+
+# ═══ Bing ══════════════════════════════════════════════════════════
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+User-agent: MSNBot
+Allow: /
+
+# ═══ Other Major Crawlers ═════════════════════════════════════════
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: facebot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# ═══ Host ══════════════════════════════════════════════════════════
+Host: https://blackroad.io

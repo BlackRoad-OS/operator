@@ -1,0 +1,46 @@
+# Architecture
+
+## Overview
+
+`operator` is the **canonical control repo** for the BlackRoad OS platform.
+All automation, configuration, and infrastructure definitions originate here.
+
+```
+┌─────────────────────────────────┐
+│         operator (this repo)    │
+│                                 │
+│  /config  ← all config lives   │
+│  /docs    ← all docs live      │
+│  /scripts ← all scripts live   │
+│  /infra   ← all infra lives    │
+└──────────────┬──────────────────┘
+               │ single source of truth
+               ▼
+   ┌───────────────────────┐
+   │  GitHub Actions CI    │
+   │  (reads config/)      │
+   └───────────┬───────────┘
+               │ approved automation only
+               ▼
+   ┌───────────────────────┐
+   │  Target repos / orgs  │
+   │  (declared in         │
+   │   config/orgs.yaml)   │
+   └───────────────────────┘
+```
+
+## Control-Flow Rules
+
+1. **Config first**: A repo or org must appear in `config/orgs.yaml` with
+   `enabled: true` before any automation touches it.
+2. **Scripts only**: Automated mutations run exclusively through scripts in
+   `scripts/`; no inline shell in workflow files.
+3. **PR gate**: Every automated change opens a PR and requires at least one
+   human review before merge.
+4. **No distributed state**: Agents do not maintain state outside this repo.
+   All state is committed here.
+
+## Operational Reset Procedure
+
+If the system feels chaotic, run the reset checklist in
+[runbook.md](runbook.md#operational-reset).

@@ -1,0 +1,12 @@
+# Org and repo registry — canonical source of truth
+#
+# Only repos listed here are eligible targets for automation.
+# Add new repos with enabled: false; flip to true after review.
+
+orgs:
+  - name: BlackRoad-OS
+    repos:
+      - name: operator
+        description: Canonical control repo — automation originates here
+        enabled: true
+        is_control_plane: true
