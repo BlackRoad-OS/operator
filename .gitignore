@@ -1,0 +1,6 @@
+# Audit runner output (generated artifacts — do not commit)
+audit/output-private.json
+audit/output-public.json
+
+# Node
+node_modules/
