@@ -1,0 +1,5 @@
+node_modules/
+data/latest.json
+data/seo/
+*.log
+.env
