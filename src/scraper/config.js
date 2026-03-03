@@ -1,47 +1,30 @@
 /**
- * Scraper configuration — 5 target repos in the BlackRoad-OS universe.
+ * Scraper configuration — delegates to the canonical e2e.config.js.
  *
- * Each entry defines what we scrape, what we verify, and what counts
- * as a passing E2E check.
+ * All target repos, timeouts, and retry config live in e2e.config.js.
+ * This file re-exports them so existing imports don't break.
  */
 
-export const ORG = "BlackRoad-OS";
+import {
+  ORG as _ORG,
+  TARGETS,
+  GITHUB_API as _GITHUB_API,
+  SCRAPE,
+  OUTPUT,
+} from "../../e2e.config.js";
 
-export const REPOS = [
-  {
-    name: "operator",
-    description: "Control center and E2E orchestrator",
-    checks: ["exists", "license", "has_commits", "api_reachable"],
-  },
-  {
-    name: "blackroad-web-scraper",
-    description: "Web scraping infrastructure",
-    checks: ["exists", "license", "has_commits", "api_reachable"],
-  },
-  {
-    name: "blackroad-os-core",
-    description: "Core OS system",
-    checks: ["exists", "license", "has_commits", "api_reachable"],
-  },
-  {
-    name: "blackroad-sync-engine",
-    description: "Sync infrastructure",
-    checks: ["exists", "license", "has_commits", "api_reachable"],
-  },
-  {
-    name: "blackroad-a-b-testing",
-    description: "A/B testing infrastructure",
-    checks: ["exists", "license", "has_commits", "api_reachable"],
-  },
-];
+export const ORG = _ORG;
 
-export const GITHUB_API = "https://api.github.com";
+export const REPOS = TARGETS.map((t) => ({
+  name: t.name,
+  description: t.description,
+  checks: t.checks,
+}));
 
-export const OUTPUT_DIR = "data";
+export const GITHUB_API = _GITHUB_API;
 
-export const SCRAPE_TIMEOUT_MS = 15_000;
+export const OUTPUT_DIR = OUTPUT.dataDir;
 
-export const RETRY = {
-  maxAttempts: 4,
-  backoffMs: [2000, 4000, 8000, 16000],
-};
+export const SCRAPE_TIMEOUT_MS = SCRAPE.timeoutMs;
+
+export const RETRY = SCRAPE.retry;

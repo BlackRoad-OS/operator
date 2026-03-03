@@ -6,12 +6,11 @@ import { verifyData } from "../../src/verify.js";
 describe("verification module", () => {
   beforeEach(() => {
     mkdirSync("data", { recursive: true });
+    rmSync("data/latest.json", { force: true });
   });
 
   afterEach(() => {
-    if (existsSync("data/latest.json")) {
-      rmSync("data/latest.json");
-    }
+    rmSync("data/latest.json", { force: true });
   });
 
   it("should fail when no data file exists", () => {
