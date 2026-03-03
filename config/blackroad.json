@@ -5,5 +5,13 @@
   ],
   "domains": [
     "blackroad.co"
-  ]
+  ],
+  "ai": {
+    "provider": "ollama",
+    "handles": ["@copilot", "@lucidia", "@blackboxprogramming"],
+    "description": "All requests mentioning these handles are routed exclusively to the local Ollama server. No external AI provider (ChatGPT, GitHub Copilot, Claude, etc.) is contacted.",
+    "ollamaBaseUrl": "http://localhost:11434",
+    "ollamaModel": "llama3",
+    "ollamaAllowedOrigin": "http://localhost:11434"
+  }
 }
