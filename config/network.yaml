@@ -14,6 +14,7 @@ network:
     # Generate a reusable/ephemeral key at https://login.tailscale.com/admin/settings/keys
 
     # Hostname advertised on the Tailscale network.
+    # Defaults to the system hostname if left empty.
     hostname: operator
 
     # Tags applied to this node (must be declared in your Tailscale ACL policy).
@@ -22,6 +23,7 @@ network:
       - tag:blackroad
 
     # Advertise subnet routes from this node (CIDR notation).
+    # Leave empty if this node should not act as a subnet router.
     advertise_routes: []
 
     # Accept routes advertised by other nodes in the mesh.
@@ -37,41 +39,29 @@ network:
     enabled: false  # flip to true once CLOUDFLARE_TUNNEL_TOKEN is provisioned
 
     # Tunnel token supplied via environment variable: CLOUDFLARE_TUNNEL_TOKEN
+    # Create a tunnel at https://dash.cloudflare.com → Zero Trust → Networks → Tunnels
+
     # Account ID supplied via environment variable: CLOUDFLARE_ACCOUNT_ID
     # Zone ID supplied via environment variable: CLOUDFLARE_ZONE_ID
 
     # Public hostname(s) routed through the tunnel to this operator instance.
+    # Each entry maps a public hostname to a local service URL.
     ingress:
       - hostname: operator.blackroad.io
         service: http://localhost:3000
+      # Add additional services as the operator expands:
+      # - hostname: api.blackroad.io
+      #   service: http://localhost:4000
 
     # Warp-to-Tunnel (private network access via WARP client).
     warp_routing:
       enabled: false
 
   # -------------------------------------------------------------------------
-  # Raspberry Pi cluster — local AI inference nodes
-  # -------------------------------------------------------------------------
-  pi_cluster:
-    nodes:
-      - name: alice
-        host: alice.local
-        port: 11434
-      - name: aria
-        host: aria.local
-        port: 11434
-      - name: octavia
-        host: octavia.local
-        port: 11434
-      - name: lucidia
-        host: lucidia.local
-        port: 11434
-    # Default node for AI routing (override with OLLAMA_BASE_URL)
-    default_node: alice
-
-  # -------------------------------------------------------------------------
   # Operator listener — local HTTP interface
   # -------------------------------------------------------------------------
   listen:
+    # Address and port the operator HTTP server binds to.
+    # Set OPERATOR_HOST and OPERATOR_PORT to override.
     host: 127.0.0.1
     port: 3000

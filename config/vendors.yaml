@@ -1,10 +1,12 @@
 # Vendor API configuration — canonical source of truth
 #
-# Declares all external API vendor endpoints used by the operator.
-# All AI inference is handled locally on the Raspberry Pi cluster.
-# No external AI providers are used.
+# Declares all external AI/API vendor endpoints used by the operator.
+# Each vendor entry supports an endpoint_override that routes through
+# your own infrastructure (e.g., a self-hosted proxy or Cloudflare Worker).
 #
 # Priority: environment variable > endpoint_override > default_endpoint
+#
+# To disable a vendor entirely, set enabled: false.
 
 vendors:
   # -----------------------------------------------------------------------
@@ -13,6 +15,7 @@ vendors:
   - name: github
     enabled: true
     default_endpoint: https://api.github.com
+    # Optional: set VENDOR_GITHUB_ENDPOINT in env to override.
     endpoint_env_var: VENDOR_GITHUB_ENDPOINT
 
   # -----------------------------------------------------------------------
@@ -22,6 +25,27 @@ vendors:
     enabled: true
     default_endpoint: https://api.cloudflare.com/client/v4
     endpoint_env_var: VENDOR_CLOUDFLARE_ENDPOINT
+
+  # -----------------------------------------------------------------------
+  # OpenAI-compatible — any provider that speaks the OpenAI REST API.
+  # Point endpoint_override at a self-hosted model server (e.g., Ollama,
+  # llama.cpp, vLLM) or a Cloudflare AI Gateway to avoid direct vendor calls.
+  # -----------------------------------------------------------------------
+  - name: openai_compatible
+    enabled: false
+    default_endpoint: https://api.openai.com/v1
+    # Set VENDOR_OPENAI_ENDPOINT to your self-hosted or proxied endpoint:
+    #   http://localhost:11434/v1            (Ollama)
+    #   https://gateway.ai.cloudflare.com/… (Cloudflare AI Gateway)
+    endpoint_env_var: VENDOR_OPENAI_ENDPOINT
+
+  # -----------------------------------------------------------------------
+  # Anthropic-compatible — same override pattern as above.
+  # -----------------------------------------------------------------------
+  - name: anthropic_compatible
+    enabled: false
+    default_endpoint: https://api.anthropic.com/v1
+    endpoint_env_var: VENDOR_ANTHROPIC_ENDPOINT
 
   # -----------------------------------------------------------------------
   # Tailscale — network fabric API
@@ -35,7 +59,10 @@ vendors:
 routing:
   # When true, only vendors whose endpoint resolves to the operator's own
   # network (Tailscale CGNAT range 100.x.x.x or a declared subnet) are used.
-  prefer_local: true
+  # Set to false to allow direct internet calls from the operator process.
+  prefer_local: false
 
   # Outbound proxy for all vendor requests (optional).
+  # Supports http://, https://, and socks5:// schemes.
+  # Set via environment variable OPERATOR_HTTP_PROXY.
   http_proxy_env_var: OPERATOR_HTTP_PROXY
