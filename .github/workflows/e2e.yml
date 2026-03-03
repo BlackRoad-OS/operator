@@ -1,44 +1,142 @@
-name: E2E Scrape & Test
+name: E2E Pipeline
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, "claude/**"]
+    paths:
+      - "src/**"
+      - "e2e/**"
+      - "scraper/**"
+      - "tests/**"
+      - "scripts/**"
+      - "config/**"
+      - "e2e.config.js"
+      - "package.json"
   pull_request:
     branches: [main, master]
   schedule:
-    # Run daily at 06:00 UTC - fresh numbers every day
-    - cron: "0 6 * * *"
+    # Every 6 hours — real-time-ish without hammering the API
+    - cron: "0 */6 * * *"
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   e2e:
+    name: Scrape → Verify → Report → Test
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts 2>/dev/null || npm install --ignore-scripts
+
+      - name: Run full E2E pipeline
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/e2e.js
+
+      - name: Upload scrape data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-data-${{ github.run_number }}
+          path: |
+            data/scrape-results.json
+            data/verified.json
+            data/readme-metrics.md
+            data/last-run.json
+          retention-days: 30
+
+      - name: Commit verified metrics (main/master only)
+        if: |
+          success() &&
+          github.event_name != 'pull_request' &&
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        run: |
+          git config user.name "blackroad-operator[bot]"
+          git config user.email "operator@blackroad.io"
+          git add data/readme-metrics.md data/verified.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "data: refresh verified metrics [automated] [skip ci]"
+            git push
+          fi
+
+  e2e-python:
+    name: Python E2E Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests beautifulsoup4 pytest
+        run: pip install -r requirements.txt
 
-      - name: Run full pipeline (scrape + test + README update)
-        run: python3 scripts/run_all.py
+      - name: Run pytest E2E suite
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pytest tests/ e2e/ -v --tb=short 2>&1 | tee test-output.txt
 
-      - name: Upload report artifact
+      - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: seo-report
-          path: reports/latest.json
+          name: pytest-results-${{ github.run_number }}
+          path: test-output.txt
+          retention-days: 14
 
-      - name: Commit updated README (scheduled runs only)
-        if: github.event_name == 'schedule' && success()
+  failure-recovery:
+    name: Retry on failure
+    needs: e2e
+    if: failure()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts 2>/dev/null || npm install --ignore-scripts
+
+      - name: Retry with backoff
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "BlackRoad Operator"
-          git config user.email "operator@blackroad.os"
-          git add README.md
-          git diff --cached --quiet || git commit -m "chore: update README with verified live data"
-          git push
+          for i in 1 2 3; do
+            echo "Retry attempt $i..."
+            if node scripts/e2e.js --skip-test 2>/dev/null; then
+              echo "Pipeline succeeded on retry $i"
+              exit 0
+            fi
+            SLEEP=$((2 ** i))
+            echo "Sleeping ${SLEEP}s before next retry..."
+            sleep $SLEEP
+          done
+          echo "All retries exhausted"
+          exit 1
+
+      - name: Upload recovery data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: recovery-data-${{ github.run_number }}
+          path: data/
+          retention-days: 30

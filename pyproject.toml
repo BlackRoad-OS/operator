@@ -9,5 +9,8 @@ dependencies = []
 test = ["pytest>=7.0"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "e2e"]
 pythonpath = ["."]
+markers = [
+    "slow: tests that hit live APIs and may be rate-limited",
+]

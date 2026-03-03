@@ -1,8 +1,42 @@
+# Dependencies
 node_modules/
+
+# Build output
 dist/
+
+# Operator
 .operator/
+
+# Test & coverage output
 coverage/
+test-output.txt
+
+# Audit output (contains sensitive data)
 audit/output-private.json
 audit/output-public.json
 audit/output.json
+
+# Generated data (re-created on every scrape run)
+data/scrape-results.json
+data/verified.json
+data/last-run.json
+data/readme-metrics.md
+data/latest.json
+data/seo/
+data/operator.json
+data/blackroad-*.json
+
+# Reports (generated per-run)
+reports/*.json
+!reports/.gitkeep
+
+# Cloned repos for E2E testing
+e2e-tests/repos/
+
+# Environment
 .env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db

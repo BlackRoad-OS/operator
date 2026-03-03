@@ -8,25 +8,36 @@
   "bin": {
     "operator": "bin/operator.js"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
     "start": "node dist/cli.js",
+    "scrape": "node src/scraper/index.js",
+    "verify": "node src/metrics/verify.js",
+    "report": "node src/metrics/report.js",
     "audit": "node audit/runner.js",
+    "e2e": "node scripts/e2e.js",
+    "e2e:run": "node src/e2e/run.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "node --test --test-concurrency=1 src/e2e/*.test.js",
+    "test:e2e:scraper": "node --test e2e/*.test.js",
+    "test:all": "node --test --test-concurrency=1 tests/unit/*.test.js src/e2e/*.test.js",
+    "ci": "npm run scrape && npm run verify && npm run report && npm run test"
   },
-  "engines": {
-    "node": ">=18"
-  },
+  "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
-    "@octokit/rest": "^21.1.1"
+    "@octokit/rest": "^21.1.1",
+    "axios": "^1.7.0",
+    "cheerio": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",
     "typescript": "^5.8.3",
     "vitest": "^3.1.1"
-  },
-  "license": "SEE LICENSE IN LICENSE"
+  }
 }
