@@ -1,5 +1,9 @@
 # Cross-Repository Issue Translation
 
+> **NOTICE (2026-03-03):** All external AI provider integrations (Claude, Copilot, Codex,
+> ChatGPT) have been removed from this repository. AI requests now route exclusively
+> to the local Raspberry Pi cluster. References to providers below are historical only.
+
 ## Battle of Perspectives: Operator vs Simulation Theory
 
 > **The Hypothesis**: One side says "we can't do that" (infrastructure/deterministic systems).

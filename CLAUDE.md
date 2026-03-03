@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**operator** is a proprietary project under [BlackRoad OS, Inc.](https://blackroad.io), a Delaware C-Corporation founded by Alexa Louise Amundson. This repository is in early-stage development — it contains project scaffolding, documentation, templates, and licensing but no application source code yet.
+**operator** is a proprietary project under [BlackRoad OS, Inc.](https://blackroad.io), a Delaware C-Corporation founded by Alexa Louise Amundson. All AI inference is handled locally on the Raspberry Pi cluster (Alice, Aria, Octavia, Lucidia) running Ollama. No external AI providers are used.
 
 ## Repository Structure
 
@@ -12,11 +12,23 @@ operator/
 │   ├── ISSUE_TEMPLATE/
 │   │   ├── bug_report.md          # Bug report template
 │   │   └── feature_request.md     # Feature request template
-│   └── PULL_REQUEST_TEMPLATE.md   # PR template with checklist
-├── CODE_OF_CONDUCT.md             # Contributor Covenant v2.0
-├── CONTRIBUTING.md                # Contribution guidelines and standards
+│   ├── PULL_REQUEST_TEMPLATE.md   # PR template with checklist
+│   └── workflows/                 # GitHub Actions (audit, tests, e2e)
+├── config/
+│   ├── blackroad.json             # Core config (orgs, domains, AI routing)
+│   ├── oauth.yaml                 # OAuth provider config
+│   ├── network.yaml               # Tailscale, Cloudflare, Pi cluster
+│   └── vendors.yaml               # External API vendor endpoints
+├── src/
+│   ├── ai/router.js               # Routes @handles to local Pi cluster
+│   └── ...                        # Application source
+├── functions/chat.js              # Cloudflare Pages chat endpoint
+├── audit/                         # Infrastructure audit runner
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── CURRENT_STATE.md
 ├── LICENSE                        # BlackRoad OS proprietary license
-├── README.md                      # Project readme (minimal)
+├── README.md
 └── CLAUDE.md                      # This file
 ```
 
@@ -36,11 +48,16 @@ All contributions must align with these principles:
 
 ### Strictly Prohibited
 
+- External AI providers (no Claude API, no OpenAI API, no Copilot cloud, no Codex)
 - External analytics or telemetry of any kind
 - Required internet connectivity for core features
 - Vendor lock-in mechanisms
 - Cloud-only functionality
 - Anything that compromises user privacy
+
+### AI Routing Policy
+
+All AI handles (`@copilot`, `@lucidia`, `@blackboxprogramming`) are intercepted and routed to the local Raspberry Pi cluster running Ollama. See `src/ai/router.js` for implementation and `config/blackroad.json` for configuration.
 
 ## Commit Message Convention
 
@@ -88,10 +105,9 @@ PRs must follow the template in `.github/PULL_REQUEST_TEMPLATE.md`:
 
 ### When Adding New Code
 
-Since this repo has no source code yet, when introducing new code:
-- Discuss the technology stack and architecture before committing
 - Ensure any dependencies respect the offline-first and privacy principles
 - Avoid dependencies that phone home, collect telemetry, or require cloud services
+- Never add integrations with external AI providers — all AI runs on the local Pi cluster
 - Prefer vendored or self-hosted dependencies where possible
 
 ## Contact

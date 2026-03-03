@@ -5,5 +5,16 @@
   ],
   "domains": [
     "blackroad.co"
-  ]
+  ],
+  "ai": {
+    "provider": "local",
+    "runtime": "ollama",
+    "description": "All AI requests route to the local Raspberry Pi cluster. No external AI providers are used.",
+    "handles": ["@copilot", "@lucidia", "@blackboxprogramming"],
+    "cluster": {
+      "nodes": ["alice", "aria", "octavia", "lucidia"],
+      "defaultBaseUrl": "http://localhost:11434",
+      "defaultModel": "llama3"
+    }
+  }
 }

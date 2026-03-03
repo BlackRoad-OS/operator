@@ -1,0 +1,77 @@
+# Network configuration — canonical source of truth
+#
+# Declares Tailscale mesh and Cloudflare tunnel settings for the operator.
+# Credentials and sensitive values MUST be supplied via environment variables.
+
+network:
+  # -------------------------------------------------------------------------
+  # Tailscale — zero-config VPN mesh
+  # -------------------------------------------------------------------------
+  tailscale:
+    enabled: false  # flip to true once TAILSCALE_AUTH_KEY is provisioned
+
+    # Auth key is supplied via environment variable: TAILSCALE_AUTH_KEY
+    # Generate a reusable/ephemeral key at https://login.tailscale.com/admin/settings/keys
+
+    # Hostname advertised on the Tailscale network.
+    hostname: operator
+
+    # Tags applied to this node (must be declared in your Tailscale ACL policy).
+    tags:
+      - tag:operator
+      - tag:blackroad
+
+    # Advertise subnet routes from this node (CIDR notation).
+    advertise_routes: []
+
+    # Accept routes advertised by other nodes in the mesh.
+    accept_routes: true
+
+    # Use Tailscale MagicDNS for internal hostname resolution.
+    magic_dns: true
+
+  # -------------------------------------------------------------------------
+  # Cloudflare — tunnel and DNS management
+  # -------------------------------------------------------------------------
+  cloudflare:
+    enabled: false  # flip to true once CLOUDFLARE_TUNNEL_TOKEN is provisioned
+
+    # Tunnel token supplied via environment variable: CLOUDFLARE_TUNNEL_TOKEN
+    # Account ID supplied via environment variable: CLOUDFLARE_ACCOUNT_ID
+    # Zone ID supplied via environment variable: CLOUDFLARE_ZONE_ID
+
+    # Public hostname(s) routed through the tunnel to this operator instance.
+    ingress:
+      - hostname: operator.blackroad.io
+        service: http://localhost:3000
+
+    # Warp-to-Tunnel (private network access via WARP client).
+    warp_routing:
+      enabled: false
+
+  # -------------------------------------------------------------------------
+  # Raspberry Pi cluster — local AI inference nodes
+  # -------------------------------------------------------------------------
+  pi_cluster:
+    nodes:
+      - name: alice
+        host: alice.local
+        port: 11434
+      - name: aria
+        host: aria.local
+        port: 11434
+      - name: octavia
+        host: octavia.local
+        port: 11434
+      - name: lucidia
+        host: lucidia.local
+        port: 11434
+    # Default node for AI routing (override with OLLAMA_BASE_URL)
+    default_node: alice
+
+  # -------------------------------------------------------------------------
+  # Operator listener — local HTTP interface
+  # -------------------------------------------------------------------------
+  listen:
+    host: 127.0.0.1
+    port: 3000
