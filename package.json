@@ -27,7 +27,10 @@
     "test:e2e": "node --test --test-concurrency=1 src/e2e/*.test.js",
     "test:e2e:scraper": "node --test e2e/*.test.js",
     "test:all": "node --test --test-concurrency=1 tests/unit/*.test.js src/e2e/*.test.js",
-    "ci": "npm run scrape && npm run verify && npm run report && npm run test"
+    "ci": "npm run scrape && npm run verify && npm run report && npm run test",
+    "dev:terminal": "vite --config src/terminal/vite.config.js",
+    "build:terminal": "vite build --config src/terminal/vite.config.js",
+    "preview:terminal": "vite preview --config src/terminal/vite.config.js"
   },
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
@@ -41,7 +44,9 @@
     "@types/node": "^22.15.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
     "typescript": "^5.8.3",
+    "vite": "^6.0.0",
     "vitest": "^3.1.1"
   }
 }
