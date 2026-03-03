@@ -29,6 +29,29 @@ All automation, configuration, and infrastructure definitions originate here.
    └───────────────────────┘
 ```
 
+## AI Routing
+
+All AI requests are routed to the local Raspberry Pi cluster (Alice, Aria,
+Octavia, Lucidia) running Ollama. No external AI providers are contacted.
+
+```
+  @copilot / @lucidia / @blackboxprogramming
+                │
+                ▼
+  ┌─────────────────────────────┐
+  │   src/ai/router.js          │
+  │   (handle detection +       │
+  │    prompt cleaning)         │
+  └──────────────┬──────────────┘
+                 │
+                 ▼
+  ┌─────────────────────────────┐
+  │   Pi Cluster (Ollama)       │
+  │   alice / aria / octavia /  │
+  │   lucidia (.local:11434)    │
+  └─────────────────────────────┘
+```
+
 ## Control-Flow Rules
 
 1. **Config first**: A repo or org must appear in `config/orgs.yaml` with
@@ -39,6 +62,8 @@ All automation, configuration, and infrastructure definitions originate here.
    human review before merge.
 4. **No distributed state**: Agents do not maintain state outside this repo.
    All state is committed here.
+5. **No external AI**: All AI inference is local. External provider APIs are
+   blocked at the routing layer.
 
 ## Operational Reset Procedure
 

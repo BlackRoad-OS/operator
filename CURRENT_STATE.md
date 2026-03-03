@@ -55,13 +55,16 @@ What is observable:
 | Workflow | File | State | Last Run |
 |----------|------|-------|----------|
 | Infrastructure Audit | `.github/workflows/audit.yml` | `active` | 2026-03-01 (action_required) |
-| Copilot code review | dynamic (managed) | `active` | — |
-| Copilot coding agent | dynamic (managed) | `active` | — |
 
-### Infrastructure Audit Runner (PR branch: `copilot/build-audit-runner`)
-- A Node.js audit runner (`audit/runner.js`) was built on a feature branch
+### Infrastructure Audit Runner
+- A Node.js audit runner (`audit/runner.js`) is on `main`
 - Outputs: `audit/output-private.json`, `audit/output-public.json`
-- **Not yet merged to main** — the runner files do not exist on `main`
+
+### AI Routing (Local Pi Cluster)
+- All AI requests (`@copilot`, `@lucidia`, `@blackboxprogramming`) route to the local Raspberry Pi cluster via Ollama
+- No external AI providers are used
+- Pi nodes: Alice, Aria, Octavia, Lucidia
+- See `src/ai/router.js` and `config/blackroad.json`
 
 ### Org-wide Automations
 - No org-level automation configuration is visible from `BlackRoad-OS/operator`
@@ -130,7 +133,7 @@ What exists:
 | GitHub orgs (observable) | 1 (`BlackRoad-OS`) |
 | Active repos | 1,150 (non-archived, public) |
 | 123,000 files location | **Unknown — not found in any config** |
-| Automations running | 3 workflows in `operator`; audit runner not yet on `main` |
+| Automations running | Infrastructure Audit workflow; AI routing via local Pi cluster |
 | Failing pipelines | 0 failures; 1 pending approval (`action_required`) |
 | Domains live | 6 referenced; **live status unverified** |
 | Unused domains | **Unknown — requires DNS audit** |

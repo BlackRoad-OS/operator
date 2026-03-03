@@ -1,0 +1,41 @@
+# Vendor API configuration — canonical source of truth
+#
+# Declares all external API vendor endpoints used by the operator.
+# All AI inference is handled locally on the Raspberry Pi cluster.
+# No external AI providers are used.
+#
+# Priority: environment variable > endpoint_override > default_endpoint
+
+vendors:
+  # -----------------------------------------------------------------------
+  # GitHub — primary platform integration
+  # -----------------------------------------------------------------------
+  - name: github
+    enabled: true
+    default_endpoint: https://api.github.com
+    endpoint_env_var: VENDOR_GITHUB_ENDPOINT
+
+  # -----------------------------------------------------------------------
+  # Cloudflare — DNS, tunnels, and Workers
+  # -----------------------------------------------------------------------
+  - name: cloudflare
+    enabled: true
+    default_endpoint: https://api.cloudflare.com/client/v4
+    endpoint_env_var: VENDOR_CLOUDFLARE_ENDPOINT
+
+  # -----------------------------------------------------------------------
+  # Tailscale — network fabric API
+  # -----------------------------------------------------------------------
+  - name: tailscale
+    enabled: true
+    default_endpoint: https://api.tailscale.com/api/v2
+    endpoint_env_var: VENDOR_TAILSCALE_ENDPOINT
+
+# Routing policy applied to all vendors.
+routing:
+  # When true, only vendors whose endpoint resolves to the operator's own
+  # network (Tailscale CGNAT range 100.x.x.x or a declared subnet) are used.
+  prefer_local: true
+
+  # Outbound proxy for all vendor requests (optional).
+  http_proxy_env_var: OPERATOR_HTTP_PROXY
