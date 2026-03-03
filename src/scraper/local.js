@@ -1,7 +1,7 @@
 import { execSync } from "node:child_process";
 import { ORG, REPOS } from "./config.js";
 
-const PROXY_BASE = "http://local_proxy@127.0.0.1:26918/git";
+const PROXY_BASE = process.env.GIT_PROXY_URL || "http://local_proxy@127.0.0.1:25393/git";
 
 /**
  * Scrape a repo using the local git proxy — git ls-remote and local git commands.

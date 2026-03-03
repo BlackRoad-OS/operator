@@ -1,10 +1,61 @@
 {
+  "meta": {
+    "name": "BlackRoad OS",
+    "tagline": "Infrastructure for sovereign systems.",
+    "version": "1.0.0",
+    "updated": "2026-03-03"
+  },
   "enterprise": "BlackRoad OS, Inc.",
+  "roles": {
+    "core": { "label": "Core Platform" },
+    "ai": { "label": "AI / ML" },
+    "cloud": { "label": "Cloud / Infra" },
+    "security": { "label": "Security" },
+    "media": { "label": "Media / Studio" },
+    "research": { "label": "Research / Labs" },
+    "education": { "label": "Education" },
+    "governance": { "label": "Governance" },
+    "hardware": { "label": "Hardware" },
+    "archive": { "label": "Archive" },
+    "ventures": { "label": "Ventures" }
+  },
   "orgs": [
-    "BlackRoad-OS"
+    { "id": "BlackRoad-OS", "name": "BlackRoad OS", "role": "core", "status": "active", "url": "https://github.com/BlackRoad-OS", "description": "Core operating system and control plane" },
+    { "id": "Blackbox-Enterprises", "name": "Blackbox Enterprises", "role": "core", "status": "active", "url": "https://github.com/Blackbox-Enterprises", "description": "Enterprise development and integration" },
+    { "id": "BlackRoad-AI", "name": "BlackRoad AI", "role": "ai", "status": "active", "url": "https://github.com/BlackRoad-AI", "description": "AI and machine learning stack" },
+    { "id": "BlackRoad-Cloud", "name": "BlackRoad Cloud", "role": "cloud", "status": "active", "url": "https://github.com/BlackRoad-Cloud", "description": "Cloud infrastructure and deployment" },
+    { "id": "BlackRoad-Security", "name": "BlackRoad Security", "role": "security", "status": "active", "url": "https://github.com/BlackRoad-Security", "description": "Security tooling and auditing" },
+    { "id": "BlackRoad-Labs", "name": "BlackRoad Labs", "role": "research", "status": "active", "url": "https://github.com/BlackRoad-Labs", "description": "Research and experimental projects" },
+    { "id": "BlackRoad-Media", "name": "BlackRoad Media", "role": "media", "status": "active", "url": "https://github.com/BlackRoad-Media", "description": "Media production and content" },
+    { "id": "BlackRoad-Studio", "name": "BlackRoad Studio", "role": "media", "status": "active", "url": "https://github.com/BlackRoad-Studio", "description": "Creative studio and design" },
+    { "id": "BlackRoad-Interactive", "name": "BlackRoad Interactive", "role": "media", "status": "active", "url": "https://github.com/BlackRoad-Interactive", "description": "Interactive experiences and gaming" },
+    { "id": "BlackRoad-Education", "name": "BlackRoad Education", "role": "education", "status": "active", "url": "https://github.com/BlackRoad-Education", "description": "Educational platforms and curriculum" },
+    { "id": "BlackRoad-Foundation", "name": "BlackRoad Foundation", "role": "governance", "status": "active", "url": "https://github.com/BlackRoad-Foundation", "description": "Open governance and community standards" },
+    { "id": "BlackRoad-Gov", "name": "BlackRoad Gov", "role": "governance", "status": "active", "url": "https://github.com/BlackRoad-Gov", "description": "Government compliance and public sector" },
+    { "id": "BlackRoad-Hardware", "name": "BlackRoad Hardware", "role": "hardware", "status": "active", "url": "https://github.com/BlackRoad-Hardware", "description": "Hardware designs and Pi cluster orchestration" },
+    { "id": "BlackRoad-Archive", "name": "BlackRoad Archive", "role": "archive", "status": "active", "url": "https://github.com/BlackRoad-Archive", "description": "Historical code and documentation archive" },
+    { "id": "BlackRoad-Ventures", "name": "BlackRoad Ventures", "role": "ventures", "status": "active", "url": "https://github.com/BlackRoad-Ventures", "description": "Investment and partnership initiatives" }
   ],
   "domains": [
-    "blackroad.co"
+    { "domain": "blackroad.io", "purpose": "Primary portal", "status": "active" },
+    { "domain": "blackroad.systems", "purpose": "Systems documentation", "status": "active" },
+    { "domain": "blackroad.company", "purpose": "Corporate site", "status": "active" },
+    { "domain": "blackroad.me", "purpose": "Personal tools", "status": "active" },
+    { "domain": "blackroad.network", "purpose": "Agent mesh network", "status": "active" },
+    { "domain": "blackroadai.com", "purpose": "AI platform", "status": "active" },
+    { "domain": "blackroadinc.us", "purpose": "US corporate entity", "status": "active" },
+    { "domain": "blackroadqi.com", "purpose": "Quantum intelligence", "status": "active" },
+    { "domain": "blackroadquantum.com", "purpose": "Quantum computing", "status": "active" },
+    { "domain": "blackroadquantum.info", "purpose": "Quantum research", "status": "active" },
+    { "domain": "blackroadquantum.net", "purpose": "Quantum network", "status": "active" },
+    { "domain": "blackroadquantum.shop", "purpose": "Quantum hardware store", "status": "active" },
+    { "domain": "blackroadquantum.store", "purpose": "Quantum product catalog", "status": "active" },
+    { "domain": "blackboxprogramming.io", "purpose": "Developer tools", "status": "active" },
+    { "domain": "lucidia.earth", "purpose": "AI companion platform", "status": "active" },
+    { "domain": "lucidia.studio", "purpose": "Creative AI studio", "status": "active" },
+    { "domain": "lucidiaqi.com", "purpose": "Lucidia quantum interface", "status": "active" },
+    { "domain": "roadchain.io", "purpose": "Identity blockchain", "status": "active" },
+    { "domain": "roadcoin.io", "purpose": "Token economy", "status": "active" }
   ],
   "ai": {
     "provider": "local",

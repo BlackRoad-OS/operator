@@ -6,7 +6,7 @@ const GRAD = "linear-gradient(90deg,#FF8400,#FF4400,#FF0066,#CC00AA,#8800FF,#006
 const MONO = "'JetBrains Mono',monospace";
 const DISP = "'Space Grotesk',sans-serif";
 
-const FS = {
+const FS: FSNode = {
   id: "root", name: "/", type: "dir", children: [
     { id: "agents", name: "agents", type: "dir", children: [
       { id: "cecilia", name: "cecilia", type: "dir", children: [
