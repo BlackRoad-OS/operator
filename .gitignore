@@ -33,6 +33,10 @@ reports/*.json
 # Cloned repos for E2E testing
 e2e-tests/repos/
 
+# Chat app
+chat-app/dist/
+chat-app/.env
+
 # Environment
 .env
 .env.local
