@@ -1,3 +1,7 @@
 node_modules/
 audit/output-private.json
 audit/output-public.json
+
+# Chat app
+chat-app/dist/
+chat-app/.env
