@@ -37,9 +37,13 @@ e2e-tests/repos/
 chat-app/dist/
 chat-app/.env
 
-# Environment
+# Environment secrets — NEVER commit
 .env
 .env.local
+.env.production
+
+# License keys
+.operator/license
 
 # OS files
 .DS_Store

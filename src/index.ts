@@ -36,3 +36,6 @@ export type { BroadcastTarget, BroadcastFile, BroadcastResult } from "./remote/b
 export { createLogger, setLogLevel } from "./utils/logger.js";
 export { withRetry } from "./utils/retry.js";
 export { mapConcurrent } from "./utils/concurrency.js";
+
+export { verifyLicense, loadLicenseKey, requireLicense, isValidKeyFormat } from "./licensing/verify.js";
+export type { LicenseInfo } from "./licensing/verify.js";
