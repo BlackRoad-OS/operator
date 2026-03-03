@@ -405,6 +405,63 @@
       </div>
     </div>
 
+    <!-- Pricing / License -->
+    <div id="pricing" style="margin-top: 3rem;">
+      <div class="section">
+        <div class="section-title">Get Licensed</div>
+        <div style="padding: 2rem 1.5rem;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem;">
+
+            <!-- One-time license -->
+            <div style="background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem;">
+              <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.5rem;">Perpetual License</div>
+              <div style="font-family: var(--font-mono); font-size: 2rem; font-weight: 700; color: var(--green); margin-bottom: 0.25rem;">$99</div>
+              <div style="font-size: 0.8rem; color: var(--muted); margin-bottom: 1rem;">One-time &mdash; yours forever</div>
+              <ul style="list-style: none; font-size: 0.85rem; color: var(--text); margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem;">
+                <li style="display: flex; gap: 0.5rem; align-items: center;"><span style="color: var(--green);">&#10003;</span> Full Operator CLI access</li>
+                <li style="display: flex; gap: 0.5rem; align-items: center;"><span style="color: var(--green);">&#10003;</span> All current features</li>
+                <li style="display: flex; gap: 0.5rem; align-items: center;"><span style="color: var(--green);">&#10003;</span> Offline-first &mdash; no phone-home</li>
+                <li style="display: flex; gap: 0.5rem; align-items: center;"><span style="color: var(--green);">&#10003;</span> License key for your team</li>
+              </ul>
+              <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="startCheckout('payment')">Buy License</button>
+            </div>
+
+            <!-- Subscription -->
+            <div style="background: var(--surface-2); border: 1px solid var(--accent); border-radius: var(--radius); padding: 1.5rem; position: relative;">
+              <div style="position: absolute; top: -10px; right: 12px; background: var(--accent); color: #fff; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 8px; border-radius: 4px;">Recommended</div>
+              <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.5rem;">Pro Subscription</div>
+              <div style="font-family: var(--font-mono); font-size: 2rem; font-weight: 700; color: var(--accent-light); margin-bottom: 0.25rem;">$19<span style="font-size: 0.9rem; color: var(--muted);">/mo</span></div>
+              <div style="font-size: 0.8rem; color: var(--muted); margin-bottom: 1rem;">Cancel anytime</div>
+              <ul style="list-style: none; font-size: 0.85rem; color: var(--text); margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem;">
+                <li style="display: flex; gap: 0.5rem; align-items: center;"><span style="color: var(--green);">&#10003;</span> Everything in Perpetual</li>
+                <li style="display: flex; gap: 0.5rem; align-items: center;"><span style="color: var(--green);">&#10003;</span> Priority updates &amp; new features</li>
+                <li style="display: flex; gap: 0.5rem; align-items: center;"><span style="color: var(--green);">&#10003;</span> Streaming engine &amp; automation</li>
+                <li style="display: flex; gap: 0.5rem; align-items: center;"><span style="color: var(--green);">&#10003;</span> Direct support from BlackRoad</li>
+              </ul>
+              <button class="btn btn-primary" style="width: 100%; justify-content: center; background: var(--accent);" onclick="startCheckout('subscription')">Subscribe</button>
+            </div>
+
+          </div>
+
+          <p style="margin-top: 1.25rem; font-size: 0.78rem; color: var(--muted); text-align: center;">
+            Payments processed securely by Stripe. Your license key is delivered instantly after purchase.
+          </p>
+
+          <!-- License verification -->
+          <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+            <div style="font-size: 0.8rem; color: var(--muted); margin-bottom: 0.75rem;">Already have a license?</div>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="text" id="licenseKeyInput" placeholder="BR-XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX"
+                style="flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.5rem 0.75rem; color: var(--text); font-family: var(--font-mono); font-size: 0.8rem;"
+              />
+              <button class="btn btn-secondary" onclick="verifyLicense()">Verify</button>
+            </div>
+            <div id="licenseStatus" style="margin-top: 0.5rem; font-size: 0.8rem; display: none;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <footer>
       <p>All processing is local. No data leaves your device. &mdash; <a href="https://blackroad.io" rel="noopener">blackroad.io</a></p>
     </footer>
@@ -623,6 +680,59 @@
     });
 
     document.getElementById('resetBtn').addEventListener('click', resetUI);
+
+    // ── Stripe checkout ─────────────────────────────────────────────────────
+    async function startCheckout(mode) {
+      try {
+        const res = await fetch('/stripe-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mode }),
+        });
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          alert(data.error || 'Could not start checkout. Please try again.');
+        }
+      } catch (err) {
+        alert('Checkout error: ' + err.message);
+      }
+    }
+
+    // ── License verification ────────────────────────────────────────────────
+    async function verifyLicense() {
+      const input = document.getElementById('licenseKeyInput');
+      const status = document.getElementById('licenseStatus');
+      const key = input.value.trim();
+
+      if (!key) {
+        status.style.display = 'block';
+        status.style.color = 'var(--amber)';
+        status.textContent = 'Please enter your license key.';
+        return;
+      }
+
+      status.style.display = 'block';
+      status.style.color = 'var(--muted)';
+      status.textContent = 'Verifying…';
+
+      try {
+        const res = await fetch('/stripe-verify?key=' + encodeURIComponent(key));
+        const data = await res.json();
+
+        if (data.valid) {
+          status.style.color = 'var(--green)';
+          status.textContent = 'License active — ' + (data.email || 'valid') + ' (' + (data.mode === 'subscription' ? 'Pro' : 'Perpetual') + ')';
+        } else {
+          status.style.color = 'var(--red)';
+          status.textContent = 'Invalid: ' + (data.error || data.status || 'License not found');
+        }
+      } catch (err) {
+        status.style.color = 'var(--red)';
+        status.textContent = 'Verification failed: ' + err.message;
+      }
+    }
   </script>
 </body>
 </html>

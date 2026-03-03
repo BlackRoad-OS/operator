@@ -1,3 +1,11 @@
 node_modules/
 audit/output-private.json
 audit/output-public.json
+
+# Environment secrets — NEVER commit
+.env
+.env.local
+.env.production
+
+# License keys
+.operator/license
