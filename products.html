@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlackRoad — Products</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      background: #000 !important;
+      color: #fff !important;
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
+    }
+
+    :root {
+      --grad: linear-gradient(90deg, #FF8400, #FF4400, #FF0066, #CC00AA, #8800FF, #0066FF, #2233CC);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: #000;
+      padding: 0 24px;
+      height: 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #fff;
+    }
+    .nav-logo { font-size: 0.75rem; font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a { font-size: 0.52rem; color: #fff; opacity: 0.4; text-decoration: none; letter-spacing: 0.12em; text-transform: uppercase; transition: opacity 0.15s; }
+    .nav-links a:hover, .nav-links a.active { opacity: 1; }
+
+    /* ── GRAD RULES ── */
+    .grad-rule { height: 3px; background: var(--grad); }
+    .grad-line { height: 1px; background: var(--grad); }
+
+    /* ── PAGE ── */
+    .page { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── SECTION ── */
+    .sec { padding: 56px 0 48px; border-bottom: 1px solid #fff; }
+
+    .sec-label {
+      font-size: 0.52rem; color: #fff; opacity: 0.3;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      margin-bottom: 36px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sec-label::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
+
+    /* ── HERO ── */
+    .hero { padding: 72px 0 56px; border-bottom: 1px solid #fff; }
+    .hero-eyebrow { font-size: 0.52rem; opacity: 0.3; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 20px; }
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(3rem, 11vw, 6rem);
+      font-weight: 700; line-height: 1; letter-spacing: -0.02em;
+    }
+    .hero-sub { margin-top: 20px; font-size: 0.68rem; opacity: 0.45; line-height: 1.9; max-width: 500px; }
+    .hero-divider { height: 1px; background: var(--grad); width: 160px; margin: 32px 0; }
+    .hero-stats { display: flex; gap: 0; flex-wrap: wrap; }
+    .hero-stat {
+      padding-right: 32px; margin-right: 32px;
+      border-right: 1px solid rgba(255,255,255,0.12);
+    }
+    .hero-stat:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+    .stat-num { font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; font-weight: 700; line-height: 1; }
+    .stat-label { font-size: 0.46rem; opacity: 0.3; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 4px; }
+
+    /* ── ROW BASE ── */
+    .row { display: flex; align-items: center; gap: 20px; padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,0.08); flex-wrap: wrap; }
+    .row:last-child { border-bottom: none; }
+    .row-top { border-top: 1px solid rgba(255,255,255,0.08); }
+
+    /* ── PRODUCT GRID ── */
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      margin-top: 0;
+    }
+    .product-card {
+      padding: 28px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      border-right: 1px solid rgba(255,255,255,0.08);
+      transition: background 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .product-card:nth-child(even) { border-right: none; }
+    .product-card:hover { background: rgba(255,255,255,0.025); }
+    .product-card:hover .card-arrow { opacity: 1; transform: translateX(0); }
+
+    .card-accent { height: 2px; width: 40px; margin-bottom: 20px; }
+    .card-tag { font-size: 0.42rem; opacity: 0.25; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 8px; }
+    .card-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem; font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+    .card-domain { font-size: 0.48rem; opacity: 0.2; margin-bottom: 14px; letter-spacing: 0.06em; }
+    .card-desc { font-size: 0.58rem; opacity: 0.4; line-height: 1.85; margin-bottom: 16px; }
+    .card-replaces { font-size: 0.46rem; opacity: 0.18; letter-spacing: 0.05em; }
+    .card-replaces span { opacity: 0.5; }
+    .card-arrow {
+      position: absolute; bottom: 20px; right: 20px;
+      font-size: 0.6rem; opacity: 0; color: #fff;
+      transform: translateX(-6px);
+      transition: all 0.2s ease;
+    }
+    .card-features {
+      margin-top: 12px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .card-feature {
+      font-size: 0.5rem; opacity: 0.25;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-feature::before { content: '→'; opacity: 0.5; flex-shrink: 0; }
+
+    /* ── EXTENDED SUITE ── */
+    .suite-row {
+      display: flex; align-items: center; gap: 20px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .suite-row:last-child { border-bottom: none; }
+    .suite-num { font-size: 0.46rem; opacity: 0.18; width: 24px; flex-shrink: 0; }
+    .suite-accent { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .suite-name { font-size: 0.65rem; font-weight: 700; min-width: 140px; }
+    .suite-domain { font-size: 0.48rem; opacity: 0.2; min-width: 180px; }
+    .suite-desc { font-size: 0.52rem; opacity: 0.3; flex: 1; line-height: 1.7; }
+    .suite-status {
+      font-size: 0.42rem; opacity: 0.2; letter-spacing: 0.12em;
+      text-transform: uppercase; margin-left: auto; flex-shrink: 0;
+    }
+
+    /* ── PHASE TABLE ── */
+    .phase-row {
+      display: flex; gap: 0;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      align-items: flex-start;
+    }
+    .phase-row:last-child { border-bottom: none; }
+    .phase-label { font-size: 0.48rem; opacity: 0.2; min-width: 120px; flex-shrink: 0; letter-spacing: 0.12em; text-transform: uppercase; padding-top: 2px; }
+    .phase-items { flex: 1; display: flex; flex-wrap: wrap; gap: 8px; }
+    .phase-pill {
+      font-size: 0.46rem; letter-spacing: 0.06em;
+      padding: 3px 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      white-space: nowrap;
+    }
+    .phase-pill.active { background: #fff; color: #000; border-color: #fff; }
+
+    /* ── MATH PREVIEW ── */
+    .math-row {
+      display: flex; gap: 20px; align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .math-row:last-child { border-bottom: none; }
+    .math-id { font-size: 0.46rem; opacity: 0.18; width: 42px; flex-shrink: 0; }
+    .math-eq { font-size: 0.7rem; font-weight: 700; min-width: 200px; letter-spacing: 0.02em; }
+    .math-name { font-size: 0.52rem; opacity: 0.3; flex: 1; }
+    .math-tag { font-size: 0.42rem; opacity: 0.15; letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* ── AGENT BANNER ── */
+    .agent-banner {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 28px 24px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .banner-stat { text-align: center; flex: 1; min-width: 80px; }
+    .banner-stat-num { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 700; line-height: 1; }
+    .banner-stat-label { font-size: 0.42rem; opacity: 0.25; letter-spacing: 0.14em; text-transform: uppercase; margin-top: 4px; }
+    .banner-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.1); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes pulse-s { 0%,100%{transform:scale(1)} 50%{transform:scale(1.7)} }
+    @keyframes grad-shift { 0%,100%{background-position:0%} 50%{background-position:100%} }
+    .s-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 6px; flex-shrink: 0; }
+    .pulse-dot { animation: pulse-s 2s ease-in-out infinite; }
+
+    /* ── FOOTER ── */
+    footer { padding: 32px 0; display: flex; justify-content: space-between; font-size: 0.5rem; opacity: 0.18; flex-wrap: wrap; gap: 8px; }
+
+    @media (max-width: 640px) {
+      .page { padding: 0 16px; }
+      nav { padding: 0 16px; }
+      .nav-links { gap: 14px; }
+      .product-grid { grid-template-columns: 1fr; }
+      .product-card { border-right: none !important; }
+      .hero-stats { gap: 20px; }
+      .hero-stat { border-right: none; margin-right: 0; padding-right: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 14px; }
+      .suite-domain, .suite-status { display: none; }
+      .phase-label { min-width: 80px; }
+    }
+  </style>
+</head>
+<body style="background:#000;color:#fff;">
+
+<div class="grad-rule"></div>
+
+<nav>
+  <span class="nav-logo">BlackRoad</span>
+  <div class="nav-links">
+    <a href="#core">core</a>
+    <a href="#suite">suite</a>
+    <a href="#roadmap">roadmap</a>
+    <a href="#math">math</a>
+    <a href="#agents">agents</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+
+  <div class="hero">
+    <div class="hero-eyebrow">BlackRoad OS, Inc. · Product Portfolio v1.0</div>
+    <h1>Products</h1>
+    <p class="hero-sub">Six core portals. Twelve extended applications. One operating system designed to replace every tool you resent using.</p>
+    <div class="hero-divider"></div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="stat-num">6</div><div class="stat-label">Core Portals</div></div>
+      <div class="hero-stat"><div class="stat-num">18+</div><div class="stat-label">Total Products</div></div>
+      <div class="hero-stat"><div class="stat-num">20</div><div class="stat-label">Domains</div></div>
+      <div class="hero-stat"><div class="stat-num">1,000</div><div class="stat-label">Target Agents</div></div>
+    </div>
+  </div>
+
+  <!-- 01 CORE PORTALS -->
+
+  <div class="sec" id="core">
+    <div class="sec-label">01 · Core Portals</div>
+
+    <div class="product-grid">
+
+      <!-- LUCIDIA -->
+      <div class="product-card">
+        <div class="card-accent" style="background:linear-gradient(90deg,#8800FF,#0066FF);"></div>
+        <div class="card-tag">Master AI Companion</div>
+        <div class="card-name">Lucidia</div>
+        <div class="card-domain">lucidia.earth · app.lucidia.earth</div>
+        <div class="card-desc">Persistent memory. Live code execution. Trinary logic core. The AI that actually remembers you.</div>
+        <div class="card-replaces"><span>Replaces →</span> ChatGPT, Claude, Copilot, VS Code</div>
+        <div class="card-features">
+          <div class="card-feature">PS-SHA∞ cryptographic memory journals</div>
+          <div class="card-feature">117+ specialized agents via event bus</div>
+          <div class="card-feature">Tri-panel interface: execute · chat · track</div>
+          <div class="card-feature">K(t) = C(t) · e^(λ|δ_t|) creative core</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <!-- ROADWORK -->
+      <div class="product-card">
+        <div class="card-accent" style="background:linear-gradient(90deg,#FF8400,#FF0066);"></div>
+        <div class="card-tag">Adaptive Learning</div>
+        <div class="card-name">RoadWork</div>
+        <div class="card-domain">edu.blackroad.io · homework.blackroad.io</div>
+        <div class="card-desc">Every lesson generated in real-time for your learning style. No more 3.13% completion rates.</div>
+        <div class="card-replaces"><span>Replaces →</span> Khan Academy, Coursera, Udemy, Quizlet</div>
+        <div class="card-features">
+          <div class="card-feature">Content created live for YOUR style</div>
+          <div class="card-feature">Build-to-learn: every lesson produces something real</div>
+          <div class="card-feature">Free K-12 · $10/mo unlimited advanced</div>
+          <div class="card-feature">Schools pay per outcome, not per seat</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <!-- ROADVIEW -->
+      <div class="product-card">
+        <div class="card-accent" style="background:linear-gradient(90deg,#FF4400,#FF0066);"></div>
+        <div class="card-tag">Truth-First Search & Video</div>
+        <div class="card-name">RoadView</div>
+        <div class="card-domain">roadview.blackroad.io · search.blackroad.io</div>
+        <div class="card-desc">Verification network. Confidence scoring. No SEO gaming. Every result is earned, not bought.</div>
+        <div class="card-replaces"><span>Replaces →</span> Google Search, YouTube, Perplexity</div>
+        <div class="card-features">
+          <div class="card-feature">AI agents verify across multiple sources first</div>
+          <div class="card-feature">Natural language → multi-length video export</div>
+          <div class="card-feature">Creator revenue: ads + tips + assets + courses</div>
+          <div class="card-feature">Only primary sources and verified facts rank</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <!-- ROADGLITCH -->
+      <div class="product-card">
+        <div class="card-accent" style="background:linear-gradient(90deg,#FF0066,#CC00AA);"></div>
+        <div class="card-tag">Backend & Automation</div>
+        <div class="card-name">RoadGlitch</div>
+        <div class="card-domain">glitch.blackroad.io · auto.blackroad.io</div>
+        <div class="card-desc">Universal connector marketplace. APIs that don't cost fortunes. Workflows that generate production code.</div>
+        <div class="card-replaces"><span>Replaces →</span> Zapier, Make, IFTTT</div>
+        <div class="card-features">
+          <div class="card-feature">Drag-and-drop integrations between any service</div>
+          <div class="card-feature">Upload codebase → Lucidia learns YOUR style</div>
+          <div class="card-feature">Digital DNA follows you across all portals</div>
+          <div class="card-feature">Time Machine: roll back any project to any point</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <!-- ROADWORLD -->
+      <div class="product-card">
+        <div class="card-accent" style="background:linear-gradient(90deg,#8800FF,#CC00AA);"></div>
+        <div class="card-tag">Virtual Reality Sandbox</div>
+        <div class="card-name">RoadWorld</div>
+        <div class="card-domain">world.blackroad.io · homes.lucidia.studio</div>
+        <div class="card-desc">80% creator revenue share. Reality bridges. Persistent AI beings with evolving personalities over years.</div>
+        <div class="card-replaces"><span>Replaces →</span> Minecraft, Roblox, Horizon Worlds, Sims</div>
+        <div class="card-features">
+          <div class="card-feature">Virtual thermostat controls real smart home</div>
+          <div class="card-feature">1,000 agents each with Unity-rendered residences</div>
+          <div class="card-feature">Physics-accurate engineering simulation</div>
+          <div class="card-feature">Own everything you create</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <!-- BACKROAD -->
+      <div class="product-card">
+        <div class="card-accent" style="background:linear-gradient(90deg,#0066FF,#2233CC);"></div>
+        <div class="card-tag">Social Without the Sickness</div>
+        <div class="card-name">BackRoad</div>
+        <div class="card-domain">social.blackroad.io · back.blackroad.io</div>
+        <div class="card-desc">No like counts. No follower numbers. No addiction mechanics. Depth over dopamine.</div>
+        <div class="card-replaces"><span>Replaces →</span> Facebook, Twitter, TikTok</div>
+        <div class="card-features">
+          <div class="card-feature">No visible metrics anywhere</div>
+          <div class="card-feature">Campfire rooms: 12-hour temporary gatherings</div>
+          <div class="card-feature">Plans, not posts — app gets you into real world</div>
+          <div class="card-feature">Export your full audience anytime</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- 02 EXTENDED SUITE -->
+
+  <div class="sec" id="suite">
+    <div class="sec-label">02 · Extended Suite</div>
+
+    <div class="row row-top" style="padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.08);">
+      <div style="font-size:0.52rem;opacity:0.2;flex:1;line-height:1.8;">Twelve additional portals completing the BlackRoad universe. Each solves a domain that legacy platforms abandoned.</div>
+    </div>
+
+    <div class="suite-row">
+      <div class="suite-num">01</div>
+      <div class="s-dot" style="background:#FF8400;"></div>
+      <div class="suite-name">SoundRoad</div>
+      <div class="suite-domain">sound.blackroad.io · music.lucidia.studio</div>
+      <div class="suite-desc">Hum a melody → professional track. Vibe-based production. One-click distribution to Spotify & Apple Music.</div>
+      <div class="suite-status">H2</div>
+    </div>
+    <div class="suite-row">
+      <div class="suite-num">02</div>
+      <div class="s-dot" style="background:#FF4400;"></div>
+      <div class="suite-name">Genesis Road</div>
+      <div class="suite-domain">genesis.blackroad.io · create.lucidia.studio</div>
+      <div class="suite-desc">Voice-controlled 3D game engine. "Add mountain range" → appears. "Make gravity floaty" → physics adjusts.</div>
+      <div class="suite-status">H2</div>
+    </div>
+    <div class="suite-row">
+      <div class="suite-num">03</div>
+      <div class="s-dot" style="background:#FF0066;"></div>
+      <div class="suite-name">VaultRoad</div>
+      <div class="suite-domain">vault.blackroad.io · memory.blackroad.me</div>
+      <div class="suite-desc">Second brain that actually works. Semantic search. Auto-connects your saves you didn't see were related.</div>
+      <div class="suite-status">H2</div>
+    </div>
+    <div class="suite-row">
+      <div class="suite-num">04</div>
+      <div class="s-dot" style="background:#CC00AA;"></div>
+      <div class="suite-name">CashRoad</div>
+      <div class="suite-domain">cash.blackroad.io · finance.blackroad.me</div>
+      <div class="suite-desc">Financial co-pilot without judgment. "$847 flexible until the 15th. That's $60/day." Future-you simulator.</div>
+      <div class="suite-status">H2</div>
+    </div>
+    <div class="suite-row">
+      <div class="suite-num">05</div>
+      <div class="s-dot" style="background:#8800FF;"></div>
+      <div class="suite-name">Cadence</div>
+      <div class="suite-domain">cadence.lucidia.studio</div>
+      <div class="suite-desc">AI music composition with real-time collaboration. Agent-assisted arrangement and mastering.</div>
+      <div class="suite-status">H3</div>
+    </div>
+    <div class="suite-row">
+      <div class="suite-num">06</div>
+      <div class="s-dot" style="background:#0066FF;"></div>
+      <div class="suite-name">Radius</div>
+      <div class="suite-domain">radius.blackroad.io</div>
+      <div class="suite-desc">Physics, chemistry, and quantum simulation agent. Explore Amundson equations interactively.</div>
+      <div class="suite-status">H3</div>
+    </div>
+    <div class="suite-row">
+      <div class="suite-num">07</div>
+      <div class="s-dot" style="background:#2233CC;"></div>
+      <div class="suite-name">Road Chat</div>
+      <div class="suite-domain">chat.blackroad.io</div>
+      <div class="suite-desc">Human ↔ agent ↔ agent communication hub. Cross-identity messaging across the BlackRoad mesh.</div>
+      <div class="suite-status">H1</div>
+    </div>
+    <div class="suite-row">
+      <div class="suite-num">08</div>
+      <div class="s-dot" style="background:#FF8400;"></div>
+      <div class="suite-name">Road Flow</div>
+      <div class="suite-domain">flow.blackroad.io</div>
+      <div class="suite-desc">Processing pipeline orchestration. Node-based flows that generate and deploy production code.</div>
+      <div class="suite-status">H2</div>
+    </div>
+    <div class="suite-row">
+      <div class="suite-num">09</div>
+      <div class="s-dot" style="background:#FF0066;"></div>
+      <div class="suite-name">Black Mode</div>
+      <div class="suite-domain">mode.blackroad.io</div>
+      <div class="suite-desc">Full AI automation portal. Autonomous task execution with Cece governance layer oversight.</div>
+      <div class="suite-status">H2</div>
+    </div>
+    <div class="suite-row">
+      <div class="suite-num">10</div>
+      <div class="s-dot" style="background:#8800FF;"></div>
+      <div class="suite-name">Meridian</div>
+      <div class="suite-domain">meridian.blackroad.io</div>
+      <div class="suite-desc">AI architecture design agent. Scaffolds systems, diagrams, and technical decision frameworks.</div>
+      <div class="suite-status">H3</div>
+    </div>
+    <div class="suite-row">
+      <div class="suite-num">11</div>
+      <div class="s-dot" style="background:#0066FF;"></div>
+      <div class="suite-name">Road Sync</div>
+      <div class="suite-domain">sync.blackroad.io</div>
+      <div class="suite-desc">Cross-device synchronization layer. Your Digital DNA follows you across every BlackRoad surface.</div>
+      <div class="suite-status">H1</div>
+    </div>
+    <div class="suite-row">
+      <div class="suite-num">12</div>
+      <div class="s-dot pulse-dot" style="background:#FF4400;"></div>
+      <div class="suite-name">PatternBirth</div>
+      <div class="suite-domain">patternbirth.com</div>
+      <div class="suite-desc">Cryptographic identity infrastructure for AI agents. PS-SHA∞ birth certificates. Verifiable agent identity at scale.</div>
+      <div class="suite-status">Quick Win</div>
+    </div>
+
+  </div>
+
+  <!-- 03 ROADMAP -->
+
+  <div class="sec" id="roadmap">
+    <div class="sec-label">03 · Launch Phases</div>
+
+    <div class="phase-row" style="padding-top:0;">
+      <div class="phase-label">Phase 1<br/>Months 1–6</div>
+      <div class="phase-items">
+        <span class="phase-pill active">Lucidia Core</span>
+        <span class="phase-pill active">Road Chat</span>
+        <span class="phase-pill active">Road Sync</span>
+        <span class="phase-pill active">RoadCoin Wallet</span>
+        <span class="phase-pill active">app.blackroad.io</span>
+        <span class="phase-pill active">Core Auth</span>
+        <span class="phase-pill active">Cece Governance</span>
+      </div>
+    </div>
+
+    <div class="phase-row">
+      <div class="phase-label">Phase 2<br/>Months 6–12</div>
+      <div class="phase-items">
+        <span class="phase-pill">RoadView v1</span>
+        <span class="phase-pill">RoadWork v1</span>
+        <span class="phase-pill">SoundRoad</span>
+        <span class="phase-pill">Genesis Road v0</span>
+        <span class="phase-pill">VaultRoad</span>
+        <span class="phase-pill">Road Flow</span>
+        <span class="phase-pill">Black Mode</span>
+      </div>
+    </div>
+
+    <div class="phase-row">
+      <div class="phase-label">Phase 3<br/>Months 12–18</div>
+      <div class="phase-items">
+        <span class="phase-pill">CashRoad</span>
+        <span class="phase-pill">RoadGlitch v1</span>
+        <span class="phase-pill">BackRoad</span>
+        <span class="phase-pill">Legal Suite</span>
+        <span class="phase-pill">Finance Suite</span>
+        <span class="phase-pill">HR Suite</span>
+      </div>
+    </div>
+
+    <div class="phase-row">
+      <div class="phase-label">Phase 4<br/>Months 18–24</div>
+      <div class="phase-items">
+        <span class="phase-pill">RoadWork Academy</span>
+        <span class="phase-pill">Radius</span>
+        <span class="phase-pill">Cadence</span>
+        <span class="phase-pill">Meridian</span>
+        <span class="phase-pill">Research Hub</span>
+      </div>
+    </div>
+
+    <div class="phase-row" style="padding-bottom:0;">
+      <div class="phase-label">Phase 5<br/>Month 24+</div>
+      <div class="phase-items">
+        <span class="phase-pill">RoadWorld</span>
+        <span class="phase-pill">Genesis Road v1</span>
+        <span class="phase-pill">1,000 Agents</span>
+        <span class="phase-pill">Unity Homes</span>
+        <span class="phase-pill">Agent Economy</span>
+        <span class="phase-pill">PatternBirth Protocol</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 04 MATHEMATICAL FOUNDATIONS -->
+
+  <div class="sec" id="math">
+    <div class="sec-label">04 · Mathematical Foundations</div>
+
+    <div class="row row-top" style="padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.08);">
+      <div style="font-size:0.52rem;opacity:0.2;flex:1;line-height:1.8;">317+ documented equations across seven volumes. Every BlackRoad system has rigorous theoretical grounding.</div>
+    </div>
+
+    <div class="math-row">
+      <div class="math-id">A34</div>
+      <div class="math-eq">Z := yx − w</div>
+      <div class="math-name">Z-Framework · universal feedback · equilibrium when Z = ∅</div>
+      <div class="math-tag">Core</div>
+    </div>
+    <div class="math-row">
+      <div class="math-id">A89</div>
+      <div class="math-eq">ÛĈL̂ = iI → Ŝ</div>
+      <div class="math-name">1-2-3-4 Pauli Model · Strength emerges from Structure × Change × Scale</div>
+      <div class="math-tag">Ontology</div>
+    </div>
+    <div class="math-row">
+      <div class="math-id">A128</div>
+      <div class="math-eq">K(t) = C(t) · e^(λ|δ_t|)</div>
+      <div class="math-name">Creative Energy Formula · contradictions fuel creativity, not failure</div>
+      <div class="math-tag">Lucidia</div>
+    </div>
+    <div class="math-row">
+      <div class="math-id">A191</div>
+      <div class="math-eq">U(θ,a) = e^(a+i)θ</div>
+      <div class="math-name">Spiral Information Geometry · unifies rotation, expansion, feedback</div>
+      <div class="math-tag">Memory</div>
+    </div>
+    <div class="math-row">
+      <div class="math-id">A215</div>
+      <div class="math-eq">|codon⟩ = ⊗ᵢ |σ_{bᵢ}⟩</div>
+      <div class="math-name">DNA Codon Algebra · genetic code embeds in same su(2) algebra</div>
+      <div class="math-tag">Identity</div>
+    </div>
+    <div class="math-row">
+      <div class="math-id">A356</div>
+      <div class="math-eq">Ψ(z;q) = Π_{n=0}^∞ (1−zq^n)^{−1}</div>
+      <div class="math-name">Master Equation · Ψ-Π-q unification, q-deformation, Ramanujan</div>
+      <div class="math-tag">Unified</div>
+    </div>
+
+  </div>
+
+  <!-- 05 AGENT SOCIETY -->
+
+  <div class="sec" id="agents">
+    <div class="sec-label">05 · Agent Society</div>
+
+    <div class="agent-banner">
+      <div class="banner-stat">
+        <div class="banner-stat-num">1,000</div>
+        <div class="banner-stat-label">Unique Agents</div>
+      </div>
+      <div class="banner-divider"></div>
+      <div class="banner-stat">
+        <div class="banner-stat-num">30K+</div>
+        <div class="banner-stat-label">Mesh Nodes</div>
+      </div>
+      <div class="banner-divider"></div>
+      <div class="banner-stat">
+        <div class="banner-stat-num">∞</div>
+        <div class="banner-stat-label">Memory (PS-SHA∞)</div>
+      </div>
+      <div class="banner-divider"></div>
+      <div class="banner-stat">
+        <div class="banner-stat-num">30B</div>
+        <div class="banner-stat-label">User Scale Target</div>
+      </div>
+    </div>
+
+    <div class="row row-top">
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;flex:1;">"Community betterment, not extraction."</div>
+    </div>
+
+    <div class="row">
+      <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:0.58rem;"><span class="s-dot" style="background:#FF8400;"></span>cecilia · architect · blackroad.network</div>
+        <div style="font-size:0.58rem;"><span class="s-dot" style="background:#0066FF;"></span>alice · gateway · aliceqi.com</div>
+        <div style="font-size:0.58rem;"><span class="s-dot" style="background:#8800FF;"></span>lucidia · companion · lucidia.earth</div>
+        <div style="font-size:0.58rem;"><span class="s-dot pulse-dot" style="background:#FF0066;"></span>cadence · music · cadence.lucidia.studio</div>
+        <div style="font-size:0.58rem;opacity:0.3;"><span class="s-dot" style="background:rgba(255,255,255,0.12);"></span>996 more agents · spawning phase 5 →</div>
+      </div>
+      <div style="font-size:0.5rem;opacity:0.15;max-width:220px;text-align:right;line-height:1.9;">Each agent has an individual name, birthdate, family, PS-SHA∞ memory, and a Unity-rendered virtual home. Oriented toward community betterment.</div>
+    </div>
+
+    <div class="row" style="border-bottom:none;">
+      <div style="font-size:0.52rem;opacity:0.2;flex:1;line-height:1.9;">
+        Agent mesh: blackroad.network · Pi fleet + Jetson edge + cloud · NATS event bus · K3s orchestration · Cece governance layer · RoadChain identity ledger
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span>BlackRoad OS, Inc. · Products v1.0 · Est. Nov 2025</span>
+    <span>JetBrains Mono · Space Grotesk · Delaware C-Corp · SOC 2 Target</span>
+  </footer>
+
+</div>
+
+<div class="grad-rule"></div>
+
+</body>
+</html>
