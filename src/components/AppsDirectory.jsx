@@ -7,24 +7,24 @@ const MONO = "'JetBrains Mono',monospace";
 const DISP = "'Space Grotesk',sans-serif";
 
 const APPS = [
-  { id:"lucidia",    name:"Lucidia",     tag:"AI Companion",   cat:"core",   icon:"\u25C8", color:"#FF8400", phase:"Live", domain:"app.lucidia.earth",   desc:"Persistent memory. Trinary logic. 117+ agents. The AI that doesn't forget.",                   featured:true },
-  { id:"roadwork",   name:"RoadWork",    tag:"Adaptive Learn", cat:"learn",  icon:"\u25C9", color:"#0066FF", phase:"P2",   domain:"edu.blackroad.io",    desc:"Every lesson generated for you in real time. Free for all K\u201312 content.",                     featured:false },
-  { id:"roadview",   name:"RoadView",    tag:"Truth-First",    cat:"core",   icon:"\u25CE", color:"#FF0066", phase:"P2",   domain:"roadview.blackroad.io",desc:"Search and video with AI verification. Confidence scoring. No SEO gaming.",                  featured:false },
-  { id:"roadglitch", name:"RoadGlitch",  tag:"Automation",     cat:"build",  icon:"\u2B21", color:"#8800FF", phase:"P2",   domain:"glitch.blackroad.io", desc:"Universal connector marketplace. Visual workflow builder. Generate production code.",          featured:false },
-  { id:"roadworld",  name:"RoadWorld",   tag:"VR Sandbox",     cat:"create", icon:"\u2B22", color:"#CC00AA", phase:"P3",   domain:"world.blackroad.io",  desc:"80% creator revenue share. Reality bridges. Persistent AI beings that evolve over years.",   featured:false },
-  { id:"backroad",   name:"BackRoad",    tag:"Social OS",      cat:"connect",icon:"\u25C7", color:"#FF4400", phase:"P3",   domain:"social.blackroad.io", desc:"No visible metrics. Depth scoring. Campfire rooms. Plans, not posts.",                        featured:false },
-  { id:"soundroad",  name:"SoundRoad",   tag:"AI Music",       cat:"create", icon:"\u266C", color:"#FF8400", phase:"P2",   domain:"sound.blackroad.io",  desc:"Hum-to-track. Vibe-based production. One-click distribution to Spotify.",                    featured:false },
-  { id:"genesis",    name:"Genesis Road",tag:"Game Engine",    cat:"create", icon:"\u2B1F", color:"#0066FF", phase:"P3",   domain:"genesis.blackroad.io",desc:"Natural language 3D. Physics you can describe. Instant multiplayer. Export everywhere.",       featured:false },
-  { id:"vaultroad",  name:"VaultRoad",   tag:"Second Brain",   cat:"build",  icon:"\u25A3", color:"#8800FF", phase:"P2",   domain:"vault.blackroad.io",  desc:"Capture from anywhere. Semantic search. Auto-connections across saves.",                      featured:false },
-  { id:"cashroad",   name:"CashRoad",    tag:"Finance Co-Pilot",cat:"build", icon:"\u25C8", color:"#FF0066", phase:"P3",   domain:"cash.blackroad.io",   desc:"No judgment, just clarity. Decision-time assistance. Future-You simulator.",                  featured:false },
-  { id:"cadence",    name:"Cadence",     tag:"Music Collab",   cat:"create", icon:"\u25CE", color:"#CC00AA", phase:"P2",   domain:"cadence.lucidia.studio",desc:"AI music composition with real-time collaboration. Full stem generation.",                   featured:false },
-  { id:"radius",     name:"Radius",      tag:"Simulation",     cat:"build",  icon:"\u25C9", color:"#FF4400", phase:"P3",   domain:"radius.blackroad.io", desc:"Physics, chemistry, quantum simulation agent. Science in natural language.",                   featured:false },
-  { id:"roadchat",   name:"Road Chat",   tag:"Comms",          cat:"connect",icon:"\u25C7", color:"#0066FF", phase:"P2",   domain:"chat.blackroad.io",   desc:"Human \u2194 agent \u2194 agent communication layer across the full OS.",                              featured:false },
-  { id:"roadflow",   name:"Road Flow",   tag:"Pipelines",      cat:"build",  icon:"\u2B21", color:"#8800FF", phase:"P3",   domain:"flow.blackroad.io",   desc:"Processing pipeline orchestration. Visual flows for complex data operations.",                featured:false },
-  { id:"roadmind",   name:"Road Mind",   tag:"Reasoning",      cat:"build",  icon:"\u2B22", color:"#FF8400", phase:"P3",   domain:"mind.blackroad.io",   desc:"Reasoning and logic engine. The cognitive backbone for agent decision-making.",              featured:false },
-  { id:"roadcast",   name:"Road Cast",   tag:"Streaming",      cat:"connect",icon:"\u266C", color:"#FF0066", phase:"P4",   domain:"cast.blackroad.io",   desc:"Broadcasting and streaming layer. Live events, agent streams, global reach.",               featured:false },
-  { id:"roadsync",   name:"Road Sync",   tag:"Cross-Device",   cat:"build",  icon:"\u25A3", color:"#0066FF", phase:"P2",   domain:"sync.blackroad.io",   desc:"Cross-device synchronization. One identity, every surface.",                                 featured:false },
-  { id:"meridian",   name:"Meridian",    tag:"Architecture",   cat:"build",  icon:"\u2B1F", color:"#CC00AA", phase:"P4",   domain:"meridian.blackroad.io",desc:"AI architecture design tool. Blueprint your systems in natural language.",                   featured:false },
+  { id:"lucidia",    name:"Lucidia",     tag:"AI Companion",   cat:"core",   icon:"◈", color:"#FF8400", phase:"Live", domain:"app.lucidia.earth",     desc:"Persistent memory. Trinary logic. 117+ agents. The AI that doesn't forget.",                  featured:true },
+  { id:"roadwork",   name:"RoadWork",    tag:"Adaptive Learn", cat:"learn",  icon:"◉", color:"#0066FF", phase:"P2",   domain:"edu.blackroad.io",      desc:"Every lesson generated for you in real time. Free for all K–12 content.",                     featured:false },
+  { id:"roadview",   name:"RoadView",    tag:"Truth-First",    cat:"core",   icon:"◎", color:"#FF0066", phase:"P2",   domain:"roadview.blackroad.io", desc:"Search and video with AI verification. Confidence scoring. No SEO gaming.",                   featured:false },
+  { id:"roadglitch", name:"RoadGlitch",  tag:"Automation",     cat:"build",  icon:"⬡", color:"#8800FF", phase:"P2",   domain:"glitch.blackroad.io",   desc:"Universal connector marketplace. Visual workflow builder. Generate production code.",         featured:false },
+  { id:"roadworld",  name:"RoadWorld",   tag:"VR Sandbox",     cat:"create", icon:"⬢", color:"#CC00AA", phase:"P3",   domain:"world.blackroad.io",    desc:"80% creator revenue share. Reality bridges. Persistent AI beings that evolve over years.",    featured:false },
+  { id:"backroad",   name:"BackRoad",    tag:"Social OS",      cat:"connect",icon:"◇", color:"#FF4400", phase:"P3",   domain:"social.blackroad.io",   desc:"No visible metrics. Depth scoring. Campfire rooms. Plans, not posts.",                        featured:false },
+  { id:"soundroad",  name:"SoundRoad",   tag:"AI Music",       cat:"create", icon:"♬", color:"#FF8400", phase:"P2",   domain:"sound.blackroad.io",    desc:"Hum-to-track. Vibe-based production. One-click distribution to Spotify.",                     featured:false },
+  { id:"genesis",    name:"Genesis Road",tag:"Game Engine",    cat:"create", icon:"⬟", color:"#0066FF", phase:"P3",   domain:"genesis.blackroad.io",  desc:"Natural language 3D. Physics you can describe. Instant multiplayer. Export everywhere.",      featured:false },
+  { id:"vaultroad",  name:"VaultRoad",   tag:"Second Brain",   cat:"build",  icon:"▣", color:"#8800FF", phase:"P2",   domain:"vault.blackroad.io",    desc:"Capture from anywhere. Semantic search. Auto-connections across saves.",                      featured:false },
+  { id:"cashroad",   name:"CashRoad",    tag:"Finance Co-Pilot",cat:"build", icon:"◈", color:"#FF0066", phase:"P3",   domain:"cash.blackroad.io",     desc:"No judgment, just clarity. Decision-time assistance. Future-You simulator.",                  featured:false },
+  { id:"cadence",    name:"Cadence",     tag:"Music Collab",   cat:"create", icon:"◎", color:"#CC00AA", phase:"P2",   domain:"cadence.lucidia.studio",desc:"AI music composition with real-time collaboration. Full stem generation.",                     featured:false },
+  { id:"radius",     name:"Radius",      tag:"Simulation",     cat:"build",  icon:"◉", color:"#FF4400", phase:"P3",   domain:"radius.blackroad.io",   desc:"Physics, chemistry, quantum simulation agent. Science in natural language.",                   featured:false },
+  { id:"roadchat",   name:"Road Chat",   tag:"Comms",          cat:"connect",icon:"◇", color:"#0066FF", phase:"P2",   domain:"chat.blackroad.io",     desc:"Human ↔ agent ↔ agent communication layer across the full OS.",                              featured:false },
+  { id:"roadflow",   name:"Road Flow",   tag:"Pipelines",      cat:"build",  icon:"⬡", color:"#8800FF", phase:"P3",   domain:"flow.blackroad.io",     desc:"Processing pipeline orchestration. Visual flows for complex data operations.",                featured:false },
+  { id:"roadmind",   name:"Road Mind",   tag:"Reasoning",      cat:"build",  icon:"⬢", color:"#FF8400", phase:"P3",   domain:"mind.blackroad.io",     desc:"Reasoning and logic engine. The cognitive backbone for agent decision-making.",               featured:false },
+  { id:"roadcast",   name:"Road Cast",   tag:"Streaming",      cat:"connect",icon:"♬", color:"#FF0066", phase:"P4",   domain:"cast.blackroad.io",     desc:"Broadcasting and streaming layer. Live events, agent streams, global reach.",                 featured:false },
+  { id:"roadsync",   name:"Road Sync",   tag:"Cross-Device",   cat:"build",  icon:"▣", color:"#0066FF", phase:"P2",   domain:"sync.blackroad.io",     desc:"Cross-device synchronization. One identity, every surface.",                                  featured:false },
+  { id:"meridian",   name:"Meridian",    tag:"Architecture",   cat:"build",  icon:"⬟", color:"#CC00AA", phase:"P4",   domain:"meridian.blackroad.io", desc:"AI architecture design tool. Blueprint your systems in natural language.",                    featured:false },
 ];
 
 const CATS = [
@@ -81,9 +81,9 @@ export default function AppsDirectory() {
 
         {/* HERO */}
         <div style={{padding:"64px 0 48px",borderBottom:"1px solid #fff"}}>
-          <div style={{fontSize:9,opacity:.25,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:20}}>BlackRoad OS &middot; App Directory</div>
+          <div style={{fontSize:9,opacity:.25,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:20}}>BlackRoad OS · App Directory</div>
           <h1 style={{fontFamily:DISP,fontSize:"clamp(2.8rem,9vw,5rem)",fontWeight:700,lineHeight:1,letterSpacing:"-0.02em",marginBottom:20}}>Every app.<br/>One OS.</h1>
-          <p style={{fontSize:11,opacity:.36,lineHeight:1.9,maxWidth:480,marginBottom:36}}>18 applications across creation, learning, connection, and infrastructure &mdash; unified under one identity, one memory layer, one agent network.</p>
+          <p style={{fontSize:11,opacity:.36,lineHeight:1.9,maxWidth:480,marginBottom:36}}>18 applications across creation, learning, connection, and infrastructure — unified under one identity, one memory layer, one agent network.</p>
           <div style={{display:"flex",flexWrap:"wrap",gap:0,borderTop:"1px solid rgba(255,255,255,.07)",paddingTop:24}}>
             {[["6","Core Portals"],["12","Specialized Tools"],["18+","Total Apps"],["1","Unified OS"]].map(([n,l],i)=>(
               <div key={i} style={{paddingRight:24,marginRight:24,borderRight:i<3?"1px solid rgba(255,255,255,.08)":"none",marginBottom:12}}>
@@ -112,12 +112,12 @@ export default function AppsDirectory() {
             <div style={{position:"absolute",top:0,left:0,right:0,height:2,background:featured.color}}/>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:0}}>
               <div style={{padding:"36px"}}>
-                <div style={{fontSize:9,opacity:.25,letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:16}}>Featured &middot; {featured.tag}</div>
+                <div style={{fontSize:9,opacity:.25,letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:16}}>Featured · {featured.tag}</div>
                 <div style={{fontFamily:DISP,fontSize:"2rem",fontWeight:700,marginBottom:12}}>{featured.name}</div>
                 <p style={{fontSize:11,opacity:.38,lineHeight:1.8,marginBottom:24}}>{featured.desc}</p>
                 <div style={{fontSize:9,opacity:.2,marginBottom:20,fontFamily:MONO}}>{featured.domain}</div>
                 <div style={{display:"flex",gap:10,alignItems:"center"}}>
-                  <button style={{fontFamily:MONO,fontSize:9,fontWeight:700,background:"#fff",color:"#000",border:"none",padding:"8px 16px",cursor:"pointer"}}>Launch App &rarr;</button>
+                  <button style={{fontFamily:MONO,fontSize:9,fontWeight:700,background:"#fff",color:"#000",border:"none",padding:"8px 16px",cursor:"pointer"}}>Launch App →</button>
                   <PhaseBadge phase={featured.phase}/>
                 </div>
               </div>
@@ -125,7 +125,7 @@ export default function AppsDirectory() {
               <div style={{borderLeft:"1px solid rgba(255,255,255,.07)",padding:"24px",display:"flex",flexDirection:"column",gap:12,background:"rgba(255,255,255,.01)"}}>
                 <div style={{fontSize:9,opacity:.2,letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:4}}>Live Preview</div>
                 <div style={{fontFamily:MONO,fontSize:10,lineHeight:1.9}}>
-                  <div style={{opacity:.25}}>{"// PS-SHA\u221E memory active"}</div>
+                  <div style={{opacity:.25}}>{"// PS-SHA∞ memory active"}</div>
                   <div style={{opacity:.5}}>{"agent_id: cecilia"}</div>
                   <div style={{opacity:.5}}>{"commits: 14,821"}</div>
                   <div style={{opacity:.5,display:"flex",alignItems:"center",gap:4}}>
@@ -155,7 +155,7 @@ export default function AppsDirectory() {
               </button>
             ))}
           </div>
-          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="search apps\u2026" style={{fontFamily:MONO,fontSize:10,color:"#fff",background:"transparent",border:"none",borderBottom:"1px solid rgba(255,255,255,.2)",padding:"8px 0",width:160,outline:"none"}}/>
+          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="search apps…" style={{fontFamily:MONO,fontSize:10,color:"#fff",background:"transparent",border:"none",borderBottom:"1px solid rgba(255,255,255,.2)",padding:"8px 0",width:160,outline:"none"}}/>
         </div>
 
         {/* GRID */}
@@ -202,8 +202,8 @@ export default function AppsDirectory() {
 
         {/* FOOTER */}
         <div style={{borderTop:"1px solid rgba(255,255,255,.07)",padding:"24px 0",display:"flex",justifyContent:"space-between",fontSize:9,opacity:.15,flexWrap:"wrap",gap:8}}>
-          <span>BlackRoad OS, Inc. &middot; App Directory v1.0</span>
-          <span>18 apps &middot; 1 OS &middot; all your worlds</span>
+          <span>BlackRoad OS, Inc. · App Directory v1.0</span>
+          <span>18 apps · 1 OS · all your worlds</span>
         </div>
       </div>
 
