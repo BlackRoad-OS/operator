@@ -8,7 +8,6 @@ let _client: Octokit | null = null;
 export function initClient(token: string): Octokit {
   _client = new Octokit({
     auth: token,
-    throttle: { enabled: false },
     userAgent: "blackroad-operator/0.1.0",
     log: {
       debug: (msg: string) => log.debug(msg),

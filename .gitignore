@@ -1,3 +1,8 @@
 node_modules/
+dist/
+.operator/
+coverage/
 audit/output-private.json
 audit/output-public.json
+audit/output.json
+.env

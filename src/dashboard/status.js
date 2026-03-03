@@ -1,13 +1,11 @@
-'use strict';
-
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
 
 /**
  * StatusDashboard - Generates verified-only status output.
  * Rule: If it wasn't checked RIGHT NOW, it doesn't get displayed.
  */
-class StatusDashboard {
+export class StatusDashboard {
   constructor(options = {}) {
     this.reportsDir = options.reportsDir || path.join(process.cwd(), 'reports');
   }
@@ -103,5 +101,3 @@ class StatusDashboard {
     };
   }
 }
-
-module.exports = { StatusDashboard };

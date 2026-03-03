@@ -1,13 +1,11 @@
-'use strict';
-
-const axios = require('axios');
-const cheerio = require('cheerio');
+import axios from 'axios';
+import * as cheerio from 'cheerio';
 
 /**
  * SEOAnalyzer - Scrapes and validates real SEO signals from live pages.
  * Every metric is fetched live. No assumptions. No yesterday's apples.
  */
-class SEOAnalyzer {
+export class SEOAnalyzer {
   constructor(options = {}) {
     this.timeout = options.timeout || 15000;
     this.userAgent = options.userAgent || 'BlackRoad-SEO-Analyzer/1.0';
@@ -24,10 +22,7 @@ class SEOAnalyzer {
         validateStatus: () => true,
       });
     } catch (err) {
-      return {
-        url, analyzed_at: ts, status: 'error',
-        error: err.message, verified: false,
-      };
+      return { url, analyzed_at: ts, status: 'error', error: err.message, verified: false };
     }
 
     const $ = cheerio.load(resp.data || '');
@@ -63,32 +58,21 @@ class SEOAnalyzer {
 
     const structuredData = [];
     $('script[type="application/ld+json"]').each((_, el) => {
-      try {
-        structuredData.push(JSON.parse($(el).html()));
-      } catch (_e) { /* skip malformed */ }
+      try { structuredData.push(JSON.parse($(el).html())); } catch (_e) { /* skip */ }
     });
 
-    const score = this._calculateScore({
-      title, metaDesc, canonical, ogTitle, ogImage,
-      h1s, images, structuredData, httpStatus: resp.status,
-    });
+    const score = this._calculateScore({ title, metaDesc, canonical, ogTitle, ogImage, h1s, images, structuredData, httpStatus: resp.status });
 
     return {
-      url,
-      analyzed_at: ts,
-      status: 'ok',
-      verified: true,
-      http_status: resp.status,
-      response_time_ms: null, // would need perf hooks for accuracy
+      url, analyzed_at: ts, status: 'ok', verified: true, http_status: resp.status,
+      response_time_ms: null,
       seo: {
         title: { value: title, length: title.length, optimal: title.length >= 30 && title.length <= 60 },
         meta_description: { value: metaDesc, length: metaDesc.length, optimal: metaDesc.length >= 120 && metaDesc.length <= 160 },
-        canonical,
-        robots,
+        canonical, robots,
         open_graph: { title: ogTitle, description: ogDesc, image: ogImage },
         headings: { h1_count: h1s.length, h1s, h2_count: h2s.length, h2s: h2s.slice(0, 10) },
-        links,
-        images,
+        links, images,
         structured_data_count: structuredData.length,
         structured_data_types: structuredData.map(sd => sd['@type']).filter(Boolean),
       },
@@ -100,12 +84,7 @@ class SEOAnalyzer {
     let score = 0;
     let maxScore = 0;
     const checks = [];
-
-    const check = (name, passed, weight = 1) => {
-      maxScore += weight;
-      if (passed) score += weight;
-      checks.push({ name, passed, weight });
-    };
+    const check = (name, passed, weight = 1) => { maxScore += weight; if (passed) score += weight; checks.push({ name, passed, weight }); };
 
     check('HTTP 200', httpStatus === 200, 2);
     check('Has title', title.length > 0, 2);
@@ -119,12 +98,7 @@ class SEOAnalyzer {
     check('Images have alt text', images.total === 0 || images.missing_alt === 0, 1);
     check('Has structured data', structuredData.length > 0, 2);
 
-    return {
-      score,
-      max_score: maxScore,
-      percentage: maxScore > 0 ? Math.round((score / maxScore) * 100) : 0,
-      checks,
-    };
+    return { score, max_score: maxScore, percentage: maxScore > 0 ? Math.round((score / maxScore) * 100) : 0, checks };
   }
 
   async analyzeGitHubRepo(owner, repo) {
@@ -140,15 +114,7 @@ class SEOAnalyzer {
     );
     return results.map((r, i) => {
       if (r.status === 'fulfilled') return r.value;
-      return {
-        url: typeof urls[i] === 'string' ? urls[i] : `${urls[i].owner}/${urls[i].repo}`,
-        analyzed_at: new Date().toISOString(),
-        status: 'error',
-        error: r.reason?.message || 'Unknown error',
-        verified: false,
-      };
+      return { url: typeof urls[i] === 'string' ? urls[i] : `${urls[i].owner}/${urls[i].repo}`, analyzed_at: new Date().toISOString(), status: 'error', error: r.reason?.message || 'Unknown error', verified: false };
     });
   }
 }
-
-module.exports = { SEOAnalyzer };

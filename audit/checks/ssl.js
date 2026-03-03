@@ -3,12 +3,12 @@
  * Fails if the certificate expires within 14 days or is already expired.
  */
 
-const tls = require('tls');
+import tls from 'node:tls';
 
 // Fail if the certificate expires within this many days (inclusive).
 const WARN_DAYS = 14;
 
-function checkSsl(domain) {
+export function checkSsl(domain) {
   return new Promise((resolve) => {
     const socket = tls.connect(
       { host: domain, port: 443, servername: domain },
@@ -64,5 +64,3 @@ function checkSsl(domain) {
     });
   });
 }
-
-module.exports = { checkSsl };

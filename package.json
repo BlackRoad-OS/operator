@@ -1,13 +1,32 @@
 {
-  "name": "blackroad-audit-runner",
-  "version": "1.0.0",
-  "description": "BlackRoad Infrastructure Audit Runner",
-  "main": "audit/runner.js",
+  "name": "@blackroad/operator",
+  "version": "0.1.0",
+  "description": "Canonical control plane for the BlackRoad OS platform — remote streaming engine, audit runner, and infrastructure automation",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "operator": "bin/operator.js"
+  },
   "scripts": {
-    "audit": "node audit/runner.js"
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "start": "node dist/cli.js",
+    "audit": "node audit/runner.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@octokit/rest": "^21.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
   },
   "license": "SEE LICENSE IN LICENSE"
 }

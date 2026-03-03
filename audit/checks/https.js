@@ -2,9 +2,9 @@
  * Check HTTPS reachability (status code 200–399 counts as pass).
  */
 
-const https = require('https');
+import https from 'node:https';
 
-function checkHttps(domain) {
+export function checkHttps(domain) {
   return new Promise((resolve) => {
     const req = https.request(
       {
@@ -47,5 +47,3 @@ function checkHttps(domain) {
     req.end();
   });
 }
-
-module.exports = { checkHttps };

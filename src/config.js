@@ -2,7 +2,7 @@
  * Multi-repo scraper configuration.
  * These 5 repos span core infra, platform, API, templates, and showcase.
  */
-const REPOS = [
+export const REPOS = [
   {
     owner: 'BlackRoad-OS',
     name: 'blackroad',
@@ -35,15 +35,7 @@ const REPOS = [
   },
 ];
 
-const GITHUB_API = 'https://api.github.com';
-const DATA_DIR = './data';
-const SCRAPE_RESULTS_FILE = `${DATA_DIR}/scrape-results.json`;
-const E2E_RESULTS_FILE = `${DATA_DIR}/e2e-results.json`;
-
-module.exports = {
-  REPOS,
-  GITHUB_API,
-  DATA_DIR,
-  SCRAPE_RESULTS_FILE,
-  E2E_RESULTS_FILE,
-};
+export const GITHUB_API = 'https://api.github.com';
+export const DATA_DIR = './data';
+export const SCRAPE_RESULTS_FILE = `${DATA_DIR}/scrape-results.json`;
+export const E2E_RESULTS_FILE = `${DATA_DIR}/e2e-results.json`;
