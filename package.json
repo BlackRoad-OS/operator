@@ -1,13 +1,26 @@
 {
-  "name": "blackroad-audit-runner",
+  "name": "blackroad-operator",
   "version": "1.0.0",
-  "description": "BlackRoad Infrastructure Audit Runner",
+  "description": "Canonical control repo for the BlackRoad OS platform",
   "main": "audit/runner.js",
   "scripts": {
-    "audit": "node audit/runner.js"
+    "audit": "node audit/runner.js",
+    "audit:trust": "node audit/run.js",
+    "scrape": "node scraper/index.js",
+    "render": "node scraper/render-readme.js",
+    "test": "node --test tests/unit/scraper.test.js && node --test tests/unit/verify.test.js && node --test tests/unit/seo.test.js && node --test tests/e2e/pipeline.test.js && node --test tests/dashboard.test.js",
+    "test:jest": "npx jest tests/github-scraper.test.js tests/seo-analyzer.test.js tests/e2e-runner.test.js",
+    "test:python": "python3 -m pytest tests/ e2e/ -v",
+    "pipeline": "python3 scripts/run_all.py",
+    "bootstrap": "bash scripts/bootstrap.sh",
+    "inventory": "bash scripts/inventory.sh"
   },
   "engines": {
     "node": ">=18"
   },
-  "license": "SEE LICENSE IN LICENSE"
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "axios": "^1.13.6",
+    "cheerio": "^1.2.0"
+  }
 }

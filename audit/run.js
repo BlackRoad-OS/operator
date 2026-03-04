@@ -244,10 +244,34 @@ async function main() {
     process.exit(1);
   }
 
-  const config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf-8"));
-  const orgs = config.infrastructure.github_orgs;
-  const checks = config.verification.checks;
-  const thresholds = config.verification.thresholds;
+  const raw = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf-8"));
+
+  // Support both legacy nested config and flat config formats
+  const orgNames = raw.infrastructure
+    ? raw.infrastructure.github_orgs.map((o) => (typeof o === "string" ? o : o.name))
+    : (raw.orgs || []);
+
+  const orgs = orgNames.map((name) => {
+    if (typeof name === "object") return name;
+    return { name, role: "org", url: `https://github.com/${name}` };
+  });
+
+  const checks = raw.verification
+    ? raw.verification.checks
+    : [
+        { id: "org_exists", severity: "critical" },
+        { id: "has_repos", severity: "critical" },
+        { id: "recent_activity", severity: "warning" },
+        { id: "has_readme", severity: "warning" },
+      ];
+
+  const thresholds = raw.verification
+    ? raw.verification.thresholds
+    : {
+        critical_pass_rate: 1.0,
+        warning_pass_rate: 0.5,
+        overall_health_minimum: 0.6,
+      };
 
   console.log(`Organizations: ${orgs.length}`);
   console.log(`Checks per org: ${checks.length}`);
@@ -255,7 +279,7 @@ async function main() {
 
   const auditResults = {
     meta: {
-      schema_version: config.schema_version,
+      schema_version: raw.schema_version || "1.0.0",
       timestamp: new Date().toISOString(),
       runner: "audit/run.js",
       org_count: orgs.length,

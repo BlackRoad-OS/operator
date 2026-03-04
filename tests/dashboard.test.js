@@ -1,5 +1,7 @@
 'use strict';
 
+const { describe, it, beforeEach, afterEach } = require('node:test');
+const assert = require('node:assert/strict');
 const { StatusDashboard } = require('../src/dashboard/status');
 const fs = require('fs');
 const path = require('path');
@@ -77,75 +79,75 @@ describe('StatusDashboard', () => {
 
   describe('loadLatest', () => {
     it('returns null when no report exists', () => {
-      expect(dashboard.loadLatest()).toBeNull();
+      assert.equal(dashboard.loadLatest(), null);
     });
 
     it('loads latest report', () => {
       fs.writeFileSync(path.join(tmpDir, 'latest.json'), JSON.stringify(mockReport));
       const loaded = dashboard.loadLatest();
-      expect(loaded.run_id).toBe('e2e-12345');
+      assert.equal(loaded.run_id, 'e2e-12345');
     });
   });
 
   describe('generateMarkdown', () => {
     it('shows no-data message when no report', () => {
       const md = dashboard.generateMarkdown(null);
-      expect(md).toContain('No verified data');
-      expect(md).toContain('npm run e2e');
+      assert.ok(md.includes('No verified data'));
+      assert.ok(md.includes('npm run e2e'));
     });
 
     it('generates markdown with verified data', () => {
       const md = dashboard.generateMarkdown(mockReport);
-      expect(md).toContain('# Operator Status');
-      expect(md).toContain('Last verified:');
-      expect(md).toContain('e2e-12345');
-      expect(md).toContain('| YES |');
-      expect(md).toContain('BlackRoad-OS/operator');
-      expect(md).toContain('verified at scrape time');
+      assert.ok(md.includes('# Operator Status'));
+      assert.ok(md.includes('Last verified:'));
+      assert.ok(md.includes('e2e-12345'));
+      assert.ok(md.includes('| YES |'));
+      assert.ok(md.includes('BlackRoad-OS/operator'));
+      assert.ok(md.includes('verified at scrape time'));
     });
 
     it('marks PASS/FAIL correctly', () => {
       const md = dashboard.generateMarkdown(mockReport);
-      expect(md).toContain('[PASS] BlackRoad-OS/operator');
-      expect(md).toContain('[FAIL] BlackRoad-OS/failing-repo');
+      assert.ok(md.includes('[PASS] BlackRoad-OS/operator'));
+      assert.ok(md.includes('[FAIL] BlackRoad-OS/failing-repo'));
     });
 
     it('includes real metrics only', () => {
       const md = dashboard.generateMarkdown(mockReport);
-      expect(md).toContain('| Stars | 10 |');
-      expect(md).toContain('| Language | JavaScript |');
+      assert.ok(md.includes('| Stars | 10 |'));
+      assert.ok(md.includes('| Language | JavaScript |'));
       // Should NOT contain any unverified claims
-      expect(md).not.toContain('approximately');
-      expect(md).not.toContain('estimated');
+      assert.ok(!md.includes('approximately'));
+      assert.ok(!md.includes('estimated'));
     });
 
     it('includes health checks', () => {
       const md = dashboard.generateMarkdown(mockReport);
-      expect(md).toContain('[PASS] repo_accessible');
-      expect(md).toContain('[FAIL] ci_passing: Latest run: failure');
+      assert.ok(md.includes('[PASS] repo_accessible'));
+      assert.ok(md.includes('[FAIL] ci_passing: Latest run: failure'));
     });
 
     it('includes SEO score', () => {
       const md = dashboard.generateMarkdown(mockReport);
-      expect(md).toContain('**SEO Score:** 75%');
-      expect(md).toContain('**SEO Score:** 30%');
+      assert.ok(md.includes('**SEO Score:** 75%'));
+      assert.ok(md.includes('**SEO Score:** 30%'));
     });
   });
 
   describe('generateJSON', () => {
     it('returns no_data when no report', () => {
       const json = dashboard.generateJSON(null);
-      expect(json.status).toBe('no_data');
+      assert.equal(json.status, 'no_data');
     });
 
     it('returns structured JSON', () => {
       const json = dashboard.generateJSON(mockReport);
-      expect(json.status).toBe('ok');
-      expect(json.targets).toHaveLength(2);
-      expect(json.targets[0].repo).toBe('BlackRoad-OS/operator');
-      expect(json.targets[0].healthy).toBe(true);
-      expect(json.targets[1].healthy).toBe(false);
-      expect(json.summary.health_percentage).toBe(80);
+      assert.equal(json.status, 'ok');
+      assert.equal(json.targets.length, 2);
+      assert.equal(json.targets[0].repo, 'BlackRoad-OS/operator');
+      assert.equal(json.targets[0].healthy, true);
+      assert.equal(json.targets[1].healthy, false);
+      assert.equal(json.summary.health_percentage, 80);
     });
   });
 });

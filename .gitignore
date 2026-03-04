@@ -1,3 +1,13 @@
 node_modules/
 audit/output-private.json
 audit/output-public.json
+audit/output.json
+__pycache__/
+*.pyc
+.pytest_cache/
+data/latest.json
+data/seo/
+scraper/data/
+reports/latest.json
+inventory-output/
+.operator/
