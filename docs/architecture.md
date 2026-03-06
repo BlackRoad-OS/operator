@@ -44,3 +44,14 @@ All automation, configuration, and infrastructure definitions originate here.
 
 If the system feels chaotic, run the reset checklist in
 [runbook.md](runbook.md#operational-reset).
+
+## Configuration Reference
+
+| File | Purpose |
+|------|---------|
+| `config/automation.yaml` | Global automation kill-switch and per-target overrides |
+| `config/orgs.yaml` | Registry of orgs and repos eligible for automation |
+| `config/oauth.yaml` | OAuth provider and PKCE settings (GitHub or self-hosted) |
+| `config/vendors.yaml` | Vendor API endpoint registry; supports self-hosted overrides |
+| `config/network.yaml` | Tailscale mesh and Cloudflare tunnel settings |
+| `config/blackroad.json` | Core enterprise config and AI routing policy |
