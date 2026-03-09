@@ -1,0 +1,50 @@
+# OAuth configuration — canonical source of truth
+#
+# Defines the OAuth provider(s) used by the BlackRoad OS operator.
+# Environment variables (see .env.example) take precedence over these defaults.
+#
+# Flow: Authorization Code + PKCE (RFC 7636)
+# All credentials MUST be supplied via environment variables — never hardcoded.
+
+oauth:
+  # Primary provider used for operator authentication.
+  # Supported values: github | custom
+  provider: github
+
+  github:
+    # OAuth App or GitHub App credentials come from environment variables:
+    #   OAUTH_GITHUB_CLIENT_ID
+    #   OAUTH_GITHUB_CLIENT_SECRET
+    authorization_url: https://github.com/login/oauth/authorize
+    token_url: https://github.com/login/oauth/access_token
+    # Minimum required scopes for operator to function.
+    scopes:
+      - repo
+      - read:org
+      - admin:org
+
+  # Self-hosted / custom OAuth provider (e.g., Authentik, Keycloak, Dex).
+  # Set oauth.provider: custom and supply endpoint URLs below.
+  custom:
+    # Endpoint URLs supplied via environment variables:
+    #   OAUTH_CUSTOM_AUTHORIZATION_URL
+    #   OAUTH_CUSTOM_TOKEN_URL
+    #   OAUTH_CUSTOM_CLIENT_ID
+    #   OAUTH_CUSTOM_CLIENT_SECRET
+    scopes:
+      - openid
+      - profile
+      - email
+
+  # PKCE settings (applies to all providers).
+  pkce:
+    enabled: true
+    code_challenge_method: S256
+
+  # Token storage: memory | encrypted_file
+  # memory — tokens are not persisted across restarts.
+  # encrypted_file — tokens are written to OPERATOR_DATA_DIR/.tokens (encrypted at rest).
+  token_storage: memory
+
+  # Session lifetime in seconds (default 8 hours).
+  session_ttl: 28800
