@@ -1,10 +1,6 @@
 /**
  * SEOAnalyzer - Scrapes and validates real SEO signals from live pages.
  * Uses built-in fetch API (Node 20+). No external dependencies.
- */
-
-/**
- * SEOAnalyzer - Scrapes and validates real SEO signals from live pages.
  * Every metric is fetched live. No assumptions. No yesterday's apples.
  */
 class SEOAnalyzer {
