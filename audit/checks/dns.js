@@ -2,9 +2,9 @@
  * Check DNS resolution for a domain.
  */
 
-const dns = require('dns');
+import dns from 'node:dns';
 
-function checkDns(domain) {
+export function checkDns(domain) {
   return new Promise((resolve) => {
     dns.lookup(domain, (err, address) => {
       if (err) {
@@ -26,4 +26,3 @@ function checkDns(domain) {
   });
 }
 
-module.exports = { checkDns };

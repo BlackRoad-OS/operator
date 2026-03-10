@@ -1,7 +1,5 @@
-'use strict';
-
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
 
 /**
  * StatusDashboard - Generates verified-only status output.
@@ -104,4 +102,4 @@ class StatusDashboard {
   }
 }
 
-module.exports = { StatusDashboard };
+export { StatusDashboard };

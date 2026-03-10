@@ -1,9 +1,7 @@
-'use strict';
-
-const { GitHubScraper } = require('../scraper/github-scraper');
-const { SEOAnalyzer } = require('../seo/seo-analyzer');
-const fs = require('fs');
-const path = require('path');
+import { GitHubScraper } from '../scraper/github-scraper.js';
+import { SEOAnalyzer } from '../seo/seo-analyzer.js';
+import fs from 'node:fs';
+import path from 'node:path';
 
 /**
  * E2E Runner - Orchestrates full end-to-end validation across target repos.
@@ -159,4 +157,4 @@ class E2ERunner {
   }
 }
 
-module.exports = { E2ERunner };
+export { E2ERunner };

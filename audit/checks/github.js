@@ -3,9 +3,9 @@
  * Uses GITHUB_TOKEN env var when present for higher rate limits.
  */
 
-const https = require('https');
+import https from 'node:https';
 
-function checkGitHubOrg(org) {
+export function checkGitHubOrg(org) {
   return new Promise((resolve) => {
     const headers = {
       'User-Agent': 'blackroad-audit-runner/1.0',
@@ -57,4 +57,3 @@ function checkGitHubOrg(org) {
   });
 }
 
-module.exports = { checkGitHubOrg };

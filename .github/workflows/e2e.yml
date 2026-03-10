@@ -1,44 +1,91 @@
-name: E2E Scrape & Test
+name: E2E Tests
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, "claude/**"]
   pull_request:
     branches: [main, master]
   schedule:
-    # Run daily at 06:00 UTC - fresh numbers every day
     - cron: "0 6 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  e2e:
+  e2e-node:
+    name: Node.js E2E (scrape + verify + test)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run scraper
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scraper/index.js
+
+      - name: Run E2E tests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node --test e2e/*.test.js
+
+      - name: Render README from verified data
+        run: node scraper/render-readme.js
+
+      - name: Upload scrape artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scrape-data-${{ github.run_number }}
+          path: |
+            scraper/data/
+            data/
+          retention-days: 30
+
+      - name: Commit updated data & README (main only, scheduled)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'schedule' && success()
+        run: |
+          git config user.name "blackroad-operator[bot]"
+          git config user.email "operator@blackroad.io"
+          git add scraper/data/ data/ README.md
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "data: refresh scraped repo metrics [automated]"
+            git push
+          fi
+
+  e2e-python:
+    name: Python E2E (scrape + SEO + test)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests beautifulsoup4 pytest
+        run: pip install -r requirements.txt
 
-      - name: Run full pipeline (scrape + test + README update)
+      - name: Run full pipeline
         run: python3 scripts/run_all.py
 
       - name: Upload report artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: seo-report
-          path: reports/latest.json
-
-      - name: Commit updated README (scheduled runs only)
-        if: github.event_name == 'schedule' && success()
-        run: |
-          git config user.name "BlackRoad Operator"
-          git config user.email "operator@blackroad.os"
-          git add README.md
-          git diff --cached --quiet || git commit -m "chore: update README with verified live data"
-          git push
+          name: seo-report-${{ github.run_number }}
+          path: reports/
+          retention-days: 30

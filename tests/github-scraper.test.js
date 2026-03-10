@@ -1,10 +1,8 @@
-'use strict';
-
-const { GitHubScraper } = require('../src/scraper/github-scraper');
+import { GitHubScraper } from '../src/scraper/github-scraper.js';
 
 // Mock axios to test without network
 jest.mock('axios');
-const axios = require('axios');
+import axios from 'axios';
 
 describe('GitHubScraper', () => {
   let scraper;

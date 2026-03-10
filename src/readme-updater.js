@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const { SCRAPE_RESULTS_FILE, E2E_RESULTS_FILE } = require('./config');
+import fs from 'node:fs';
+import path from 'node:path';
+import { SCRAPE_RESULTS_FILE, E2E_RESULTS_FILE } from './config.js';
 
 /**
  * Update README.md with ONLY verified, scraped numbers.
@@ -125,8 +125,8 @@ npm run full          # Full pipeline: scrape -> test -> update readme
   console.log(`[readme] Data sourced from scrape at ${scraped_at}`);
 }
 
-if (require.main === module) {
+if (process.argv[1]?.endsWith('readme-updater.js')) {
   updateReadme();
 }
 
-module.exports = { updateReadme };
+export { updateReadme };

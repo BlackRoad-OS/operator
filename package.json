@@ -1,13 +1,29 @@
 {
-  "name": "blackroad-audit-runner",
+  "name": "blackroad-operator",
   "version": "1.0.0",
-  "description": "BlackRoad Infrastructure Audit Runner",
-  "main": "audit/runner.js",
+  "description": "BlackRoad OS Operator — cross-repo health monitor, scraper, and audit runner",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "operator": "./bin/operator.js"
+  },
   "scripts": {
-    "audit": "node audit/runner.js"
+    "start": "node src/index.js",
+    "audit": "node audit/runner.js",
+    "scrape": "node src/index.js",
+    "scrape:repos": "node scraper/index.js",
+    "verify": "node src/verify.js",
+    "report": "node src/metrics/report.js",
+    "render": "node scraper/render-readme.js",
+    "test": "node --test tests/unit/*.test.js",
+    "test:e2e": "node --test e2e/*.test.js",
+    "build": "tsc --noEmit"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
   },
   "license": "SEE LICENSE IN LICENSE"
 }

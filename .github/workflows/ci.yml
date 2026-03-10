@@ -20,7 +20,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Validate config JSON
         run: node -e "JSON.parse(require('fs').readFileSync('config/blackroad.json','utf8')); console.log('config/blackroad.json: valid JSON');"
@@ -29,11 +29,16 @@ jobs:
         run: |
           for f in \
             config/blackroad.json \
+            package.json \
             audit/runner.js \
             audit/checks/dns.js \
             audit/checks/github.js \
             audit/checks/https.js \
-            audit/checks/ssl.js; do
+            audit/checks/ssl.js \
+            src/index.js \
+            src/verify.js \
+            src/config.js \
+            src/scraper.js; do
             if [ ! -f "$f" ]; then
               echo "MISSING: $f"
               exit 1
@@ -48,6 +53,10 @@ jobs:
             audit/checks/dns.js \
             audit/checks/github.js \
             audit/checks/https.js \
-            audit/checks/ssl.js; do
+            audit/checks/ssl.js \
+            src/index.js \
+            src/verify.js \
+            src/config.js \
+            src/scraper.js; do
             node --check "$f" && echo "Syntax OK: $f"
           done

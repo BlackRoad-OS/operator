@@ -1,9 +1,7 @@
-'use strict';
-
-const { SEOAnalyzer } = require('../src/seo/seo-analyzer');
+import { SEOAnalyzer } from '../src/seo/seo-analyzer.js';
 
 jest.mock('axios');
-const axios = require('axios');
+import axios from 'axios';
 
 describe('SEOAnalyzer', () => {
   let analyzer;

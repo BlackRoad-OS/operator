@@ -1,16 +1,14 @@
-'use strict';
-
-const { E2ERunner } = require('../src/e2e/runner');
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
+import { E2ERunner } from '../src/e2e/runner.js';
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
 
 // Mock the dependencies
-jest.mock('../src/scraper/github-scraper');
-jest.mock('../src/seo/seo-analyzer');
+jest.mock('../src/scraper/github-scraper.js');
+jest.mock('../src/seo/seo-analyzer.js');
 
-const { GitHubScraper } = require('../src/scraper/github-scraper');
-const { SEOAnalyzer } = require('../src/seo/seo-analyzer');
+import { GitHubScraper } from '../src/scraper/github-scraper.js';
+import { SEOAnalyzer } from '../src/seo/seo-analyzer.js';
 
 describe('E2ERunner', () => {
   let runner;

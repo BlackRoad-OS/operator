@@ -1,7 +1,7 @@
-'use strict';
-
-const axios = require('axios');
-const cheerio = require('cheerio');
+/**
+ * SEOAnalyzer - Scrapes and validates real SEO signals from live pages.
+ * Uses built-in fetch API (Node 20+). No external dependencies.
+ */
 
 /**
  * SEOAnalyzer - Scrapes and validates real SEO signals from live pages.
@@ -15,14 +15,18 @@ class SEOAnalyzer {
 
   async analyzePage(url) {
     const ts = new Date().toISOString();
-    let resp;
+    let html, httpStatus;
     try {
-      resp = await axios.get(url, {
-        timeout: this.timeout,
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), this.timeout);
+      const resp = await fetch(url, {
         headers: { 'User-Agent': this.userAgent },
-        maxRedirects: 5,
-        validateStatus: () => true,
+        signal: controller.signal,
+        redirect: 'follow',
       });
+      clearTimeout(timer);
+      httpStatus = resp.status;
+      html = await resp.text();
     } catch (err) {
       return {
         url, analyzed_at: ts, status: 'error',
@@ -30,47 +34,47 @@ class SEOAnalyzer {
       };
     }
 
-    const $ = cheerio.load(resp.data || '');
-    const title = $('title').text().trim();
-    const metaDesc = $('meta[name="description"]').attr('content') || '';
-    const canonical = $('link[rel="canonical"]').attr('href') || '';
-    const ogTitle = $('meta[property="og:title"]').attr('content') || '';
-    const ogDesc = $('meta[property="og:description"]').attr('content') || '';
-    const ogImage = $('meta[property="og:image"]').attr('content') || '';
-    const robots = $('meta[name="robots"]').attr('content') || '';
-    const h1s = [];
-    $('h1').each((_, el) => h1s.push($(el).text().trim()));
-    const h2s = [];
-    $('h2').each((_, el) => h2s.push($(el).text().trim()));
+    // Simple HTML parsing using regex (no external deps)
+    const getTag = (tag) => { const m = html.match(new RegExp(`<${tag}[^>]*>([^<]*)</${tag}>`, 'i')); return m ? m[1].trim() : ''; };
+    const getMeta = (attr, val) => { const m = html.match(new RegExp(`<meta[^>]*${attr}="${val}"[^>]*content="([^"]*)"`, 'i')); return m ? m[1] : ''; };
+    const getLink = (rel) => { const m = html.match(new RegExp(`<link[^>]*rel="${rel}"[^>]*href="([^"]*)"`, 'i')); return m ? m[1] : ''; };
+
+    const title = getTag('title');
+    const metaDesc = getMeta('name', 'description');
+    const canonical = getLink('canonical');
+    const ogTitle = getMeta('property', 'og:title');
+    const ogDesc = getMeta('property', 'og:description');
+    const ogImage = getMeta('property', 'og:image');
+    const robots = getMeta('name', 'robots');
+    const h1s = [...html.matchAll(/<h1[^>]*>(.*?)<\/h1>/gis)].map(m => m[1].replace(/<[^>]*>/g, '').trim());
+    const h2s = [...html.matchAll(/<h2[^>]*>(.*?)<\/h2>/gis)].map(m => m[1].replace(/<[^>]*>/g, '').trim());
 
     const links = { internal: 0, external: 0, nofollow: 0, broken_candidates: [] };
-    $('a[href]').each((_, el) => {
-      const href = $(el).attr('href') || '';
-      const rel = $(el).attr('rel') || '';
-      if (rel.includes('nofollow')) links.nofollow++;
-      if (href.startsWith('http') && !href.includes(new URL(url).hostname)) {
+    const hostname = new URL(url).hostname;
+    for (const m of html.matchAll(/<a[^>]*href="([^"]*)"[^>]*>/gi)) {
+      const href = m[0]; const hrefVal = m[1];
+      if (href.includes('nofollow')) links.nofollow++;
+      if (hrefVal.startsWith('http') && !hrefVal.includes(hostname)) {
         links.external++;
       } else {
         links.internal++;
       }
-    });
+    }
 
     const images = { total: 0, missing_alt: 0 };
-    $('img').each((_, el) => {
+    for (const m of html.matchAll(/<img[^>]*>/gi)) {
       images.total++;
-      if (!$(el).attr('alt')) images.missing_alt++;
-    });
+      if (!m[0].includes('alt=')) images.missing_alt++;
+    }
 
     const structuredData = [];
-    $('script[type="application/ld+json"]').each((_, el) => {
-      try {
-        structuredData.push(JSON.parse($(el).html()));
-      } catch (_e) { /* skip malformed */ }
-    });
+    for (const m of html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>(.*?)<\/script>/gis)) {
+      try { structuredData.push(JSON.parse(m[1])); } catch { /* skip */ }
+    }
 
     const score = this._calculateScore({
       title, metaDesc, canonical, ogTitle, ogImage,
-      h1s, images, structuredData, httpStatus: resp.status,
+      h1s, images, structuredData, httpStatus,
     });
 
     return {
@@ -78,7 +82,7 @@ class SEOAnalyzer {
       analyzed_at: ts,
       status: 'ok',
       verified: true,
-      http_status: resp.status,
+      http_status: httpStatus,
       response_time_ms: null, // would need perf hooks for accuracy
       seo: {
         title: { value: title, length: title.length, optimal: title.length >= 30 && title.length <= 60 },
@@ -151,4 +155,4 @@ class SEOAnalyzer {
   }
 }
 
-module.exports = { SEOAnalyzer };
+export { SEOAnalyzer };

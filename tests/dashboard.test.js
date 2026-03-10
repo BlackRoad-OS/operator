@@ -1,9 +1,7 @@
-'use strict';
-
-const { StatusDashboard } = require('../src/dashboard/status');
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
+import { StatusDashboard } from '../src/dashboard/status.js';
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
 
 describe('StatusDashboard', () => {
   let dashboard;

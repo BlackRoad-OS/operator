@@ -1,6 +1,6 @@
-const fs = require('fs');
-const { scrapeAll } = require('./scraper');
-const { REPOS, SCRAPE_RESULTS_FILE, E2E_RESULTS_FILE, DATA_DIR } = require('./config');
+import fs from 'node:fs';
+import { scrapeAll } from './scraper.js';
+import { REPOS, SCRAPE_RESULTS_FILE, E2E_RESULTS_FILE, DATA_DIR } from './config.js';
 
 /**
  * E2E test suite for multi-repo scraper.
@@ -313,7 +313,7 @@ async function runE2E(preScrapeData) {
   return results;
 }
 
-if (require.main === module) {
+if (process.argv[1]?.endsWith('e2e-runner.js')) {
   runE2E().then(results => {
     process.exit(results.summary.failed > 0 ? 1 : 0);
   }).catch(err => {
@@ -322,4 +322,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { runE2E, E2ERunner };
+export { runE2E, E2ERunner };

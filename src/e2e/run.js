@@ -1,11 +1,14 @@
 #!/usr/bin/env node
-'use strict';
 
-const { E2ERunner } = require('./runner');
-const { StatusDashboard } = require('../dashboard/status');
-const targets = require('../../config/targets.json');
-const fs = require('fs');
-const path = require('path');
+import { E2ERunner } from './runner.js';
+import { StatusDashboard } from '../dashboard/status.js';
+import { readFileSync } from 'node:fs';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const targets = JSON.parse(readFileSync(path.join(__dirname, '../../config/targets.json'), 'utf8'));
 
 async function main() {
   console.log('=== BlackRoad Operator E2E Runner ===');

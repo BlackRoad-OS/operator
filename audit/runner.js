@@ -9,14 +9,16 @@
  * Exits 0 if all checks pass, 1 if any fail.
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const { checkGitHubOrg } = require('./checks/github');
-const { checkDns } = require('./checks/dns');
-const { checkHttps } = require('./checks/https');
-const { checkSsl } = require('./checks/ssl');
+import { checkGitHubOrg } from './checks/github.js';
+import { checkDns } from './checks/dns.js';
+import { checkHttps } from './checks/https.js';
+import { checkSsl } from './checks/ssl.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const CONFIG_PATH = path.join(ROOT, 'config', 'blackroad.json');
 const OUT_DIR = path.join(ROOT, 'audit');

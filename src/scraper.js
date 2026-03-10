@@ -1,6 +1,6 @@
-const { execSync } = require('child_process');
-const fs = require('fs');
-const { REPOS, GITHUB_API, DATA_DIR, SCRAPE_RESULTS_FILE } = require('./config');
+import { execSync } from 'node:child_process';
+import fs from 'node:fs';
+import { REPOS, GITHUB_API, DATA_DIR, SCRAPE_RESULTS_FILE } from './config.js';
 
 /**
  * Fetch JSON from GitHub API via curl (respects system proxy).
@@ -214,11 +214,12 @@ async function scrapeAll() {
 }
 
 // Run if called directly
-if (require.main === module) {
+const isMain = process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/.*\//, ''));
+if (isMain) {
   scrapeAll().catch(err => {
     console.error('[scraper] Fatal error:', err.message);
     process.exit(1);
   });
 }
 
-module.exports = { scrapeRepo, scrapeAll };
+export { scrapeRepo, scrapeAll };

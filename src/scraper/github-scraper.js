@@ -1,6 +1,4 @@
-'use strict';
-
-const axios = require('axios');
+import https from 'node:https';
 
 /**
  * GitHubScraper - Scrapes and validates real metrics from GitHub repos.
@@ -28,11 +26,15 @@ class GitHubScraper {
     let lastError;
     for (let attempt = 0; attempt < this.retries; attempt++) {
       try {
-        const resp = await axios.get(url, {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), this.timeout);
+        const resp = await fetch(url, {
           headers: this._headers(),
-          timeout: this.timeout,
+          signal: controller.signal,
         });
-        return { data: resp.data, status: resp.status, headers: resp.headers };
+        clearTimeout(timer);
+        const data = await resp.json();
+        return { data, status: resp.status, headers: Object.fromEntries(resp.headers) };
       } catch (err) {
         lastError = err;
         if (attempt < this.retries - 1) {
@@ -41,7 +43,7 @@ class GitHubScraper {
         }
       }
     }
-    return { error: lastError.message, status: lastError.response?.status || 0 };
+    return { error: lastError.message, status: 0 };
   }
 
   async scrapeRepo(owner, repo) {
@@ -218,4 +220,4 @@ class GitHubScraper {
   }
 }
 
-module.exports = { GitHubScraper };
+export { GitHubScraper };

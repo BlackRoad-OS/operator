@@ -1,8 +1,8 @@
-const { scrapeAll } = require('./scraper');
-const { runE2E } = require('./e2e-runner');
-const { updateReadme } = require('./readme-updater');
-const fs = require('fs');
-const { DATA_DIR } = require('./config');
+import { scrapeAll } from './scraper.js';
+import { runE2E } from './e2e-runner.js';
+import { updateReadme } from './readme-updater.js';
+import fs from 'node:fs';
+import { DATA_DIR } from './config.js';
 
 /**
  * Full automation pipeline:
@@ -151,7 +151,7 @@ function writeReport(report) {
   fs.writeFileSync(`${DATA_DIR}/pipeline-report.json`, JSON.stringify(report, null, 2));
 }
 
-if (require.main === module) {
+if (process.argv[1]?.endsWith('automation.js')) {
   runPipeline().then(report => {
     process.exit(report.overall_status === 'partial' ? 1 : 0);
   }).catch(err => {
@@ -160,4 +160,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { runPipeline };
+export { runPipeline };
