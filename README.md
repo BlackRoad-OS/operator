@@ -1,44 +1,48 @@
+<!-- BlackRoad SEO Enhanced -->
+
 # operator
 
-**Canonical control repo for the BlackRoad OS platform.**
+> Part of **[BlackRoad OS](https://blackroad.io)** — Sovereign Computing for Everyone
 
-All automation, configuration, and infrastructure definitions originate here.
-No automation runs against any org or repo unless it is declared in this repo first.
+[![BlackRoad OS](https://img.shields.io/badge/BlackRoad-OS-ff1d6c?style=for-the-badge)](https://blackroad.io)
+[![BlackRoad OS](https://img.shields.io/badge/Org-BlackRoad-OS-2979ff?style=for-the-badge)](https://github.com/BlackRoad-OS)
+[![License](https://img.shields.io/badge/License-Proprietary-f5a623?style=for-the-badge)](LICENSE)
 
-## Structure
+**operator** is part of the **BlackRoad OS** ecosystem — a sovereign, distributed operating system built on edge computing, local AI, and mesh networking by **BlackRoad OS, Inc.**
 
-| Directory | Purpose |
-|-----------|---------|
-| [`config/`](config/) | Single source of truth for all configuration |
-| [`docs/`](docs/) | Architecture documentation and operational runbooks |
-| [`scripts/`](scripts/) | Approved automation entry-points |
-| [`infra/`](infra/) | Infrastructure-as-code definitions |
+## About BlackRoad OS
 
-## Core Rule
+BlackRoad OS is a sovereign computing platform that runs AI locally on your own hardware. No cloud dependencies. No API keys. No surveillance. Built by [BlackRoad OS, Inc.](https://github.com/BlackRoad-OS-Inc), a Delaware C-Corp founded in 2025.
 
-> All automation originates here.
+### Key Features
+- **Local AI** — Run LLMs on Raspberry Pi, Hailo-8, and commodity hardware
+- **Mesh Networking** — WireGuard VPN, NATS pub/sub, peer-to-peer communication
+- **Edge Computing** — 52 TOPS of AI acceleration across a Pi fleet
+- **Self-Hosted Everything** — Git, DNS, storage, CI/CD, chat — all sovereign
+- **Zero Cloud Dependencies** — Your data stays on your hardware
 
-- Agents do not open PRs across orgs until declared in [`config/orgs.yaml`](config/orgs.yaml).
-- Every automated mutation runs through a script in [`scripts/`](scripts/).
-- Every infrastructure change is declared in [`infra/`](infra/).
+### The BlackRoad Ecosystem
+| Organization | Focus |
+|---|---|
+| [BlackRoad OS](https://github.com/BlackRoad-OS) | Core platform and applications |
+| [BlackRoad OS, Inc.](https://github.com/BlackRoad-OS-Inc) | Corporate and enterprise |
+| [BlackRoad AI](https://github.com/BlackRoad-AI) | Artificial intelligence and ML |
+| [BlackRoad Hardware](https://github.com/BlackRoad-Hardware) | Edge hardware and IoT |
+| [BlackRoad Security](https://github.com/BlackRoad-Security) | Cybersecurity and auditing |
+| [BlackRoad Quantum](https://github.com/BlackRoad-Quantum) | Quantum computing research |
+| [BlackRoad Agents](https://github.com/BlackRoad-Agents) | Autonomous AI agents |
+| [BlackRoad Network](https://github.com/BlackRoad-Network) | Mesh and distributed networking |
+| [BlackRoad Education](https://github.com/BlackRoad-Education) | Learning and tutoring platforms |
+| [BlackRoad Labs](https://github.com/BlackRoad-Labs) | Research and experiments |
+| [BlackRoad Cloud](https://github.com/BlackRoad-Cloud) | Self-hosted cloud infrastructure |
+| [BlackRoad Forge](https://github.com/BlackRoad-Forge) | Developer tools and utilities |
 
-## Quick Start
+### Links
+- **Website**: [blackroad.io](https://blackroad.io)
+- **Documentation**: [docs.blackroad.io](https://docs.blackroad.io)
+- **Chat**: [chat.blackroad.io](https://chat.blackroad.io)
+- **Search**: [search.blackroad.io](https://search.blackroad.io)
 
-```bash
-# Validate your local environment
-bash scripts/bootstrap.sh
-```
+---
 
-## Operational Reset
 
-If the system feels out of control, follow the reset procedure in
-[`docs/runbook.md`](docs/runbook.md#operational-reset):
-
-1. Set `global_enabled: false` in [`config/automation.yaml`](config/automation.yaml).
-2. Audit [`config/orgs.yaml`](config/orgs.yaml) — disable any targets that should not be touched.
-3. Re-enable targets one at a time after review.
-
-## Docs
-
-- [Architecture](docs/architecture.md) — system design and control-flow
-- [Runbook](docs/runbook.md) — day-to-day operations
